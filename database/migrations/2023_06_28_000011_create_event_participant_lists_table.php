@@ -27,16 +27,15 @@ return new class extends Migration
             $table->increments('id');
             $table->string('first_name', 45)->nullable()->default(null);
             $table->string('last_name', 45)->nullable()->default(null);
-            $table->integer('event_users_id')->unsigned();
+            $table->integer('event_participants_id')->unsigned();
             $table->timestamps();
 
-            $table->index(["event_users_id"]);
+            $table->index(["event_participants_id"]);
 
 
-            $table->foreign('event_users_id')
-                ->references('id')->on('event_users')
-                ->onDelete('no action')
-                ->onUpdate('no action');
+            $table->foreign('event_participants_id')
+                ->references('id')->on('event_participants');
+                
         });
     }
 

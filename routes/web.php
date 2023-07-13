@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\eventParticipantController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +22,7 @@ Route::get('/', function () {
 
 Route::get('/event/list',[EventController::class,'index'])->name('event.list');
 
-Route::post('/signup', [EventController::class, 'signup']);
+Route::post('/signup', [eventParticipantController::class, 'signup']);
 
 
 Auth::routes(['verify'=>true]);

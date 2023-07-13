@@ -60,13 +60,7 @@
                 <td>{{ $event->date_start_publi }}</td>
                 <td>{{ $event->date_end_publi }}</td>
                 <td>{{ $event->status->name }}</td>
-                <td>
-                    <form method="POST" action="/signup">
-                    @csrf
-                    <input type="hidden" name="event_id" value="{{ $event->id }}">
-                    <button type="submit" class="btn btn-primary">Zapisz się</button>
-                   </form>
-                </td>
+                
               
             </tr>
             @if ($event->info->isNotEmpty())
@@ -96,6 +90,14 @@
                                 <td>{{ $info->description }}</td>
                                 <td>{{ $info->comments }}</td>
                                 <td>{{ $info->number_seats }}</td>
+                                <td>
+                    <form method="POST" action="/signup">
+                    @csrf
+                    <input type="hidden" name="event_id" value="{{ $event->id }}">
+                    <input type="hidden" name="event_details_id" value="{{ $info->id }}">
+                    <button type="submit" class="btn btn-primary">Zapisz się</button>
+                   </form>
+                </td>
                                
                                 
                             </tr>

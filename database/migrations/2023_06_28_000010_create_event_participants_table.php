@@ -12,7 +12,7 @@ return new class extends Migration
      * Schema table name to migrate
      * @var string
      */
-    public $tableName = 'event_users';
+    public $tableName = 'event_participants';
 
     /**
      * Run the migrations.
@@ -46,24 +46,19 @@ return new class extends Migration
 
 
             $table->foreign('dictionary_schools_id')
-                ->references('id')->on('dictionary_schools')
-                ->onDelete('no action')
-                ->onUpdate('no action');
+                ->references('id')->on('dictionary_schools');
+                
 
             $table->foreign('participants_id')
-                ->references('id')->on('participants')
-                ->onDelete('no action')
-                ->onUpdate('no action');
-
+                ->references('id')->on('participants');
+               
             $table->foreign('events_id')
-                ->references('id')->on('events')
-                ->onDelete('no action')
-                ->onUpdate('no action');
+                ->references('id')->on('events');
+                
 
             $table->foreign('event_details_id')
-                ->references('id')->on('event_details')
-                ->onDelete('no action')
-                ->onUpdate('no action');
+                ->references('id')->on('event_details');
+                
         });
     }
 
