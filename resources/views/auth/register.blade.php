@@ -54,7 +54,7 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
+                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Hasło') }}</label>
 
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
@@ -68,23 +68,28 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
+                            <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('Potwierdź hasło') }}</label>
 
                             <div class="col-md-6">
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="sex" class="col-md-4 col-form-label text-md-end">{{ __('sex') }}</label>
+                            <label for="sex" class="col-md-4 col-form-label text-md-end">{{ __('Płeć') }}</label>
 
                             <div class="col-md-6">
-                                <input id="sex" type="text" class="form-control @error('first_name') is-invalid @enderror" name="sex" value="{{ old('first_name') }}" required autocomplete="sex" autofocus>
+                                <select id="sex" class="form-control" name="sex" required autofocus>
+                                    <option value="m">Mężczyzna</option>
+                                    <option value="k">Kobieta</option>
+                                    <option value="n">Nie chcę podawać</option>
+
+                                </select>
 
                                 
                             </div>
                         </div>
                         <div class="row mb-3">
-                            <label for="birth_date" class="col-md-4 col-form-label text-md-end">{{ __('birth_date') }}</label>
+                            <label for="birth_date" class="col-md-4 col-form-label text-md-end">{{ __('Data urodzin') }}</label>
 
                             <div class="col-md-6">
                                 <input id="birth_date" type="date" class="form-control @error('first_name') is-invalid @enderror" name="birth_date" value="{{ old('first_name') }}" required autocomplete="birth_date" autofocus>
@@ -94,7 +99,7 @@
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
-                                    {{ __('Register') }}
+                                    {{ __('Zarejestruj') }}
                                 </button>
                             </div>
                         </div>

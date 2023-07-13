@@ -15,6 +15,7 @@
                     @endif
 
                     {{ __('You are logged in!') }}
+                    <a href="change-password    ">Zmień hasło</a>
                 </div>
             </div>
         </div>
