@@ -74,7 +74,23 @@
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
                             </div>
                         </div>
+                        <div class="row mb-3">
+                            <label for="sex" class="col-md-4 col-form-label text-md-end">{{ __('sex') }}</label>
 
+                            <div class="col-md-6">
+                                <input id="sex" type="text" class="form-control @error('first_name') is-invalid @enderror" name="sex" value="{{ old('first_name') }}" required autocomplete="sex" autofocus>
+
+                                
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="birth_date" class="col-md-4 col-form-label text-md-end">{{ __('birth_date') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="birth_date" type="date" class="form-control @error('first_name') is-invalid @enderror" name="birth_date" value="{{ old('first_name') }}" required autocomplete="birth_date" autofocus>
+
+                            </div>
+                        </div>
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">

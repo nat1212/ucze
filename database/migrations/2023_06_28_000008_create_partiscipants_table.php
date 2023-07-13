@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('first_name', 45)->nullable()->default(null);
             $table->string('last_name', 45)->nullable()->default(null);
             $table->string('email', 45)->nullable()->default(null);
-            $table->string('password', 45)->nullable()->default(null);
+            $table->string('password')->nullable()->default(null);
             $table->string('sex', 45)->nullable()->default(null);
             $table->date('birth_date')->nullable()->default(null);
             $table->string('idu_create', 45)->nullable()->default(null);
