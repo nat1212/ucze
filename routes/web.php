@@ -21,7 +21,7 @@ Route::get('/', function () {
 });
 
 Route::get('/event/list',[EventController::class,'index'])->name('event.list');
-
+Route::get('/leave/{entryId}',[eventParticipantController::class,'leave']);
 Route::post('/signup', [eventParticipantController::class, 'signup']);
 
 

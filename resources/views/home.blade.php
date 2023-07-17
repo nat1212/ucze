@@ -16,6 +16,16 @@
 
                     {{ __('You are logged in!') }}
                     <a href="change-password    ">Zmień hasło</a>
+                    <h4>Lista twoich wydarzeń oraz kto ma dostęp:</h4>
+                    @if(isset($results))
+                        @foreach ($results as $result)
+                            <p>Event id: {{ $result->id }}</p>
+                            <p>Event Name: {{ $result->name }}</p>
+                            <p>Event Details Title: {{ $result->title }}</p>
+                            <a href="/leave/{{ $result->id }}"><button>Wypisz się</button></a>
+                        @endforeach
+                    @endif
+
                 </div>
             </div>
         </div>

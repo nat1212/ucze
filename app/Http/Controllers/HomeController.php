@@ -5,6 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\Participant;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
+use App\Models\EventParticipant;
+use App\Models\Event;
+use App\Models\EventDetails;
+
 
 class HomeController extends Controller
 {
@@ -25,7 +32,18 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $participantId = Auth::id();
+        $result = DB::table('event_participants')
+        ->join('events', 'event_participants.events_id', '=', 'events.id')
+        ->join('event_details', 'event_participants.event_details_id', '=', 'event_details.id')
+        ->where('event_participants.participants_id', $participantId)
+        ->whereNull('event_participants.delated_at')
+        ->select('events.name', 'event_details.title','event_participants.id')
+        ->get();
+
+
+        return view('home', ['results' => $result]);
+
     }
     public function changePassword()
     {

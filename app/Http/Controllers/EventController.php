@@ -14,7 +14,7 @@ class EventController extends Controller
         [
 
         'events' => Event::paginate(2)
-
+            
         ]);
     }
   

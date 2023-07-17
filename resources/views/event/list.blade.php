@@ -91,17 +91,19 @@
                                 <td>{{ $info->comments }}</td>
                                 <td>{{ $info->number_seats }}</td>
                                 <td>
-                    <form method="POST" action="/signup">
-                    @csrf
-                    <input type="hidden" name="event_id" value="{{ $event->id }}">
-                    <input type="hidden" name="event_details_id" value="{{ $info->id }}">
-                    <button type="submit" class="btn btn-primary">Zapisz się</button>
-                   </form>
-                </td>
-                               
-                                
-                            </tr>
-                            @endforeach
+                                @if ($info->isRegistered) <!-- Przykładowa flaga 'isRegistered' oznaczająca, że użytkownik jest już zapisany -->
+                                    <button type="button" class="btn btn-primary" disabled>Zapisany</button>
+                                @else
+                                    <form method="POST" action="/signup">
+                                        @csrf
+                                        <input type="hidden" name="event_id" value="{{ $event->id }}">
+                                        <input type="hidden" name="event_details_id" value="{{ $info->id }}">
+                                        <button type="submit" class="btn btn-primary">Zapisz się</button>
+                                    </form>
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
                         </tbody>
                     </table>
                 </td>
