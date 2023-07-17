@@ -35,6 +35,7 @@ return new class extends Migration
             $table->integer('events_id')->unsigned();
             $table->integer('event_details_id')->unsigned();
             $table->timestamps();
+            $table->dateTime('delated_at')->nullable()->default(null);
 
             $table->index(["dictionary_schools_id"]);
 
