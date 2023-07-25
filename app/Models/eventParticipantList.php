@@ -14,4 +14,5 @@ class eventParticipantList extends Model
         'last_name',
         'event_participants_id',
     ];
+    
 }

@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\DictionarySchoolController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\EventController;
+
 use App\Http\Controllers\eventParticipantController;
 
 /*
@@ -20,13 +22,24 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+
+
+Route::get('/szkola', [DictionarySchoolController::class, 'showForm']);
+
+Route::post('/szkola', [DictionarySchoolController::class, 'schollssave']);
+
 Route::get('/event/list',[EventController::class,'index'])->name('event.list');
 Route::get('/leave/{entryId}',[eventParticipantController::class,'leave']);
 Route::post('/signup', [eventParticipantController::class, 'signup']);
 
-
+Route::get('/events/search', [EventController::class,'search'])->name('events.search');
 Auth::routes(['verify'=>true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+
 Route::get('/change-password', [App\Http\Controllers\HomeController::class, 'changePassword'])->name('change-password');
 Route::post('/change-password', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('update-password');
+

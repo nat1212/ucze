@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use app\Models\Event;
 
 class eventParticipant extends Model
 {
@@ -20,4 +21,15 @@ class eventParticipant extends Model
         'events_id',
         'event_details_id',
     ];
+    public function participant()
+    {
+        return $this->belongsTo(Participant::class, 'participants_id');
+    }
+    
+    public function eventDetails()
+    {
+        return $this->belongsTo(EventDetails::class, 'event_details_id');
+    }
+    
+
 }

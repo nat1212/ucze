@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\EventDetails;
+use App\Models\Participant;
+use App\Models\eventParticipant;
 
 class Event extends Model
 {
@@ -38,6 +40,19 @@ class Event extends Model
     {
         return $this->hasMany (EventDetails::class, 'events_id');
     }
+    public function participants()
+    {
+    return $this->belongsToMany(Participant::class, 'event_participants', 'events_id', 'participants_id');
+    }
+    
+    public function isParticipantRegistered($participantId)
+    {
+        return $this->participants()
+        ->where('participants_id', $participantId)
+        ->whereNull('deleted_at')
+        ->exists();
+    }
+
 
 
 }

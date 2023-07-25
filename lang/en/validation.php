@@ -163,8 +163,8 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'birth_date' => [
+            'before_or_equal' => 'The :attribute must be a date before or equal to January 1, 2010.',
         ],
     ],
 

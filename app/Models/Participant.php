@@ -44,4 +44,8 @@ class Participant extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public function eventParticipants()
+    {
+        return $this->hasMany(EventParticipant::class, 'participants_id');
+    }
 }

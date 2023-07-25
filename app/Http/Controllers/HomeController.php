@@ -24,7 +24,19 @@ class HomeController extends Controller
     {
         $this->middleware('auth');
     }
+    public function school($id){
+        $participant = DB::table('participants')
+                ->where('id', $id)
+                ->whereNotNull('dictionary_schools_id')
+                ->first();
 
+        if ($participant) {
+            return 1;
+        } else {
+            return 0;
+        }
+
+    }
     /**
      * Show the application dashboard.
      *
@@ -33,18 +45,29 @@ class HomeController extends Controller
     public function index()
     {
         $participantId = Auth::id();
+        $participant = Participant::findOrFail($participantId);
+
         $result = DB::table('event_participants')
         ->join('events', 'event_participants.events_id', '=', 'events.id')
         ->join('event_details', 'event_participants.event_details_id', '=', 'event_details.id')
         ->where('event_participants.participants_id', $participantId)
-        ->whereNull('event_participants.delated_at')
-        ->select('events.name', 'event_details.title','event_participants.id')
+        ->whereNull('event_participants.deleted_at')
+        ->select('events.name', 'event_details.title','event_details.date_start', 'event_details.date_end', 'event_participants.id')
+        ->orderBy('event_details.date_start', 'asc')
         ->get();
 
-
-        return view('home', ['results' => $result]);
+        $checkSchool = $this->school($participantId);
+        if ($checkSchool == 1) {
+            return view('home', ['results' => $result,'participant'=> $participant,'error' => null]);
+        } else {
+            return view('home', ['results' => $result,'participant'=> $participant, 'error' => 'Proszę uzupełić szkołę!']);
+        }
+       
 
     }
+
+    
+
     public function changePassword()
     {
         return view('change-password');
