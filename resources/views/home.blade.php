@@ -62,7 +62,7 @@
             <div class="card-header">{{ __('Edycja Profilu') }}</div>
 
             <div class="card-body">
-            <form method="POST" action="">
+            <form method="POST" action="{{ route('participant.updateFirstName', $participant->id) }}">
     @csrf
     <div class="row">
         <label for="first_name" class="col-md-4 col-form-label text-md-end">{{ __('Imię') }}</label>
@@ -77,7 +77,7 @@
 
                     <div class="spacer"></div>
 
-                    <form method="POST" action="">
+                    <form method="POST" action="{{ route('participant.updateLastName', $participant->id) }}">
     @csrf
     <div class="row">
         <label for="last_name" class="col-md-4 col-form-label text-md-end">{{ __('Nazwisko') }}</label>
@@ -93,8 +93,8 @@
                     <div class="spacer"></div>
 
 
-                    <form method="POST" action="">
-                     @csrf
+                    <form method="POST" action="{{ route('participant.updateSex', $participant->id) }}">
+    @csrf
                     <div class="row">
                         <label for="sex" class="col-md-4 col-form-label text-md-end">{{ __('Płeć') }}</label>
                         <div class="col-md-3">
@@ -109,8 +109,8 @@
 
 
 
-                    <form method="POST" action="">
-                     @csrf
+                    <form method="POST" action="{{ route('participant.updateBirthDate', $participant->id) }}">
+    @csrf
                     <div class="row">
                         <label for="birth_date" class="col-md-4 col-form-label text-md-end">{{ __('Data urodzin') }}</label>
                         <div class="col-md-3">

@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Casts\AsDateTime;
 
 use Illuminate\Http\Request;
 use App\Models\Participant;
+use App\Http\Controllers\Controller;
 
 class ParticipantController extends Controller
 {

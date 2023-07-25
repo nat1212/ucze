@@ -4,6 +4,7 @@ use App\Http\Controllers\DictionarySchoolController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\EventController;
+use App\Http\Controllers\ParticipantController;
 
 use App\Http\Controllers\eventParticipantController;
 
@@ -38,6 +39,13 @@ Auth::routes(['verify'=>true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+
+
+Route::get('/participant/edit/{id}', [ParticipantController::class, 'edit'])->name('participant.edit');
+Route::post('/participant/update/first_name/{id}', [ParticipantController::class, 'updateFirstName'])->name('participant.updateFirstName');
+Route::post('/participant/update/last_name/{id}', [ParticipantController::class, 'updateLastName'])->name('participant.updateLastName');
+Route::post('/participant/update/sex/{id}', [ParticipantController::class, 'updateSex'])->name('participant.updateSex');
+Route::post('/participant/update/birth_date/{id}', [ParticipantController::class, 'updateBirthDate'])->name('participant.updateBirthDate');
 
 
 Route::get('/change-password', [App\Http\Controllers\HomeController::class, 'changePassword'])->name('change-password');
