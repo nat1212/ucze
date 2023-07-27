@@ -28,6 +28,7 @@ class EventController extends Controller
         $events = Event::where('date_start_publi', '<', $currentDateTime)
                    ->where('date_end_publi', '>', $currentDateTime)
                    ->whereNull('deleted_at')
+                   ->where('statuses_id',1)
                    ->with(['info' => function ($query) {
                     $query->whereNull('deleted_at');
                 }])
