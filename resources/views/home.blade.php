@@ -15,16 +15,20 @@
                 
                 <div class="card-body">
                     @if (session('status'))
-                        <div class="alert alert-success" role="alert">
+                        <div id="status-message" class="alert alert-success" role="alert">
                             {{ session('status') }}
                         </div>
                     @endif
 
 
-                    <div class="link-frame">
-                    <span>Zaktualizuj swoją szkołę -> </span>
-                    <a href="#">Pokaż szczegóły</a>
-                    </div>
+                 
+                    @if(isset($error) && !empty($error))
+                        <div class="link-frame">
+                            <p>{{ $error }} -> <a href="/szkola">Kliknij tutaj</a></p>
+                        </div>
+                    @endif
+                  
+                    <h4 class="expand-toggle" onclick="redirectToEventList()">Lista wszystkich wydarzeń:  <span class="toggle-icon">►</span></h4>
 
                     <h4 class="expand-toggle">Lista wydarzeń na które jesteś zapisany/a:  <span class="toggle-icon">▼</span></h4>
                     <div class="grid-wrapper">
@@ -62,7 +66,7 @@
             <div class="card-header">{{ __('Edycja Profilu') }}</div>
 
             <div class="card-body">
-            <form method="POST" action="{{ route('participant.updateFirstName', $participant->id) }}">
+            <form method="POST" action="{{ route('participant.updateFirstName', $participant->id) }}" onsubmit="return confirm('Czy na pewno chcesz zapisać zmiany?')">
     @csrf
     <div class="row">
         <label for="first_name" class="col-md-4 col-form-label text-md-end">{{ __('Imię') }}</label>
@@ -77,7 +81,7 @@
 
                     <div class="spacer"></div>
 
-                    <form method="POST" action="{{ route('participant.updateLastName', $participant->id) }}">
+                    <form method="POST" action="{{ route('participant.updateLastName', $participant->id) }}" onsubmit="return confirm('Czy na pewno chcesz zapisać zmiany?')">
     @csrf
     <div class="row">
         <label for="last_name" class="col-md-4 col-form-label text-md-end">{{ __('Nazwisko') }}</label>
@@ -93,28 +97,33 @@
                     <div class="spacer"></div>
 
 
-                    <form method="POST" action="{{ route('participant.updateSex', $participant->id) }}">
-    @csrf
+                    <form method="POST" action="{{ route('participant.updateSex', $participant->id) }}" onsubmit="return confirm('Czy na pewno chcesz zapisać zmiany?')">
+                    @csrf
                     <div class="row">
                         <label for="sex" class="col-md-4 col-form-label text-md-end">{{ __('Płeć') }}</label>
                         <div class="col-md-3">
-                            <input id="sex" type="text" class="form-control" name="sex" value="{{ $participant->sex  }}" placeholder="Płeć" required autocomplete="Płeć" autofocus>
+                            <select id="sex" class="form-control" name="sex" required autofocus>
+                                <option value="m" @if($participant->sex === 'm') selected @endif>Mężczyzna</option>
+                                <option value="k" @if($participant->sex === 'k') selected @endif>Kobieta</option>
+                                <option value="n" @if($participant->sex === 'n') selected @endif>Nie chcę podawać</option>
+                            </select>
                         </div>
                         <div class="col-md-3">
                             <button type="submit" class="btn btn-primary">Zapisz</button>
                         </div>
                     </div>
                     </form>
+
                     <div class="spacer"></div>
 
 
 
-                    <form method="POST" action="{{ route('participant.updateBirthDate', $participant->id) }}">
+                    <form method="POST" action="{{ route('participant.updateBirthDate', $participant->id) }}" onsubmit="return confirm('Czy na pewno chcesz zapisać zmiany?')">
     @csrf
                     <div class="row">
                         <label for="birth_date" class="col-md-4 col-form-label text-md-end">{{ __('Data urodzin') }}</label>
                         <div class="col-md-3">
-                            <input id="birth_date" type="datetime-local" class="form-control" name="birth_date" value="{{ $participant->birth_date }}">
+                            <input id="birth_date" type="date" class="form-control" name="birth_date" value="{{ $participant->birth_date }}">
                         </div>
                         <div class="col-md-3">
                             <button type="submit" class="btn btn-primary">Zapisz</button>
@@ -171,6 +180,18 @@ function toggleExpand() {
     }
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+        const statusMessage = document.getElementById('status-message');
+
+        if (statusMessage) {
+            setTimeout(function() {
+                statusMessage.style.display = 'none';
+            }, 5000); 
+        }
+    });
+    function redirectToEventList() {
+  window.location.href = "{{ route('event.list') }}";
+}
     
 </script>
 

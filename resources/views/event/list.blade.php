@@ -135,10 +135,10 @@
                                     @csrf
                                     <input type="hidden" name="event_id" value="{{ $event->id }}">
                                     <input type="hidden" name="event_details_id" value="{{ $info->id }}">
-                                    <button type="submit" class="btn btn-primary">Zapisz się</button>
+                                    <button type="submit" class="btn sign">Zapisz się</button>
                                 </form>
                                 @else
-                                    <button  class="btn btn-primary" type="button" disabled>Zapisz się</button>
+                                    <button  class="btn sign" type="button" disabled>Zapisz się</button>
                                 @endif
               <button class="btn show-sub-events" data-info-id="{{ $info->id }}">Pokaż szczegóły</button>
             </div>
@@ -223,7 +223,7 @@
         expandableContents[index].classList.toggle('expanded');
         button.textContent = expandableContents[index].classList.contains('expanded') ? 'Schowaj wydarzenia' : 'Pokaż wydarzenia';
 
-        // Dodajemy poniższy kod, aby automatycznie chować szczegóły podwydarzeń, gdy schowamy wydarzenia
+     
         if (!expandableContents[index].classList.contains('expanded')) {
           var subEvents = expandableContents[index].querySelectorAll('.sub-events');
           var showSubEventButtons = expandableContents[index].querySelectorAll('.show-sub-events');

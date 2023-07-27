@@ -28,6 +28,7 @@ class EventController extends Controller
         $events = Event::where('date_start_publi', '<', $currentDateTime)
                    ->where('date_end_publi', '>', $currentDateTime)
                    ->whereNull('deleted_at')
+                   ->where('statuses_id',1)
                    ->with(['info' => function ($query) {
                     $query->whereNull('deleted_at');
                 }])
@@ -59,7 +60,25 @@ class EventController extends Controller
         return view('event.list', compact('event'));
     }
   
-
+    public function search(Request $request)
+    {
+        $searchName = $request->input('search_name');
+    
+        $events = Event::query();
+    
+        if ($searchName) {
+            $events->where(function ($query) use ($searchName) {
+                $query->where('name', 'LIKE', '%' . $searchName . '%')
+                    ->orWhereHas('info', function ($query) use ($searchName) {
+                        $query->where('title', 'LIKE', '%' . $searchName . '%');
+                    });
+            });
+        }
+    
+        $events = $events->paginate(5);
+    
+        return view('event.list', ['events' => $events]);
+    }
 }
 /*events = Event::paginate(2);
         $loggedInParticipantId = auth()->user()->id;

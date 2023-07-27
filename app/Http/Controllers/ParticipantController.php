@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Casts\AsDateTime;
 use Illuminate\Http\Request;
 use App\Models\Participant;
 use App\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 class ParticipantController extends Controller
 {
     public function edit($id)
@@ -22,35 +23,79 @@ protected $casts = [
 
 
 public function updateFirstName(Request $request, $id)
-{
-    $participant = Participant::findOrFail($id);
-    $participant->update(['first_name' => $request->first_name]);
+    {
+        $participant = Participant::findOrFail($id);
 
-    return redirect()->route('home')->with('status', 'Imię zostało zaktualizowane.');
-}
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required|string|max:255',
+        ]);
 
-public function updateLastName(Request $request, $id)
-{
-    $participant = Participant::findOrFail($id);
-    $participant->update(['last_name' => $request->last_name]);
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
 
-    return redirect()->route('home')->with('status', 'Nazwisko zostało zaktualizowane.');
-}
+        $participant->update(['first_name' => $request->first_name]);
 
-public function updateSex(Request $request, $id)
-{
-    $participant = Participant::findOrFail($id);
-    $participant->update(['sex' => $request->sex]);
+        return redirect()->route('home')->with('status', 'Imię zostało zaktualizowane.');
+    }
 
-    return redirect()->route('home')->with('status', 'Płeć zostało zaktualizowane.');
-}
+    public function updateLastName(Request $request, $id)
+    {
+        $participant = Participant::findOrFail($id);
 
-public function updateBirthDate(Request $request, $id)
-{
-    $participant = Participant::findOrFail($id);
-    $participant->update(['birth_date' => $request->birth_date]);
+        $validator = Validator::make($request->all(), [
+            'last_name' => 'required|string|max:255',
+        ]);
 
-    return redirect()->route('home')->with('status', 'Data urodzenia zostało zaktualizowane.');
-}
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $participant->update(['last_name' => $request->last_name]);
+
+        return redirect()->route('home')->with('status', 'Nazwisko zostało zaktualizowane.');
+    }
+
+    public function updateSex(Request $request, $id)
+    {
+        $participant = Participant::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [
+            'sex' => ['required', Rule::in(['m', 'k', 'n'])],
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $participant->update(['sex' => $request->sex]);
+
+        return redirect()->route('home')->with('status', 'Płeć została zaktualizowana.');
+    }
+
+    public function updateBirthDate(Request $request, $id)
+    {
+        $participant = Participant::findOrFail($id);
+
+        $validator = Validator::make($request->all(), [
+            'birth_date' => 'required', 'date', 'before_or_equal:2010-01-01',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $participant->update(['birth_date' => $request->birth_date]);
+
+        return redirect()->route('home')->with('status', 'Data urodzenia została zaktualizowana.');
+    }
 
 }

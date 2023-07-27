@@ -60,7 +60,7 @@ class HomeController extends Controller
         if ($checkSchool == 1) {
             return view('home', ['results' => $result,'participant'=> $participant,'error' => null]);
         } else {
-            return view('home', ['results' => $result,'participant'=> $participant, 'error' => 'Proszę uzupełić szkołę!']);
+            return view('home', ['results' => $result,'participant'=> $participant, 'error' => 'Proszę uzupełnić szkołę!']);
         }
        
 
@@ -94,4 +94,5 @@ class HomeController extends Controller
 
         return back()->with("status", "Udało się!");
 }
+
 }
