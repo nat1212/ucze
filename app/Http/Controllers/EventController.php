@@ -37,12 +37,28 @@ class EventController extends Controller
                     $query->orderBy('date_start', 'asc');
                 }])->orderBy('date_start', 'asc')->paginate(2);
                   
-   
-        
+                foreach ($events as $event) {
+                    $event->date_start = Carbon::parse($event->date_start);
+                    $event->date_end = Carbon::parse($event->date_end);
+                    $event->date_start_rek = Carbon::parse($event->date_start_rek);
+                    $event->date_end_rek = Carbon::parse($event->date_end_rek);
+                    
+                }
+                       
 
         $Button = EventDetails::where('date_start_rek', '<', $currentDateTime)
                    ->where('date_end_rek', '>', $currentDateTime)
                    ->paginate(2);
+
+                   foreach ($event->info as $info) {
+                    $info->date_start = Carbon::parse($info->date_start);
+                    $info->date_end = Carbon::parse($info->date_end);
+                    $info->date_start_rek = Carbon::parse($info->date_start_rek);
+                    $info->date_end_rek = Carbon::parse($info->date_end_rek);
+                    
+                }
+
+                
        
         return view('event.list', [
             'events' => $events,
@@ -62,23 +78,43 @@ class EventController extends Controller
   
     public function search(Request $request)
     {
-        $searchName = $request->input('search_name');
+        $searchTerm = $request->input('search_name');
     
-        $events = Event::query();
+        $currentDateTime = Carbon::now();
+
+        $events = Event::where('date_start_publi', '<', $currentDateTime)
+                       ->where('date_end_publi', '>', $currentDateTime)
+                       ->whereNull('deleted_at')
+                       ->where('statuses_id', 1)
+                       ->where('name', 'LIKE', "%{$searchTerm}%")
+                       ->with(['info' => function ($query) {
+                           $query->whereNull('deleted_at');
+                           $query->orderBy('date_start', 'asc');
+                       }])
+                       ->orderBy('date_start', 'asc')
+                       ->paginate(2);
     
-        if ($searchName) {
-            $events->where(function ($query) use ($searchName) {
-                $query->where('name', 'LIKE', '%' . $searchName . '%')
-                    ->orWhereHas('info', function ($query) use ($searchName) {
-                        $query->where('title', 'LIKE', '%' . $searchName . '%');
-                    });
-            });
+        foreach ($events as $event) {
+            $event->date_start = Carbon::parse($event->date_start);
+            $event->date_end = Carbon::parse($event->date_end);
+            $event->date_start_rek = Carbon::parse($event->date_start_rek);
+            $event->date_end_rek = Carbon::parse($event->date_end_rek);
+    
+            foreach ($event->info as $info) {
+                $info->date_start = Carbon::parse($info->date_start);
+                $info->date_end = Carbon::parse($info->date_end);
+                $info->date_start_rek = Carbon::parse($info->date_start_rek);
+                $info->date_end_rek = Carbon::parse($info->date_end_rek);
+            }
         }
     
-        $events = $events->paginate(5);
-    
-        return view('event.list', ['events' => $events]);
+        return view('event.list', [
+            'events' => $events,
+            'searchTerm' => $searchTerm,
+      
+        ]);
     }
+    
 }
 /*events = Event::paginate(2);
         $loggedInParticipantId = auth()->user()->id;

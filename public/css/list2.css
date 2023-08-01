@@ -68,6 +68,11 @@ button:hover {
     margin: 0 5px; 
 }
 
+.btn.disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}
+
  
   .des7{ 
     color: #000000;
@@ -102,12 +107,27 @@ button:hover {
 .grid-wrapper {
   display: none; 
 }
+
+.grid-wrapper3 {
+  display: none; 
+}
 .expand-toggle {
   cursor: pointer;
   margin-top: 30px;
   font-weight: bold;
 }
 
+.expand-toggle3 {
+  cursor: pointer;
+  margin-top: 30px;
+  font-weight: bold;
+}
+
+.expand {
+  cursor: pointer;
+  margin-top: 30px;
+  font-weight: bold;
+}
 .toggle-icon {
   display: inline-block;
   transition: transform 0.2s ease; 

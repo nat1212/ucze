@@ -9,6 +9,7 @@ use App\Models\Participant;
 use Illuminate\Http\Request;
 use App\Models\eventParticipantList;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class eventParticipantController extends Controller
 {
@@ -53,77 +54,78 @@ class eventParticipantController extends Controller
         }
     }
 
-    public function signup(Request $request){
-
+    public function signup(Request $request)
+    {
         $participantId = Auth::id();
-        $result=DB::table('participants')
-        ->where('id',$participantId)
-        ->whereNull('dictionary_schools_id')
-        ->count();
-        if($result>0)
-        {
+        $result = DB::table('participants')
+            ->where('id', $participantId)
+            ->whereNull('dictionary_schools_id')
+            ->count();
+    
+        if ($result > 0) {
             $error = 'Uzupełnij dane.';
             return redirect()->route('event.list')->withErrors(['message' => $error]);
         }
-
+    
         $eventDetailsId = $request->input('event_details_id');
         $isSaved = $this->check($eventDetailsId);
-        $availableSeats =$this->freeSeets($eventDetailsId);
-     if($isSaved==1)  {
-        if($availableSeats==1)
-        {
-            $eventId = $request->input('event_id');
+        $availableSeats = $this->freeSeets($eventDetailsId);
     
-     
-            $eventUser = new eventParticipant();
-            $eventUser->date_report = now();
-            $eventUser->dictionary_schools_id=1;
-            $eventUser->participants_id = Auth::id(); 
-            $eventUser->events_id = $eventId;
-            $eventUser->event_details_id = $eventDetailsId;
-            
-             
-            $eventUser->save();
-            return redirect()->route('home');
-        }
-        else{
-            $error = 'Nie ma wolnych miejsc.';
-        return redirect()->route('event.list')->withErrors(['message' => $error]);
-        }
-     
+        if ($isSaved == 1) {
+            if ($availableSeats == 1) {
+                $eventId = $request->input('event_id');
     
-    }else{
-        $error = 'Jestes juz zapisany.';
-        return redirect()->route('event.list')->withErrors(['message' => $error]);
-    }
-    /* $eventParticipantList = new eventParticipantList();
-        $participant = Participant::find(Auth::id());
-     $eventParticipantList->first_name = $participant->first_name; 
-     $eventParticipantList->last_name = $participant->last_name;
-     $eventParticipantList->event_participants_id = $eventUser->id;
-     $eventParticipantList->save();*/
-    // return view("/home");
-   
+                try {
+                    DB::transaction(function () use ($eventId, $eventDetailsId) {
+                        $eventUser = new eventParticipant();
+                        $eventUser->date_report = now();
+                        $eventUser->dictionary_schools_id = 1;
+                        $eventUser->participants_id = Auth::id();
+                        $eventUser->events_id = $eventId;
+                        $eventUser->event_details_id = $eventDetailsId;
+                        $eventUser->save();
 
-
-   
+                        $eventDetails = EventDetails::find($eventDetailsId);
+                        $eventDetails->number_seats -= 1;
+                        $eventDetails->save();
+                    });
+                    $statusMessage = 'Udało Ci się zapisać na wydarzenie!';
+                    return redirect()->route('event.list')->with('status', $statusMessage);
+                    
+                } catch (\Exception $e) {
+                    $error = 'Wystąpił problem podczas zapisywania. Spróbuj ponownie.';
+                    return redirect()->route('event.list')->withErrors(['message' => $error]);
+                }
+            } else {
+                $error = 'Nie ma już wolnych miejsc.';
+                return redirect()->route('event.list')->withErrors(['message' => $error]);
+            }
+        } else {
+            $error = 'Jesteś już zapisany.';
+            return redirect()->route('event.list')->withErrors(['message' => $error]);
+        }
     }
 
 
-    public function leave($entryId){
-        // Znajdź odpowiedni rekord w bazie danych, który użytkownik chce opuścić
+    public function leave($entryId)
+    {
+ 
         $entry = eventParticipant::find($entryId);
-
-        if ($entry) {
-    // Ustaw bieżącą datę i godzinę jako wartość dla kolumny 'delated_at'
-        $entry->deleted_at = now(); // lub Carbon::now() dla zaawansowanych operacji z datą
-
-    // Zapisz zmiany w bazie danych
-        $entry->save();
-    }
-    return redirect()->route('home');
-    }
-
-  
     
+        if ($entry) {
+
+            $entry->deleted_at = now();
+
+            $entry->save();
+    
+
+            $eventDetails = EventDetails::find($entry->event_details_id);
+            if ($eventDetails) {
+                $eventDetails->number_seats += 1;
+                $eventDetails->save();
+            }
+        }
+        $statusMessage = 'Udało Ci się wypisać z wydarzenia!';
+        return redirect()->route('home')->with('status', $statusMessage);
+    }
 }

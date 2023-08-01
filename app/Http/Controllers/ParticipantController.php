@@ -8,6 +8,7 @@ use App\Models\Participant;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Http\JsonResponse;
 class ParticipantController extends Controller
 {
     public function edit($id)
@@ -22,80 +23,41 @@ protected $casts = [
 ];
 
 
-public function updateFirstName(Request $request, $id)
-    {
-        $participant = Participant::findOrFail($id);
+public function updateProfile(Request $request, $id)
+{
+    $participant = Participant::findOrFail($id);
 
-        $validator = Validator::make($request->all(), [
-            'first_name' => 'required|string|max:255',
-        ]);
+    $validator = Validator::make($request->all(), [
+        'first_name' => 'nullable|string|max:255',
+        'last_name' => 'nullable|string|max:255',
+        'sex' => ['nullable', Rule::in(['m', 'k', 'n'])],
+        'birth_date' => 'nullable|date|before_or_equal:2010-01-01',
+    ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        $participant->update(['first_name' => $request->first_name]);
-
-        return redirect()->route('home')->with('status', 'Imię zostało zaktualizowane.');
+    if ($validator->fails()) {
+        return new JsonResponse(['success' => false, 'message' => 'Wystąpił błąd walidacji danych.']);
     }
 
-    public function updateLastName(Request $request, $id)
-    {
-        $participant = Participant::findOrFail($id);
-
-        $validator = Validator::make($request->all(), [
-            'last_name' => 'required|string|max:255',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        $participant->update(['last_name' => $request->last_name]);
-
-        return redirect()->route('home')->with('status', 'Nazwisko zostało zaktualizowane.');
+    $dataToUpdate = [];
+    if (!empty($request->first_name)) {
+        $dataToUpdate['first_name'] = $request->first_name;
     }
 
-    public function updateSex(Request $request, $id)
-    {
-        $participant = Participant::findOrFail($id);
-
-        $validator = Validator::make($request->all(), [
-            'sex' => ['required', Rule::in(['m', 'k', 'n'])],
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        $participant->update(['sex' => $request->sex]);
-
-        return redirect()->route('home')->with('status', 'Płeć została zaktualizowana.');
+    if (!empty($request->last_name)) {
+        $dataToUpdate['last_name'] = $request->last_name;
     }
 
-    public function updateBirthDate(Request $request, $id)
-    {
-        $participant = Participant::findOrFail($id);
-
-        $validator = Validator::make($request->all(), [
-            'birth_date' => 'required', 'date', 'before_or_equal:2010-01-01',
-        ]);
-
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        $participant->update(['birth_date' => $request->birth_date]);
-
-        return redirect()->route('home')->with('status', 'Data urodzenia została zaktualizowana.');
+    if (!empty($request->sex)) {
+        $dataToUpdate['sex'] = $request->sex;
     }
+
+    if (!empty($request->birth_date)) {
+        $dataToUpdate['birth_date'] = $request->birth_date;
+    }
+
+    $participant->update($dataToUpdate);
+
+    return new JsonResponse(['success' => true, 'message' => 'Profil został zaktualizowany.']);
+}
 
 }

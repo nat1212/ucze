@@ -42,10 +42,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 
 Route::get('/participant/edit/{id}', [ParticipantController::class, 'edit'])->name('participant.edit');
-Route::post('/participant/update/first_name/{id}', [ParticipantController::class, 'updateFirstName'])->name('participant.updateFirstName');
-Route::post('/participant/update/last_name/{id}', [ParticipantController::class, 'updateLastName'])->name('participant.updateLastName');
-Route::post('/participant/update/sex/{id}', [ParticipantController::class, 'updateSex'])->name('participant.updateSex');
-Route::post('/participant/update/birth_date/{id}', [ParticipantController::class, 'updateBirthDate'])->name('participant.updateBirthDate');
+Route::post('/participant/{id}/update', [ParticipantController::class, 'updateProfile'])->name('participant.updateProfile');
 
 
 Route::get('/change-password', [App\Http\Controllers\HomeController::class, 'changePassword'])->name('change-password');

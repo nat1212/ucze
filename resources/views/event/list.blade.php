@@ -12,14 +12,20 @@
         </div>
     </div>
     @if($errors->any())
-    <div class="alert alert-danger">
+    <div class="alert alert-danger error-message">
         <ul>
             @foreach($errors->all() as $error)
                 <li>{{ $error }}</li>
             @endforeach
         </ul>
     </div>
-@endif
+      @endif
+                    @if (session('status'))
+              <div id="status-message" class="alert alert-success" role="alert">
+                        {{ session('status') }}
+                </div>
+                    @endif
+
     <div class="row3">
     <div class="col-10">
         <form action="{{ route('events.search') }}" method="GET" class="d-flex align-items-center">
@@ -46,42 +52,39 @@
             <div class="left-content">
             
             <div class="des-row">
-                    <p scope="col" class="des " >Data rozpoczęcia wydarzenia:</p>
-                    <p scope="col" class="des2 ">{{ $event->date_start }}</p>
-            </div>
-            <div class="des-row">
-                    <p scope="col" class="des" >Data zakończenia wydarzenia:</p>
-                    <p scope="col" class="des2" >{{ $event->date_end }}</p>
-            </div>
-            <div class="des-row">
-                    <p scope="col" class="des" >Rozpoczęcie rekrutacji:</p>
-                    <p scope="col" class="des2" >{{ $event->date_start_rek }}</p>
-            </div>
-            <div class="des-row">
-                    <p scope="col" class="des" >Zakończenie rekrutacji:</p>
-                    <p scope="col" class="des2">{{ $event->date_end_rek }}</p>
-            </div>      
+    <p scope="col" class="des">Data rozpoczęcia:</p>
+    <p scope="col" class="des2">{{ $event->date_start->format('Y-m-d') }} </p>
+    <p scope="col" class="des2">godz.{{ $event->date_start->format('H:i') }}</p>
+</div>
+<div class="des-row">
+    <p scope="col" class="des">Data zakończenia:</p>
+    <p scope="col" class="des2">{{ $event->date_end->format('Y-m-d') }}</p>
+    <p scope="col" class="des2">godz.{{ $event->date_end->format('H:i') }}</p>
+</div>
+<div class="des-row">
+    <p scope="col" class="des">Rozpoczęcie rekrutacji:</p>
+    <p scope="col" class="des2">{{ $event->date_start_rek->format('Y-m-d') }}</p>
+    <p scope="col" class="des2">godz.{{ $event->date_start_rek->format('H:i') }}</p>
+</div>
+<div class="des-row">
+    <p scope="col" class="des">Zakończenie rekrutacji:</p>
+    <p scope="col" class="des2">{{ $event->date_end_rek->format('Y-m-d') }}</p>
+    <p scope="col" class="des2">godz.{{ $event->date_end_rek->format('H:i') }}</p>
+</div>
             <div class="des-row">
    
                     <p scope="col" class="des" >Status wydarzenia:</p>
                     <p scope="col" class="des2" >{{ $event->status->name }}</p>
             </div>
             <div class="des-row">
-   
-              <p scope="col" class="des" >Status wydarzenia:</p>
-              <p scope="col" class="des2" >{{ $event->status->name }}</p>
-              
-            </div>
+                        <p scope="col" class="des">Skrót:</p>
+                        <p scope="col" class="des2">{{ $event->location_shortcut }}</p>
+                    </div>
             
             </div>
         
                 <div class="right-content expandable-content1"style="display:none;">
-                           
-                    <div class="des-row">
-                        <p scope="col" class="des5">Ulica:</p>
-                        <p scope="col" class="des6">{{ $event->city }} ul.{{ $event->street }}  {{ $event->zip_code }}</p>
-                    </div>
-                
+            
                     <div class="des-row">
                         <p scope="col" class="des5">Nr budynku:</p>
                         <p scope="col" class="des6">{{ $event->no_building }}</p>
@@ -90,10 +93,7 @@
                         <p scope="col" class="des5">Klasa:</p>
                         <p scope="col" class="des6">{{ $event->no_room }}</p>
                     </div>
-                    <div class="des-row">
-                        <p scope="col" class="des5">Skrót:</p>
-                        <p scope="col" class="des6">{{ $event->location_shortcut }}</p>
-                    </div>
+            
                     <div class="des-row2">
                         <p scope="col" class="des5">Opis wydarzenia głównego:</p>
                         <p scope="col" class="des22">{{ $event->description }}</p>
@@ -119,12 +119,20 @@
           <div class="text">
             <p scope="col" class="des7">{{ $info->title }}</p>
             <div class="des-row2">
-              <p scope="col" class="des3">Data rozpoczęcia wydarzenia:</p>
-              <p scope="col" class="des4">{{ $info->date_start }}</p>
+              <p scope="col" class="des3">Data rozpoczęcia:</p>
+              <p scope="col" class="des4">{{ $info->date_start->format('Y-m-d') }} godz. {{$info->date_start->format('H:i') }}</p>
             </div>
             <div class="des-row2">
-              <p scope="col" class="des3">Data zakończenia wydarzenia:</p>
-              <p scope="col" class="des4">{{ $info->date_end }}</p>
+              <p scope="col" class="des3">Data zakończenia:</p>
+              <p scope="col" class="des4">{{ $info->date_end->format('Y-m-d') }} godz. {{$info->date_end->format('H:i') }}</p>
+            </div>
+            <div class="des-row2">
+              <p scope="col" class="des3">Data rozpoczęcia zapisów:</p>
+              <p scope="col" class="des4">{{ $info->date_start_rek->format('Y-m-d') }} godz. {{$info->date_start_rek->format('H:i') }}</p>
+            </div>
+            <div class="des-row2">
+              <p scope="col" class="des3">Data zakończenia zapisów:</p>
+              <p scope="col" class="des4">{{ $info->date_end_rek->format('Y-m-d') }} godz. {{$info->date_end_rek->format('H:i') }}</p>
             </div>
             <div class="des-row2">
               <p scope="col" class="des3">Ilość miejsc: {{ $info->number_seats }}</p>
@@ -253,7 +261,21 @@
       button.addEventListener('click', toggleDetails);
     });
   });
+  setTimeout(function() {
+        var errorMessages = document.getElementsByClassName('error-message');
+        for (var i = 0; i < errorMessages.length; i++) {
+            errorMessages[i].style.display = 'none';
+        }
+    }, 2000); 
+    document.addEventListener('DOMContentLoaded', function() {
+        const statusMessage = document.getElementById('status-message');
 
+        if (statusMessage) {
+            setTimeout(function() {
+                statusMessage.style.display = 'none';
+            }, 5000); 
+        }
+    });
  
 </script>
 

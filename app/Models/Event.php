@@ -53,6 +53,4 @@ class Event extends Model
         ->exists();
     }
 
-
-
 }

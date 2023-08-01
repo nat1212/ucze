@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 
 use App\Models\EventParticipant;
 use App\Models\Event;
@@ -46,7 +47,7 @@ class HomeController extends Controller
     {
         $participantId = Auth::id();
         $participant = Participant::findOrFail($participantId);
-
+            
         $result = DB::table('event_participants')
         ->join('events', 'event_participants.events_id', '=', 'events.id')
         ->join('event_details', 'event_participants.event_details_id', '=', 'event_details.id')
@@ -55,6 +56,12 @@ class HomeController extends Controller
         ->select('events.name', 'event_details.title','event_details.date_start', 'event_details.date_end', 'event_participants.id')
         ->orderBy('event_details.date_start', 'asc')
         ->get();
+
+        foreach ($result as $resulted) {
+            $resulted->date_start = Carbon::parse($resulted->date_start);
+            $resulted->date_end = Carbon::parse($resulted->date_end);
+        }
+
 
         $checkSchool = $this->school($participantId);
         if ($checkSchool == 1) {
