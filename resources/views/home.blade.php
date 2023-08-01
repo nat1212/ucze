@@ -75,7 +75,7 @@
     <div class="grid">
         @if(isset($results))
             @foreach ($results as $result)
-                @if ($result->date_end <= now()) <!-- Zmiana znaku z > na <= -->
+                @if ($result->date_end <= now()) 
                     <div class="event-wrapper">
                         <div class="event"> 
                             <div class="text">
@@ -250,21 +250,21 @@ function sprawdzDatyWydarzen() {
 
     if (roznicaCzasu <= 0) {
       przycisk.classList.add('disabled');
-      przycisk.removeEventListener('click', confirmWypisz); // Usunięcie nasłuchiwania zdarzenia, aby wyłączyć okno dialogowe potwierdzenia
+      przycisk.removeEventListener('click', confirmWypisz); 
     } else {
       przycisk.classList.remove('disabled');
-      przycisk.addEventListener('click', confirmWypisz); // Dodanie ponownie nasłuchiwania zdarzenia
+      przycisk.addEventListener('click', confirmWypisz); 
 
-      // Ustawienie czasu wyłączenia przycisku na czas rozpoczęcia wydarzenia
+
       setTimeout(() => {
         przycisk.classList.add('disabled');
-        przycisk.removeEventListener('click', confirmWypisz); // Usunięcie nasłuchiwania zdarzenia
+        przycisk.removeEventListener('click', confirmWypisz); 
       }, roznicaCzasu);
     }
   });
 
 }
-  // Wywołanie funkcji po załadowaniu strony
+
   document.addEventListener('DOMContentLoaded', sprawdzDatyWydarzen);
 
 
