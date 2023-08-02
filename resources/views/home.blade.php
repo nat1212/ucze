@@ -88,9 +88,6 @@
                                     <p class="des3">Data zakończenia wydarzenia:</p>
                                     <p class="des4">{{ $result->date_end->format('Y-m-d') }} godz. {{$result->date_end->format('H:i') }}</p> 
                                 </div>
-                                <div class="btn-container">
-                                    <a href="{{ route('event.list')}}" class="btn btn-primary">Pokaż szczegóły</a>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -196,39 +193,28 @@
 
     document.addEventListener('DOMContentLoaded', function() {
     let lastUpdateTime = 0;
-    const updateInterval = 1000; 
+    const updateInterval = 1000;
+    const expiredEventsGrid = document.querySelector('.grid-wrapper3 .grid');
 
     function moveExpiredEvents(timestamp) {
         if (timestamp - lastUpdateTime >= updateInterval) {
             lastUpdateTime = timestamp;
 
-            const activeEvents = document.querySelectorAll('.grid-wrapper .event-wrapper');
-            const expiredEventsGrid = document.querySelector('.grid-wrapper3 .grid');
+            const now = new Date();
 
+            const activeEvents = document.querySelectorAll('.grid-wrapper .event-wrapper');
             activeEvents.forEach(event => {
                 const endDate = new Date(event.dataset.endDate);
-                const now = new Date();
 
                 if (endDate <= now) {
-     
-                    expiredEventsGrid.appendChild(event);
-                } else {
-        
-                    const endHour = endDate.getHours();
-                    const endMinute = endDate.getMinutes();
-                    const endSecond = endDate.getSeconds();
-                    const currentHour = now.getHours();
-                    const currentMinute = now.getMinutes();
-                    const currentSecond = now.getSeconds();
-
-                    if (
-                        (currentHour === endHour && currentMinute === endMinute && currentSecond >= endSecond) ||
-                        (currentHour === endHour && currentMinute > endMinute) ||
-                        currentHour > endHour
-                    ) {
-                  
-                        expiredEventsGrid.appendChild(event);
+                    // Usunięcie przycisków "Wypisz się" i "Pokaż szczegóły" z wydarzenia
+                    const btnContainer = event.querySelector('.btn-container');
+                    if (btnContainer) {
+                        btnContainer.remove();
                     }
+
+                    // Przeniesienie wydarzenia do drugiej listy
+                    expiredEventsGrid.appendChild(event);
                 }
             });
         }
@@ -236,9 +222,8 @@
         requestAnimationFrame(moveExpiredEvents);
     }
 
-    moveExpiredEvents(0); 
+    moveExpiredEvents(0);
 });
-
 
     
 function sprawdzDatyWydarzen() {

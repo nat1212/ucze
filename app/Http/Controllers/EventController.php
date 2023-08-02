@@ -99,13 +99,7 @@ class EventController extends Controller
             $event->date_end = Carbon::parse($event->date_end);
             $event->date_start_rek = Carbon::parse($event->date_start_rek);
             $event->date_end_rek = Carbon::parse($event->date_end_rek);
-    
-            foreach ($event->info as $info) {
-                $info->date_start = Carbon::parse($info->date_start);
-                $info->date_end = Carbon::parse($info->date_end);
-                $info->date_start_rek = Carbon::parse($info->date_start_rek);
-                $info->date_end_rek = Carbon::parse($info->date_end_rek);
-            }
+
         }
     
         return view('event.list', [
