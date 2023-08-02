@@ -158,7 +158,7 @@
                     
                                         <div class="spacer"></div>
 
-                                        <div class="row align-items-center justify-content-center">
+                                        <div class="row align-items-center justify-content-start">
                                             <div class="col-md-3">
                                                 <a href="change-password" class="btn btn-primary">Zmień hasło</a>
                                             </div>
