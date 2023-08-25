@@ -21,7 +21,7 @@
                         </div>
                     @endif
 
-
+                    <div id="update-message" class="alert alert-success" style="display: none;"></div>
                  
                     @if(isset($error) && !empty($error))
                         <div class="link-frame">
@@ -29,7 +29,7 @@
                         </div>
                     @endif
                   
-                    <h4 class="expand-toggle3" onclick="redirectToEventList(event)">Lista wszystkich wydarzeń:  <span class="toggle-icon">►</span></h4>
+                    <h4 class="expand-toggle3" onclick="redirectToEventList(event)">Lista wszystkich aktualnych wydarzeń:  <span class="toggle-icon">►</span></h4>
 
 
 
@@ -39,7 +39,7 @@
         @if(isset($results))
             @foreach ($results as $result)
                 @if ($result->date_end > now())
-                    <div class="event-wrapper" data-end-date="{{ $result->date_end }}">
+                    <div class="event-wrapper" data-end-date="{{ $result->date_end }}"  data-description="{{ $result->description }}">
                         <div class="event"> 
                             <div class="text">
                                 <p class="des7">{{ $result->title }}</p>
@@ -53,11 +53,11 @@
                                 </div>
                                 <div class="btn-container">
                                     @if ($result->date_start > now())
-                                        <a href="/leave/{{ $result->id }}" class="btn btn-primary leave-button" data-date-start="{{ $result->date_start->format('Y-m-d H:i:s') }}" onclick="return confirmWypisz()">Wypisz się</a>
+                                        <a href="/leave/{{ $result->id }}" id="leaveEventBtn"  class="btn btn-primary leave-button" data-date-start="{{ $result->date_start->format('Y-m-d H:i:s') }}" onclick="return confirmWypisz()">Wypisz się</a>
                                     @else
-                                        <a href="javascript:void(0)" class="btn btn-primary disabled">Wypisz się</a>
+                                        <a href="javascript:void(0)"  class="btn btn-primary disabled">Wypisz się</a>
                                     @endif
-                                    <a href="{{ route('event.list')}}" class="btn btn-primary">Pokaż szczegóły</a>
+                                    <button class="btn btn-primary show-sub-event" data-result-id="{{ $result->id }}">Pokaż szczegóły</button>
                                 </div>
 
                             </div>
@@ -104,13 +104,14 @@
                                 <div class="card-header">{{ __('Edycja Profilu') }}</div>
 
                                 <div class="card-body">
+                     
                                 <form id="updateProfileForm" method="POST" action="{{ route('participant.updateProfile', $participant->id) }}">
 
                                         @csrf
                                         <div class="row">
                                             <label for="first_name" class="col-md-4 col-form-label text-md-end">{{ __('Imię') }}</label>
                                             <div class="col-md-3">
-                                                <input id="first_name" type="text" class="form-control" name="first_name" value="{{ $participant->first_name }}" placeholder="Imię" required autocomplete="Imię" autofocus>
+                                                <input id="first_name" type="text" class="form-control tracked-field" name="first_name" value="{{ $participant->first_name }}" placeholder="Imię" required autocomplete="Imię" autofocus>
                                             </div>
                                         </div>
 
@@ -119,14 +120,14 @@
                                         <div class="row">
                                             <label for="last_name" class="col-md-4 col-form-label text-md-end">{{ __('Nazwisko') }}</label>
                                             <div class="col-md-3">
-                                                <input id="last_name" type="text" class="form-control" name="last_name" value="{{ $participant->last_name  }}" placeholder="Nazwisko" required autocomplete="Nazwisko" autofocus>
+                                                <input id="last_name" type="text" class="form-control tracked-field" name="last_name" value="{{ $participant->last_name  }}" placeholder="Nazwisko" required autocomplete="Nazwisko" autofocus>
                                             </div>
                                         </div>
 
                                         <div class="spacer"></div>
 
                                         <div class="row">
-                                            <label for="sex" class="col-md-4 col-form-label text-md-end">{{ __('Płeć') }}</label>
+                                            <label for="sex" class="col-md-4 col-form-label text-md-end " >{{ __('Płeć') }}</label>
                                             <div class="col-md-3">
                                                 <select id="sex" class="form-control" name="sex" required autofocus>
                                                     <option value="m" @if($participant->sex === 'm') selected @endif>Mężczyzna</option>
@@ -139,7 +140,7 @@
                                         <div class="spacer"></div>
 
                                         <div class="row">
-                                            <label for="birth_date" class="col-md-4 col-form-label text-md-end">{{ __('Data urodzin') }}</label>
+                                            <label for="birth_date" class="col-md-4 col-form-label text-md-end ">{{ __('Data urodzin') }}</label>
                                             <div class="col-md-3">
                                                 <input id="birth_date" type="date" class="form-control" name="birth_date" value="{{ $participant->birth_date }}">
                                             </div>
@@ -147,11 +148,14 @@
 
                                         <div class="spacer"></div>
 
-                                        <div class="row align-items-center justify-content-center">
-                                            <div class="col-md-3">
-                                            <button id="updateProfileBtn" type="button" class="btn btn-primary" onclick="confirmUpdate()">Zapisz zmiany</button>
+                                        <div class="row1">
+                                        <div class="col-md-5">
+                                            <div class="d-flex  justify-content-start align-items-center">
+                                            <button id="updateProfileBtn" type="button" class="btn btn-primary btn-sm" onclick="confirmUpdate()" disabled>Zapisz zmiany</button>
 
+                                                <button type="button" class="btn btn-secondary btn-sm" onclick="cancelChanges()">Anuluj</button>
                                             </div>
+                                        </div>
                                         </div>
 
                                         </form>
@@ -169,7 +173,37 @@
                 </div> 
             </div>
         </div> 
+  
 </div>
+
+<div class="footer">
+    <p class="footer-text">@Sławek&Natan Company</p>
+</div>
+<div id="custom-dialog" class="dialog">
+    <div class="dialog-content">
+        <p>Czy na pewno chcesz zapisać zmiany?</p>
+        <button id="confirm-button">Tak</button>
+        <button id="cancel-button">Nie</button>
+    </div>
+</div>
+
+<div id="leave-dialog" class="dialog">
+    <div class="dialog-content">
+        <p>Czy na pewno chesz wypisać się z wydarzenia</p>
+        <button id="confirm-leave-button">Tak</button>
+        <button id="cancel-leave-button">Nie</button>
+    </div>
+</div>
+
+<div id="agreed2" class="dialog2" >
+    <div class="dialog-content2">
+        <p id="dese">Opis wydarzenia:</p>
+        <p id="eve_dese"></p>
+        <button id="cancel2-button">Wróć</button>
+    </div>
+</div>
+
+
 </div>
 
 
@@ -207,13 +241,12 @@
                 const endDate = new Date(event.dataset.endDate);
 
                 if (endDate <= now) {
-                    // Usunięcie przycisków "Wypisz się" i "Pokaż szczegóły" z wydarzenia
+
                     const btnContainer = event.querySelector('.btn-container');
                     if (btnContainer) {
                         btnContainer.remove();
                     }
 
-                    // Przeniesienie wydarzenia do drugiej listy
                     expiredEventsGrid.appendChild(event);
                 }
             });
@@ -226,6 +259,9 @@
 });
 
     
+
+
+
 function sprawdzDatyWydarzen() {
   const przyciskiWypiszSie = document.querySelectorAll('.leave-button');
 
@@ -263,72 +299,189 @@ function toggleExpand() {
     }
 }
 
-
-
-document.addEventListener('DOMContentLoaded', function() {
-        const statusMessage = document.getElementById('status-message');
-
-        if (statusMessage) {
-            setTimeout(function() {
-                statusMessage.style.display = 'none';
-            }, 5000); 
-        }
-    });
-    function redirectToEventList(event) {
+ function redirectToEventList(event) {
         event.stopPropagation(); 
         window.location.href = "{{ route('event.list') }}";
     }
-    
-document.getElementById('updateProfileBtn').addEventListener('click', function() {
-        var form = document.getElementById('updateProfileForm');
-        var formData = new FormData(form);
 
+    document.addEventListener('DOMContentLoaded', function() {
+    var csrfToken = '{{ csrf_token() }}';
+
+    var updateProfileBtn = document.getElementById('updateProfileBtn');
+    var formInputs = document.querySelectorAll('.tracked-field');
+
+    var sexField = document.getElementById('sex');
+    var birthDateField = document.getElementById('birth_date');
+
+    var originalValues = {};
+
+    formInputs.forEach(function(input) {
+        originalValues[input.id] = input.value;
+
+        input.addEventListener('input', function() {
+            var anyFieldFilled = Array.from(formInputs).some(function(input) {
+                return input.value.trim() !== '';
+            });
+
+            var anyValueChanged = Array.from(formInputs).some(function(input) {
+                return input.value !== originalValues[input.id];
+            });
+
+            updateProfileBtn.disabled = !anyFieldFilled || !anyValueChanged;
+        });
+    });
+
+    sexField.addEventListener('change', function() {
+        updateProfileBtn.disabled = false;
+    });
+
+    birthDateField.addEventListener('input', function() {
+        updateProfileBtn.disabled = false;
+    });
+});
+
+
+
+document.getElementById('updateProfileBtn').addEventListener('click', function() {
+    var dialog = document.getElementById('custom-dialog');
+    dialog.style.display = 'flex';
+});
+
+document.getElementById('confirm-button').addEventListener('click', function() {
+    var form = document.getElementById('updateProfileForm');
+    var formData = new FormData(form);
+
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    var updateMessage = document.getElementById('update-message');
+                    updateMessage.textContent = response.message;
+                    updateMessage.style.display = 'block'; 
+                    setTimeout(function() {
+                        updateMessage.style.display = 'none'; 
+                        location.reload();
+                    }, 1500); 
+                } else {
+                    alert('Wystąpił błąd podczas aktualizacji profilu.');
+                }
+            } else {
+                alert('Wystąpił błąd podczas wysyłania żądania.');
+            }
+        }
+    };
+
+    xhr.open('POST', form.action);
+    xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
+    xhr.send(formData);
+
+    var dialog = document.getElementById('custom-dialog');
+    dialog.style.display = 'none';
+});
+
+document.getElementById('cancel-button').addEventListener('click', function() {
+    var dialog = document.getElementById('custom-dialog');
+    dialog.style.display = 'none';
+});
+
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    var showDetailsButtons = document.querySelectorAll('.show-sub-event');
+
+    showDetailsButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var dialog = document.getElementById('agreed2');
+            dialog.style.display = 'flex';
+
+            var description = this.closest('.event-wrapper').getAttribute('data-description');
+            var descriptionElement = document.getElementById('eve_dese');
+            descriptionElement.textContent = description;
+
+            var cancelButton = document.getElementById('cancel2-button');
+
+            cancelButton.addEventListener('click', function() {
+                dialog.style.display = 'none';
+            });
+        });
+    });
+});
+
+  
+
+document.getElementById('leaveEventBtn').addEventListener('click', function(event) {
+        event.preventDefault(); 
+
+        var dialog = document.getElementById('leave-dialog');
+        dialog.style.display = 'flex';
+
+      
+        var entryId = this.getAttribute('href').split('/').pop();
+        dialog.setAttribute('data-entry-id', entryId);
+    });
+
+    document.getElementById('confirm-leave-button').addEventListener('click', function() {
+        var dialog = document.getElementById('leave-dialog');
+        dialog.style.display = 'none';
+
+        var entryId = dialog.getAttribute('data-entry-id');
+
+     
         var xhr = new XMLHttpRequest();
+        xhr.open('GET', '/leave/' + entryId, true);
         xhr.onreadystatechange = function() {
-            if (xhr.readyState === 4) {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
                     var response = JSON.parse(xhr.responseText);
                     if (response.success) {
-                        alert(response.message);
-                    } else {
-                        alert('Wystąpił błąd podczas aktualizacji profilu.');
-                    }
+                    var updateMessage = document.getElementById('update-message');
+                    updateMessage.textContent = response.message;
+                    updateMessage.style.display = 'block'; 
+                    setTimeout(function() {
+                        updateMessage.style.display = 'none'; 
+                        location.reload();
+                    }, 1500); 
                 } else {
-                    alert('Wystąpił błąd podczas wysyłania żądania.');
+                    alert('Wystąpił błąd podczas aktualizacji profilu.');
                 }
+            } else {
+                alert('Wystąpił błąd podczas wysyłania żądania.');
             }
-        };
-
-        xhr.open('POST', form.action);
-        xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
-        xhr.send(formData);
+        }
+    };
+        xhr.send();
+        var dialog = document.getElementById('custom-dialog');
+    dialog.style.display = 'none';
     });
 
-   
-    function confirmUpdate() {
-        var confirmed = confirm('Czy na pewno chcesz zapisać zmiany?');
+    document.getElementById('cancel-leave-button').addEventListener('click', function() {
+        var dialog = document.getElementById('leave-dialog');
+        dialog.style.display = 'none';
+    });
 
-        if (confirmed) {
 
-            var form = document.getElementById('updateProfileForm');
-            var formData = new FormData(form);
 
-            var xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function() {
-            };
-
-            xhr.open('POST', form.action);
-            xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
-            xhr.send(formData);
-        }
-    }
-    function confirmWypisz() {
-  if (confirm('Czy na pewno chcesz się wypisać?')) {
-    return true;
-  } else {
-    return false;
-  }
+    function cancelChanges() {
+    var firstNameInput = document.getElementById("first_name");
+    firstNameInput.value = "{{ $participant->first_name }}";
+    
+    var lastNameInput = document.getElementById("last_name");
+    lastNameInput.value = "{{ $participant->last_name }}";
+    
+    var sexInput = document.getElementById("sex");
+    sexInput.value = "{{ $participant->sex }}";
+    
+    var birthDateInput = document.getElementById("birth_date");
+    birthDateInput.value = "{{ $participant->birth_date }}";
+    
+  
+    var updateProfileBtn = document.getElementById('updateProfileBtn');
+    updateProfileBtn.disabled = true;
 }
+
 </script>
 
 @endsection

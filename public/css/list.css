@@ -101,6 +101,7 @@ font-size: 25px;
     margin-left: 30px;
   }
   
+ 
   
 
   .grid {
@@ -207,3 +208,132 @@ font-size: 25px;
     width: 100%;
   }
 
+   
+    .dialog {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999; 
+  }
+  
+  .dialog-content {
+
+      background-color: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 50%; 
+  }
+  
+  .dialog-content2 {
+
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+  .dialog-content button {
+      margin: 5px;
+      cursor: pointer;
+  }
+  
+  .dialog-content2 button {
+    margin: 5px;
+    cursor: pointer;
+}
+
+.person
+{
+  margin: 10px;
+}
+
+.space
+{
+  margin:5px;
+}
+
+#person-count-input
+{
+  margin-bottom: 10px;
+}
+
+#group {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#group-persons {
+  max-height: 500px; 
+  overflow: auto; 
+}
+#alert-container
+{
+  font-size: 15px;
+  color: red;
+}
+#available-seats-info
+{
+  margin: 10px;
+}
+.person-number
+{
+  margin-right: 5px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    .footer {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      background-color: #f5f5f5;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .footer-text {
+      margin: 5px;
+      font-size: 14px;
+      color: #333;
+    }
+
+   
+    #dese
+    {
+      font-weight: bold;
+      font-size: 22px;
+      
+    }
+
+    #eve_dese
+    {
+      font-size: 17px;
+      text-align: justify;
+    }

@@ -31,5 +31,9 @@ class eventParticipant extends Model
         return $this->belongsTo(EventDetails::class, 'event_details_id');
     }
     
-
+    public function eventParticipantLists()
+    {
+        return $this->hasMany(eventParticipantList::class, 'event_participants_id');
+    }
 }
+

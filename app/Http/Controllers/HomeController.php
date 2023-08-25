@@ -53,7 +53,7 @@ class HomeController extends Controller
         ->join('event_details', 'event_participants.event_details_id', '=', 'event_details.id')
         ->where('event_participants.participants_id', $participantId)
         ->whereNull('event_participants.deleted_at')
-        ->select('events.name', 'event_details.title','event_details.date_start', 'event_details.date_end', 'event_participants.id')
+        ->select('event_details.title','event_details.date_start', 'event_details.date_end','event_details.description', 'event_participants.id')
         ->orderBy('event_details.date_start', 'asc')
         ->get();
 

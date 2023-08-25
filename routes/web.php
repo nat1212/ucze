@@ -34,6 +34,12 @@ Route::get('/event/list',[EventController::class,'index'])->name('event.list');
 Route::get('/leave/{entryId}',[eventParticipantController::class,'leave']);
 Route::post('/signup', [eventParticipantController::class, 'signup']);
 
+//Route::post('/add-participants', [eventParticipantController::class, 'addParticipants'])->name('event.addParticipants');
+
+//Route::post('/signupGroup', [eventParticipantController::class, 'signupGroup']);
+
+
+
 Route::get('/events/search', [EventController::class,'search'])->name('events.search');
 Auth::routes(['verify'=>true]);
 

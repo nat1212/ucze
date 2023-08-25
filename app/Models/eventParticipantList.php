@@ -15,4 +15,9 @@ class eventParticipantList extends Model
         'event_participants_id',
     ];
     
+
+    public function list()
+    {
+        return $this->belongsTo(eventParticipant::class, 'event_participants_id');
+    }
 }

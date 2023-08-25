@@ -26,43 +26,42 @@ class EventController extends Controller
        
         $currentDateTime = Carbon::now();
         $events = Event::where('date_start_publi', '<', $currentDateTime)
-                   ->where('date_end_publi', '>', $currentDateTime)
-                   ->whereNull('deleted_at')
-                   ->where('statuses_id',1)
-                   ->with(['info' => function ($query) {
-                    $query->whereNull('deleted_at');
-                }])
-                ->with(['info' => function ($query) {
-                   
-                    $query->orderBy('date_start', 'asc');
-                }])->orderBy('date_start', 'asc')->paginate(2);
-                  
-                foreach ($events as $event) {
-                    $event->date_start = Carbon::parse($event->date_start);
-                    $event->date_end = Carbon::parse($event->date_end);
-                    $event->date_start_rek = Carbon::parse($event->date_start_rek);
-                    $event->date_end_rek = Carbon::parse($event->date_end_rek);
-                    
-                }
-                       
+        ->where('date_end_publi', '>', $currentDateTime)
+        ->whereNull('deleted_at')
+        ->where('statuses_id', 1)
+        ->with(['info' => function ($query) use ($currentDateTime) {
+            $query->whereNull('deleted_at')
+                ->where('date_start_rek', '<', $currentDateTime)
+                ->where('date_end', '>', $currentDateTime)
+                ->orderBy('date_start', 'asc');
+        }])
+        ->orderBy('date_start', 'asc')
+        ->paginate(2);
+    
+    
+    foreach ($events as $event) {
+        $event->date_start = Carbon::parse($event->date_start);
+        $event->date_end = Carbon::parse($event->date_end);
+        $event->date_start_rek = Carbon::parse($event->date_start_rek);
+        $event->date_end_rek = Carbon::parse($event->date_end_rek);
 
-            $event->info = EventDetails::where('date_start_rek', '<', $currentDateTime)
-                   ->where('date_end_rek', '>', $currentDateTime)
-                   ->paginate(2);
+        foreach($event->info as $info)
+        {
+            $info->date_start = Carbon::parse($info->date_start);
+            $info->date_end = Carbon::parse($info->date_end);
+            $info->date_start_rek = Carbon::parse($info->date_start_rek);
+            $info->date_end_rek = Carbon::parse($info->date_end_rek);
+            
+        }
 
-                   foreach ($event->info as $info) {
-                    $info->date_start = Carbon::parse($info->date_start);
-                    $info->date_end = Carbon::parse($info->date_end);
-                    $info->date_start_rek = Carbon::parse($info->date_start_rek);
-                    $info->date_end_rek = Carbon::parse($info->date_end_rek);
-                }
-       
-        return view('event.list', [
-            'events' => $events,
-            'buttons'=>$event->info,
-            'specificEventId' => $specificEventId,
-           
-        ]);
+    }
+    
+    
+    return view('event.list', [
+        'events' => $events,
+        'specificEventId' => $specificEventId,
+    ]);
+    
     }
     public function show($id)
     {
@@ -78,40 +77,43 @@ class EventController extends Controller
         $searchTerm = $request->input('search_name');
     
         $currentDateTime = Carbon::now();
-
+    
         $events = Event::where('date_start_publi', '<', $currentDateTime)
                        ->where('date_end_publi', '>', $currentDateTime)
                        ->whereNull('deleted_at')
                        ->where('statuses_id', 1)
                        ->where('name', 'LIKE', "%{$searchTerm}%")
-                       ->with(['info' => function ($query) {
-                           $query->whereNull('deleted_at');
-                           $query->orderBy('date_start', 'asc');
-                       }])
                        ->orderBy('date_start', 'asc')
                        ->paginate(2);
     
-        foreach ($events as $event) {
-            $event->date_start = Carbon::parse($event->date_start);
-            $event->date_end = Carbon::parse($event->date_end);
-            $event->date_start_rek = Carbon::parse($event->date_start_rek);
-            $event->date_end_rek = Carbon::parse($event->date_end_rek);
-
         
-        foreach ($event->info as $info) {
+    
+    foreach ($events as $event) {
+        $event->date_start = Carbon::parse($event->date_start);
+        $event->date_end = Carbon::parse($event->date_end);
+        $event->date_start_rek = Carbon::parse($event->date_start_rek);
+        $event->date_end_rek = Carbon::parse($event->date_end_rek);
+
+        foreach($event->info as $info)
+        {
             $info->date_start = Carbon::parse($info->date_start);
             $info->date_end = Carbon::parse($info->date_end);
             $info->date_start_rek = Carbon::parse($info->date_start_rek);
             $info->date_end_rek = Carbon::parse($info->date_end_rek);
         }
+
     }
+    
+        
+    
     
         return view('event.list', [
             'events' => $events,
             'searchTerm' => $searchTerm,
-            
+
         ]);
     }
+    
     
 }
 /*events = Event::paginate(2);

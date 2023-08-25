@@ -1,5 +1,7 @@
 @extends('layouts.app')
-
+@section('styles')
+<link rel="stylesheet" href="{{asset('css/list2.css')}}">
+@endsection
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -50,3 +52,6 @@
 
 
 @endsection
+<div class="footer">
+    <p class="footer-text">@Sławek&Natan Company</p>
+</div>
