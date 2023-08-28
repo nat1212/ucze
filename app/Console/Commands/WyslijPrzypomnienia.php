@@ -36,19 +36,30 @@ class WyslijPrzypomnienia extends Command
                 $adresyEmail = DB::table('participants')
                 ->whereIn('id', $uczestnicy)
                 ->pluck('email');
+
+              
                 foreach ($adresyEmail as $email) {
+                    $uczestnik = DB::table('participants')
+                    ->where('email', $email)
+                    ->first();
+                  
+                    if ($uczestnik) {
                     // Wysyłanie powiadomienia do każdego uczestnika
-                    $this->sendPrzypomnienieEmail($email, $wydarzenie->title, $wydarzenie->date_start);
+                    $this->sendPrzypomnienieEmail($email, $wydarzenie->title, Carbon::parse($wydarzenie->date_start)->format('Y-m-d'), Carbon::parse($wydarzenie->date_start)->format('H:i'),$wydarzenie->speaker_first_name,$wydarzenie->speaker_last_name, $uczestnik->first_name);
+            }
+            else {
+                $this->error("Nie znaleziono uczestnika o adresie email");
             }
         }
+    }
 
         $this->info('Przypomnienia wysłane pomyślnie.');
         
     }
 
-    private function sendPrzypomnienieEmail($email, $nazwaWydarzenia, $dataWydarzenia)
+    private function sendPrzypomnienieEmail($email, $nazwaWydarzenia, $dataWydarzenia, $godzinaWydarzenia ,$firstName,$lastName, $u_first_name)
     {
         // Tutaj możesz użyć Mailera do wysyłania emaili
-        Mail::to($email)->send(new PrzypomnienieEmail($nazwaWydarzenia, $dataWydarzenia));
+        Mail::to($email)->send(new PrzypomnienieEmail($nazwaWydarzenia, $dataWydarzenia, $godzinaWydarzenia,$firstName,$lastName, $u_first_name));
     }
 }

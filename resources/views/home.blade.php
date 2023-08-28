@@ -286,7 +286,8 @@ function sprawdzDatyWydarzen() {
 
 }
 
-  document.addEventListener('DOMContentLoaded', sprawdzDatyWydarzen);
+setInterval(sprawdzDatyWydarzen, 1000);
+document.addEventListener('DOMContentLoaded', sprawdzDatyWydarzen);
 
 
 

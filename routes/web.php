@@ -39,7 +39,6 @@ Route::post('/signup', [eventParticipantController::class, 'signup']);
 //Route::post('/signupGroup', [eventParticipantController::class, 'signupGroup']);
 
 
-
 Route::get('/events/search', [EventController::class,'search'])->name('events.search');
 Auth::routes(['verify'=>true]);
 

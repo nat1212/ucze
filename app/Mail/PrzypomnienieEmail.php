@@ -13,11 +13,19 @@ class PrzypomnienieEmail extends Mailable
 
     public $nazwaWydarzenia;
     public $dataWydarzenia;
+    public $godzinaWydarzenia;
+    public $Imie;
+    public $Nazwisko;
+    public $uNazwisko;
 
-    public function __construct($nazwaWydarzenia, $dataWydarzenia)
+    public function __construct($nazwaWydarzenia, $dataWydarzenia,$godzinaWydarzenia ,$firstName,$lastName,$u_first_name)
     {
         $this->nazwaWydarzenia = $nazwaWydarzenia;
         $this->dataWydarzenia = $dataWydarzenia;
+        $this->godzinaWydarzenia = $godzinaWydarzenia;
+        $this->Imie = $firstName;
+        $this->Nazwisko = $lastName;
+        $this->uNazwisko = $u_first_name;
     }
 
     public function build()

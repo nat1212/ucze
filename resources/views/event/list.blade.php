@@ -157,23 +157,13 @@
         <button id="confirm-agreed-button">Indywidualnie</button>
         <button id="confirm-group-button">Grupa</button>
         <button id="cancel-agreed-button">Anuluj</button>
+        <div id="alert-container" style="display: none;"></div>
     </div>
     </div>
 
-      <div id="group-dialog" class="dialog" style="display: none;">
-    <div class="dialog-content">
-        <p id="group">Dodaj osoby:</p>
-        <div id="group-persons">
-        <span id="available-seats-info">Dostępne miejsca: {{ $info->number_seats }}</span>
-        <input type="number" id="person-count-input" placeholder="Liczba osób"  min="1" value="1">
-        </div>
-        <button id="add-person-button">Dodaj osobę</button>
-        <button id="confirm-group-submit">Potwierdź</button>
-        <button id="cancel-group-button">Anuluj</button>
-        <div id="alert-container" style="display: none;"></div>
-    </div>
-    </form>
-      </div>
+
+
+    
       @endforeach
     </div>
   </div>
@@ -284,6 +274,39 @@
         var dialog = document.getElementById('agreed');
         dialog.style.display = 'flex'; 
         
+        var userRole = '{{ Auth::user()->role }}';
+    var groupButton = document.getElementById('confirm-group-button');
+    
+    if (userRole === '2') {
+        groupButton.style.display = 'inline-block';
+    } else {
+        groupButton.style.display = 'none'; 
+    }
+
+    
+    groupButton.addEventListener('click', function() {
+        if (userRole !== '2') {
+            showAlert('Nie masz uprawnień do korzystania z tej funkcji.');
+            return;
+        }
+        groupDialog.style.display = 'flex';
+    });
+
+    function showAlert(message) {
+        var alertContainer = document.getElementById('alert-container');
+        alertContainer.innerHTML = '<div class="alert">' + message + '</div>';
+        alertContainer.style.display = 'block';
+        setTimeout(function() {
+            hideAlert();
+        }, 4000);
+    }
+
+    function hideAlert() {
+        var alertContainer = document.getElementById('alert-container');
+        alertContainer.style.display = 'none';
+        alertContainer.innerHTML = ''; 
+    }
+
         var przyciskPotwierdzenia = document.getElementById('confirm-agreed-button');
         var przyciskAnulowania = document.getElementById('cancel-agreed-button');
         
@@ -302,12 +325,14 @@
         });
     }
 
-  
     var przyciskiZapisu = document.querySelectorAll('.sign');
     przyciskiZapisu.forEach(function(przycisk) {
         przycisk.addEventListener('click', obslugaZapisu);
     });
+
+ 
 });
+
 
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -332,128 +357,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 
-    document.addEventListener('DOMContentLoaded', function() {
-    var groupButton = document.getElementById('confirm-group-button');
-    var groupDialog = document.getElementById('group-dialog');
-    var groupPersonsDiv = document.getElementById('group-persons');
-    var addPersonButton = document.getElementById('add-person-button');
-    var groupSubmitButton = document.getElementById('confirm-group-submit');
-    var groupCancelButton = document.getElementById('cancel-group-button');
-    var personCountInput = document.getElementById('person-count-input');
-    @foreach ($events as $event)
-      @foreach ($event->info as $info)
-    var availableSeats = {{ $info->number_seats }};
-      @endforeach
-    @endforeach
-    var availableSeatsSpan = document.getElementById('available-seats-info'); 
 
-    groupButton.addEventListener('click', function() {
-        groupDialog.style.display = 'flex';
-    });
-
-addPersonButton.addEventListener('click', function() {
-        var personCount = parseInt(personCountInput.value);
-        if (isNaN(personCount) || personCount <= 0) {
-            return; 
-        }
-
-        if (personCount > availableSeats) {
-            showAlert('Nie można dodać więcej osób');
-            return;
-        }
-        
-        var currentPersonCount = groupPersonsDiv.getElementsByClassName('person').length;
-      
-
-        for (let i = 0; i < personCount; i++) {
-            (function() {
-                var personDiv = document.createElement('div');
-                personDiv.classList.add('person');
-
-                var personNumber = currentPersonCount + i + 1;
-        var personNumberSpan = document.createElement('span');
-        personNumberSpan.classList.add('person-number');
-        personNumberSpan.textContent = personNumber+':';
-        personDiv.appendChild(personNumberSpan);
-
-                var firstNameInput = document.createElement('input');
-                firstNameInput.type = 'text';
-                firstNameInput.placeholder = 'Imię osoby';
-                personDiv.appendChild(firstNameInput);
-
-                var spaceSpan = document.createElement('span');
-                spaceSpan.classList.add('space');
-                personDiv.appendChild(spaceSpan);
-
-                var lastNameInput = document.createElement('input');
-                lastNameInput.type = 'text';
-                lastNameInput.placeholder = 'Nazwisko osoby';
-                personDiv.appendChild(lastNameInput);
-
-                var removeButton = document.createElement('button');
-                removeButton.textContent = 'Usuń';
-                removeButton.classList.add('remove-person-button');
-                removeButton.addEventListener('click', function() {
-                    groupPersonsDiv.removeChild(personDiv);
-                    zwiekszDostepneMiejsca();
-                    
-                });
-                personDiv.appendChild(removeButton);
-                
-
-                groupPersonsDiv.appendChild(personDiv);
-                zmniejszDostepneMiejsca();
-
-
-                groupPersonsDiv.scrollTop = groupPersonsDiv.scrollHeight;
-                
-            })();
-        }
-    
-    });
-
-    function zwiekszDostepneMiejsca() {
-    availableSeats++;
-    availableSeatsSpan.textContent = 'Dostępne miejsca: ' + availableSeats;
-    personCountInput.value = "1";
-}
-    
-function zmniejszDostepneMiejsca() {
-    availableSeats--;
-    availableSeatsSpan.textContent = 'Dostępne miejsca: ' + availableSeats;
-    personCountInput.value = "1";
-}
-
-groupSubmitButton.addEventListener('click', function() {
-   
-            groupDialog.style.display = 'none';
-       
-});
-
-    groupCancelButton.addEventListener('click', function() {
-      hideAlert();
-        groupDialog.style.display = 'none';
-    });
-
-    function showAlert(message) {
-        var alertContainer = document.getElementById('alert-container');
-        alertContainer.innerHTML = '<div class="alert">' + message + '</div>';
-        alertContainer.style.display = 'block';
-        setTimeout(function() {
-            hideAlert();
-        }, 4000);
-    }
-
-    function hideAlert() {
-        var alertContainer = document.getElementById('alert-container');
-        alertContainer.style.display = 'none';
-        alertContainer.innerHTML = ''; 
-    }
-});
-
-
-
-
+  
 
 
 

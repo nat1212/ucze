@@ -24,6 +24,7 @@ class Participant extends Authenticatable implements MustVerifyEmail
         'password',
         'sex',
         'birth_date',
+        'role',
     ];
 
     /**
