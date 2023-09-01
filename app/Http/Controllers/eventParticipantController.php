@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\EventDetails;
 use App\Models\eventParticipant;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Collection;
 use App\Models\Participant;
 use Illuminate\Http\Request;
 use App\Models\eventParticipantList;
@@ -171,10 +172,6 @@ class eventParticipantController extends Controller
         return redirect()->route('event.list')->withErrors(['message' => $error]);
     }
 }
-
-
-
-
 
 
 

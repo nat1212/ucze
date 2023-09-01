@@ -3,13 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\View\View;
+
 use App\Models\Event;
 use App\Models\EventDetails;
 use App\Models\eventParticipant;
 use App\Models\Participant;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
+use Illuminate\Contracts\View\View;
 
 class EventController extends Controller
 {

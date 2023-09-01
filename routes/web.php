@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\ParticipantController;
 
+use App\Http\Controllers\EventGroupController;
 use App\Http\Controllers\eventParticipantController;
 
 /*
@@ -34,9 +35,11 @@ Route::get('/event/list',[EventController::class,'index'])->name('event.list');
 Route::get('/leave/{entryId}',[eventParticipantController::class,'leave']);
 Route::post('/signup', [eventParticipantController::class, 'signup']);
 
-//Route::post('/add-participants', [eventParticipantController::class, 'addParticipants'])->name('event.addParticipants');
 
-//Route::post('/signupGroup', [eventParticipantController::class, 'signupGroup']);
+Route::post('/add_group_submit',  [EventGroupController::class,'add_group_submit'])->name('add_group_submit');
+Route::get('/add_group',[EventGroupController::class,'addGroup'])->name('add_group');
+
+
 
 
 Route::get('/events/search', [EventController::class,'search'])->name('events.search');

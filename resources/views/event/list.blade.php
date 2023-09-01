@@ -155,7 +155,7 @@
     <div class="dialog-content2">
         <p>Jak chcesz się zapisać?</p>
         <button id="confirm-agreed-button">Indywidualnie</button>
-        <button id="confirm-group-button">Grupa</button>
+        <button class="hidden" id="confirm-group-button"  onclick="redirectToGroupView()">Grupa</button>
         <button id="cancel-agreed-button">Anuluj</button>
         <div id="alert-container" style="display: none;"></div>
     </div>
@@ -335,6 +335,7 @@
 
 
 
+
 document.addEventListener('DOMContentLoaded', function() {
       
         var showDetailsButtons = document.querySelectorAll('.show-sub-events');
@@ -380,7 +381,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 
-
+    function redirectToGroupView(eventDetailsId) {
+    window.location.href = "{{ route('add_group') }}";
+}
 
 
 

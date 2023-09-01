@@ -28,6 +28,10 @@
                             <p>{{ $error }} -> <a href="/szkola">Kliknij tutaj</a></p>
                         </div>
                     @endif
+
+                    <div id="update-message-container">
+
+                    </div>
                   
                     <h4 class="expand-toggle3" onclick="redirectToEventList(event)">Lista wszystkich aktualnych wydarzeń:  <span class="toggle-icon">►</span></h4>
 
@@ -225,71 +229,6 @@
         });
     });
 
-    document.addEventListener('DOMContentLoaded', function() {
-    let lastUpdateTime = 0;
-    const updateInterval = 1000;
-    const expiredEventsGrid = document.querySelector('.grid-wrapper3 .grid');
-
-    function moveExpiredEvents(timestamp) {
-        if (timestamp - lastUpdateTime >= updateInterval) {
-            lastUpdateTime = timestamp;
-
-            const now = new Date();
-
-            const activeEvents = document.querySelectorAll('.grid-wrapper .event-wrapper');
-            activeEvents.forEach(event => {
-                const endDate = new Date(event.dataset.endDate);
-
-                if (endDate <= now) {
-
-                    const btnContainer = event.querySelector('.btn-container');
-                    if (btnContainer) {
-                        btnContainer.remove();
-                    }
-
-                    expiredEventsGrid.appendChild(event);
-                }
-            });
-        }
-
-        requestAnimationFrame(moveExpiredEvents);
-    }
-
-    moveExpiredEvents(0);
-});
-
-    
-
-
-
-function sprawdzDatyWydarzen() {
-  const przyciskiWypiszSie = document.querySelectorAll('.leave-button');
-
-  przyciskiWypiszSie.forEach(przycisk => {
-    const dataRozpoczecia = new Date(przycisk.dataset.dateStart);
-    const roznicaCzasu = dataRozpoczecia - new Date();
-
-    if (roznicaCzasu <= 0) {
-      przycisk.classList.add('disabled');
-      przycisk.removeEventListener('click', confirmWypisz); 
-    } else {
-      przycisk.classList.remove('disabled');
-      przycisk.addEventListener('click', confirmWypisz); 
-
-
-      setTimeout(() => {
-        przycisk.classList.add('disabled');
-        przycisk.removeEventListener('click', confirmWypisz); 
-      }, roznicaCzasu);
-    }
-  });
-
-}
-
-setInterval(sprawdzDatyWydarzen, 1000);
-document.addEventListener('DOMContentLoaded', sprawdzDatyWydarzen);
-
-
 
 function toggleExpand() {
     const gridWrapper2 = document.querySelector('.grid-wrapper2');
@@ -482,6 +421,74 @@ document.getElementById('leaveEventBtn').addEventListener('click', function(even
     var updateProfileBtn = document.getElementById('updateProfileBtn');
     updateProfileBtn.disabled = true;
 }
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+    let lastUpdateTime = 0;
+    const updateInterval = 1000;
+    const expiredEventsGrid = document.querySelector('.grid-wrapper3 .grid');
+
+    function moveExpiredEvents(timestamp) {
+        if (timestamp - lastUpdateTime >= updateInterval) {
+            lastUpdateTime = timestamp;
+
+            const now = new Date();
+
+            const activeEvents = document.querySelectorAll('.grid-wrapper .event-wrapper');
+            activeEvents.forEach(event => {
+                const endDate = new Date(event.dataset.endDate);
+
+                if (endDate <= now) {
+
+                    const btnContainer = event.querySelector('.btn-container');
+                    if (btnContainer) {
+                        btnContainer.remove();
+                    }
+
+                    expiredEventsGrid.appendChild(event);
+                }
+            });
+        }
+
+        requestAnimationFrame(moveExpiredEvents);
+    }
+
+    moveExpiredEvents(0);
+});
+
+    
+
+
+
+function sprawdzDatyWydarzen() {
+  const przyciskiWypiszSie = document.querySelectorAll('.leave-button');
+
+  przyciskiWypiszSie.forEach(przycisk => {
+    const dataRozpoczecia = new Date(przycisk.dataset.dateStart);
+    const roznicaCzasu = dataRozpoczecia - new Date();
+
+    if (roznicaCzasu <= 0) {
+      przycisk.classList.add('disabled');
+      przycisk.removeEventListener('click', confirmWypisz); 
+    } else {
+      przycisk.classList.remove('disabled');
+      przycisk.addEventListener('click', confirmWypisz); 
+
+
+      setTimeout(() => {
+        przycisk.classList.add('disabled');
+        przycisk.removeEventListener('click', confirmWypisz); 
+      }, roznicaCzasu);
+    }
+  });
+
+}
+
+setInterval(sprawdzDatyWydarzen, 1000);
+document.addEventListener('DOMContentLoaded', sprawdzDatyWydarzen);
+
+
+ 
 
 </script>
 
