@@ -40,6 +40,11 @@ class Event extends Model
     {
         return $this->hasMany (EventDetails::class, 'events_id');
     }
+
+    public function group()
+    {
+        return $this->hasMany (EventDetails::class, 'events_id');
+    }
     public function participants()
     {
     return $this->belongsToMany(Participant::class, 'event_participants', 'events_id', 'participants_id');

@@ -32,5 +32,5 @@ class EventDetails extends Model
 {
     return $this->belongsTo(Participant::class);
 }
-    
+
 }

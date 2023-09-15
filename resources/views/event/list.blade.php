@@ -144,22 +144,24 @@
                                     <button  class="btn sign" type="button" disabled>Zapisz się</button>
             @endif
               <button class="btn show-sub-events" data-info-id="{{ $info->id }}">Pokaż szczegóły</button>
-        
+   
             </div>
             </div>
+            @if(Auth::user() && Auth::user()->role == '2')
+            <a href="{{ route('zapisz', $info->id) }}"class=" hidden btn">Zapis Grupowy</a>
+            @endif
           </div>
         </div>
       @endif
 
       <div id="agreed" class="dialog" style="display: none;">
     <div class="dialog-content2">
-        <p>Jak chcesz się zapisać?</p>
-        <button id="confirm-agreed-button">Indywidualnie</button>
-        <button class="hidden" id="confirm-group-button"  onclick="redirectToGroupView()">Grupa</button>
-        <button id="cancel-agreed-button">Anuluj</button>
-        <div id="alert-container" style="display: none;"></div>
+        <p>Czy na pewno chcesz się zapisać na wydarzenie?</p>
+        <button id="confirm-agreed-button">Tak</button>
+        <button id="cancel-agreed-button">Nie</button>
     </div>
     </div>
+
 
 
 
@@ -207,6 +209,8 @@
 
 
 <script>
+
+
   document.addEventListener('DOMContentLoaded', function() {
     function toggleDetails(event) {
       event.preventDefault();
@@ -274,38 +278,7 @@
         var dialog = document.getElementById('agreed');
         dialog.style.display = 'flex'; 
         
-        var userRole = '{{ Auth::user()->role }}';
-    var groupButton = document.getElementById('confirm-group-button');
-    
-    if (userRole === '2') {
-        groupButton.style.display = 'inline-block';
-    } else {
-        groupButton.style.display = 'none'; 
-    }
-
-    
-    groupButton.addEventListener('click', function() {
-        if (userRole !== '2') {
-            showAlert('Nie masz uprawnień do korzystania z tej funkcji.');
-            return;
-        }
-        groupDialog.style.display = 'flex';
-    });
-
-    function showAlert(message) {
-        var alertContainer = document.getElementById('alert-container');
-        alertContainer.innerHTML = '<div class="alert">' + message + '</div>';
-        alertContainer.style.display = 'block';
-        setTimeout(function() {
-            hideAlert();
-        }, 4000);
-    }
-
-    function hideAlert() {
-        var alertContainer = document.getElementById('alert-container');
-        alertContainer.style.display = 'none';
-        alertContainer.innerHTML = ''; 
-    }
+      
 
         var przyciskPotwierdzenia = document.getElementById('confirm-agreed-button');
         var przyciskAnulowania = document.getElementById('cancel-agreed-button');
@@ -381,9 +354,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
 
-    function redirectToGroupView(eventDetailsId) {
-    window.location.href = "{{ route('add_group') }}";
-}
+
 
 
 

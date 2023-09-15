@@ -147,10 +147,9 @@ font-size: 25px;
     text-align: center;
     width: 150px;
     padding: 10px 0; 
+    
 }
 
-  
-  
   .btn:hover {
     background: #d1d3d4;
     transition-duration: 80ms;

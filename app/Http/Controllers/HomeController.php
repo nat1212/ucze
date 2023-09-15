@@ -43,35 +43,50 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
-    {
-        $participantId = Auth::id();
-        $participant = Participant::findOrFail($participantId);
-            
-        $result = DB::table('event_participants')
+   public function index()
+{
+    $participantId = Auth::id();
+    $participant = Participant::findOrFail($participantId);
+
+    $results = DB::table('event_participants')
         ->join('events', 'event_participants.events_id', '=', 'events.id')
         ->join('event_details', 'event_participants.event_details_id', '=', 'event_details.id')
         ->where('event_participants.participants_id', $participantId)
         ->whereNull('event_participants.deleted_at')
-        ->select('event_details.title','event_details.date_start', 'event_details.date_end','event_details.description', 'event_participants.id')
+        ->whereNull('event_participants.number_of_people')
+        ->select('event_details.title', 'event_details.date_start', 'event_details.date_end', 'event_details.description', 'event_participants.id','event_details.id')
         ->orderBy('event_details.date_start', 'asc')
         ->get();
 
-        foreach ($result as $resulted) {
-            $resulted->date_start = Carbon::parse($resulted->date_start);
-            $resulted->date_end = Carbon::parse($resulted->date_end);
-        }
-
-
-        $checkSchool = $this->school($participantId);
-        if ($checkSchool == 1) {
-            return view('home', ['results' => $result,'participant'=> $participant,'error' => null]);
-        } else {
-            return view('home', ['results' => $result,'participant'=> $participant, 'error' => 'Proszę uzupełnić szkołę!']);
-        }
-       
-
+    foreach ($results as $result) {
+        $result->date_start = Carbon::parse($result->date_start);
+        $result->date_end = Carbon::parse($result->date_end);
     }
+
+    $groups = DB::table('event_participants')
+        ->join('events', 'event_participants.events_id', '=', 'events.id')
+        ->join('event_details', 'event_participants.event_details_id', '=', 'event_details.id')
+        ->where('event_participants.participants_id', $participantId)
+        ->whereNull('event_participants.deleted_at')
+        ->whereNotNull('event_participants.number_of_people')
+        ->select('event_details.title', 'event_details.date_start', 'event_details.date_end', 'event_details.description', 'event_participants.id','event_details.number_seats','event_details.id','event_participants.created_at')
+        ->orderBy('event_details.date_start', 'asc')
+        ->get();
+
+    foreach ($groups as $group) {
+        $group->date_start = Carbon::parse($group->date_start);
+        $group->date_end = Carbon::parse($group->date_end);
+    }
+
+    $checkSchool = $this->school($participantId);
+
+    return view('home', [
+        'results' => $results,
+        'groups' => $groups,
+        'participant' => $participant,
+        'error' => ($checkSchool == 1) ? null : 'Proszę uzupełnić szkołę!'
+    ]);
+}
 
     
 

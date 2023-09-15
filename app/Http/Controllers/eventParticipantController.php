@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Contracts\View\View;
 use App\Models\EventDetails;
 use App\Models\eventParticipant;
 use Illuminate\Support\Facades\Auth;
@@ -24,6 +24,7 @@ class eventParticipantController extends Controller
             ->where('participants_id', $participantId)
             ->where('event_details_id', $eventDetailsId)
             ->whereNull('deleted_at')
+            ->whereNull('event_participants.number_of_people')
             ->get();
 
         if ($registration->isNotEmpty()) {
@@ -32,8 +33,37 @@ class eventParticipantController extends Controller
             return 1;
         }
             }
-    
-    public function freeSeets($id){
+
+        
+            public function zapisz($id) : View
+    {   
+        $event = EventDetails::find($id);
+        $Numberseats = EventDetails::find($id)->number_seats;
+        $title = EventDetails::find($id)->title;
+        return view('zapisz',[
+            'event_details_id'=>$id,
+           'event_details_title'=>$title,
+           'seats'=>$Numberseats,
+          ]);
+    }
+    public function list($id){
+        $eventParticipants = EventParticipantList::select('first_name', 'last_name')
+    ->join('event_participants', 'event_participant_lists.event_participants_id', '=', 'event_participants.id')
+    ->where('event_participants.event_details_id',$id )
+
+    ->get();
+
+    $Numberseats = EventDetails::find($id)->number_seats;
+    $title = EventDetails::find($id)->title;
+    return view('list',[
+        'event_details_title'=>$title,
+        'event_details_id'=>$id,
+        'names'=>$eventParticipants,
+        'seats'=>$Numberseats,
+       ]);
+    }
+
+    public function freeSeets($id,$registrationCount){
        
         $eventDetailsId = $id;
 
@@ -56,9 +86,34 @@ class eventParticipantController extends Controller
         }
     }
 
+
+    public function freeSeets2($id){
+       
+        $eventDetailsId = $id;
+
+        $eventDetails = EventDetails::find($id);
+
+        $registrationCount = DB::table('event_participants')
+        ->where('event_details_id', $eventDetailsId)
+        ->whereNull('deleted_at')
+        ->count();
+
+        $availableSeats = $eventDetails->number_seats - $registrationCount;
+
+        if($availableSeats <= 0)
+        {
+            return 0;
+
+        }
+        else{
+            return 1;
+        }
+    }
     public function signup(Request $request)
     {
         $participantId = Auth::id();
+        $dictionarySchool = Participant::find($participantId);
+
         $result = DB::table('participants')
             ->where('id', $participantId)
             ->whereNull('dictionary_schools_id')
@@ -71,17 +126,18 @@ class eventParticipantController extends Controller
     
         $eventDetailsId = $request->input('event_details_id');
         $isSaved = $this->check($eventDetailsId);
-        $availableSeats = $this->freeSeets($eventDetailsId);
+        $availableSeats = $this->freeSeets2($eventDetailsId);
+       
     
         if ($isSaved == 1) {
             if ($availableSeats == 1) {
                 $eventId = $request->input('event_id');
     
                 try {
-                    DB::transaction(function () use ($eventId, $eventDetailsId) {
+                    DB::transaction(function () use ($eventId, $eventDetailsId,$dictionarySchool) {
                         $eventUser = new eventParticipant();
                         $eventUser->date_report = now();
-                        $eventUser->dictionary_schools_id = 1;
+                        $eventUser->dictionary_schools_id = $dictionarySchool->id;
                         $eventUser->participants_id = Auth::id();
                         $eventUser->events_id = $eventId;
                         $eventUser->event_details_id = $eventDetailsId;
@@ -109,69 +165,83 @@ class eventParticipantController extends Controller
     }
 
 
-    public function addParticipants(Request $request)
-{
-    $participantId = Auth::id();
-    $result = DB::table('participants')
-        ->where('id', $participantId)
-        ->whereNull('dictionary_schools_id')
-        ->count();
+    public function store(Request $request){
 
-    if ($result > 0) {
-        $error = 'Uzupełnij dane.';
-        return redirect()->route('event.list')->withErrors(['message' => $error]);
-    }
-
-    $eventDetailsId = $request->input('event_details_id');
-    $isSaved = $this->check($eventDetailsId);
-    $availableSeats = $this->freeSeets($eventDetailsId);
-
-    if ($isSaved == 1) {
-        $numberOfPeople = $request->input('number_of_people'); 
-
-        if ($availableSeats >= $numberOfPeople) {
-            $eventId = $request->input('event_id');
-            $groupData = $request->input('group_data');
-
-            try {
-                DB::transaction(function () use ($eventId, $eventDetailsId, $participantId, $numberOfPeople, $groupData) {
-                    $eventUser = new eventParticipant();
-                    $eventUser->date_report = now();
-                    $eventUser->dictionary_schools_id = 1;
-                    $eventUser->participants_id = $participantId;
-                    $eventUser->events_id = $eventId;
-                    $eventUser->event_details_id = $eventDetailsId;
-                    $eventUser->number_of_people = $numberOfPeople; 
-                    $eventUser->save();
-
-                    $eventDetails = EventDetails::find($eventDetailsId);
-                    $eventDetails->number_seats -= $numberOfPeople;
-                    $eventDetails->save();
-
-                    foreach ($groupData as $userData) {
-                        $eventParticipantList = new eventParticipantList();
-                        $eventParticipantList->event_participants_id = $eventUser->id;
-                        $eventParticipantList->first_name = $userData['first_name'];
-                        $eventParticipantList->last_name = $userData['last_name'];
-                        $eventParticipantList->save();
-                    }
-                });
-
-                $statusMessage = 'Udało Ci się zapisać grupę na wydarzenie!';
-                return redirect()->route('event.list')->with('status', $statusMessage);
-            } catch (\Exception $e) {
-                $error = 'Wystąpił problem podczas zapisywania. Spróbuj ponownie.';
-                return redirect()->route('event.list')->withErrors(['message' => $error]);
-            }
-        } else {
-            $error = 'Nie ma wystarczającej liczby wolnych miejsc.';
+        $participantId = Auth::id();
+        $result = DB::table('participants')
+            ->where('id', $participantId)
+            ->whereNull('dictionary_schools_id')
+            ->count();
+    
+        if ($result > 0) {
+            $error = 'Uzupełnij dane.';
             return redirect()->route('event.list')->withErrors(['message' => $error]);
         }
-    } else {
-        $error = 'Jesteś już zapisany/a.';
-        return redirect()->route('event.list')->withErrors(['message' => $error]);
+
+        $participants = [];
+        for ($i = 1; $i <= 10; $i++) {
+            $first_name_key = "first_name{$i}";
+            $last_name_key = "last_name{$i}";
+    
+            $first_name = $request->input($first_name_key);
+            $last_name = $request->input($last_name_key);
+    
+            // Sprawdź, czy oba pola Imie i nazwisko są wypełnione
+            if ($first_name && $last_name) {
+                $participants[] = [
+                    'first_name' => $first_name,
+                    'last_name' => $last_name,
+                ];
+            }
+        }
+        if(count($participants)==0)
+        {
+            return redirect()->route('home');
+        }
+        $event_details_id = $request->input('event_details_id');
+        $events_id = EventDetails::find($event_details_id)->events_id;
+        
+        $NumberParticipants=count($participants);
+        $dictionarySchool = Participant::find($participantId);
+
+        $result=$this->freeSeets($event_details_id,$NumberParticipants);
+        if($result==1){
+            $eventParticipant = new EventParticipant();
+            $eventParticipant->date_report = now(); // Ustawiamy datę raportu na aktualną datę
+            $eventParticipant->date_approval = null; // Ustawiamy datę zatwierdzenia na null
+            $eventParticipant->number_of_people = count($participants);
+            $eventParticipant->comments = null;
+            $eventParticipant->dictionary_schools_id = $dictionarySchool->id;
+            $eventParticipant->participants_id = $participantId;
+            $eventParticipant->events_id = $events_id;
+            $eventParticipant->event_details_id = $event_details_id;
+        
+            
+            $eventParticipant->save();
+            $eventDetails = EventDetails::find($event_details_id);
+            $eventDetails->number_seats -= $NumberParticipants;
+            $eventDetails->save();
+            $eventParticipantId = $eventParticipant->id;
+           
+    
+            foreach ($participants as $participantData){
+                $eventParticipantList = new EventParticipantList();
+                $eventParticipantList->event_participants_id=$eventParticipantId;
+                $eventParticipantList->first_name= $participantData['first_name'];
+                $eventParticipantList->last_name=$participantData['last_name'];
+                $eventParticipantList->save();
+                
+            }
+            $statusMessage = 'Udało Ci się zapisać grupę wydarzenie!';
+            return redirect()->route('home')->with('status', $statusMessage);
+
+        }
+        else{
+                 $error = 'Nie ma już wolnych miejsc.';
+                return redirect()->route('home')->withErrors(['message' => $error]);
+        }
+      
     }
-}
 
 
 

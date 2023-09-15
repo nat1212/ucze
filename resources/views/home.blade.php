@@ -57,7 +57,7 @@
                                 </div>
                                 <div class="btn-container">
                                     @if ($result->date_start > now())
-                                        <a href="/leave/{{ $result->id }}" id="leaveEventBtn"  class="btn btn-primary leave-button" data-date-start="{{ $result->date_start->format('Y-m-d H:i:s') }}" onclick="return confirmWypisz()">Wypisz się</a>
+                                        <a href="/leave/{{ $result->id }}" id="leaveEventBtn"  class="btn btn-primary leave-button" data-date-start="{{ $result->date_start->format('Y-m-d H:i:s') }}" onclick="return confirmWypisz({{ $result->id }})">Wypisz się</a>
                                     @else
                                         <a href="javascript:void(0)"  class="btn btn-primary disabled">Wypisz się</a>
                                     @endif
@@ -72,6 +72,44 @@
         @endif
     </div>
 </div>
+
+
+<h4 class="expand-toggle">Lista wydarzeń na które jest zapisana grupa: <span class="toggle-icon">▼</span></h4>
+<div class="grid-wrapper">
+    <div class="grid">
+        @if(isset($groups))
+            @foreach ($groups as $group)
+                @if ($group->date_end > now())
+                    <div class="event-wrapper" data-end-date="{{ $group->date_end }}"  data-description="{{ $group->description }}">
+                        <div class="event"> 
+                            <div class="text">
+                                <p class="des7">{{ $group->title }}</p>
+                                <div class="des-row">
+                                    <p class="des3">Data rozpoczęcia wydarzenia:</p>
+                                    <p class="des4">{{ $group->date_start->format('Y-m-d') }} godz. {{$group->date_start->format('H:i') }}</p> 
+                                </div>
+                                <div class="des-row">
+                                    <p class="des3">Data zakończenia wydarzenia:</p>
+                                    <p class="des4">{{ $group->date_end->format('Y-m-d') }} godz. {{$group->date_end->format('H:i') }}</p> 
+                                </div>
+                                <div class="btn-container">
+                                    @if ($group->date_start > now())
+                                    <a href="{{ route('list', $group->id) }}" class="btn btn-danger">Lista</a>
+                                    @else
+                                    <a href="{{ route('list', $group->id) }}" class="btn btn-danger disabled">Lista</a>
+                                    @endif
+                                    <button class="btn btn-primary show-sub-event" data-result-id="{{ $group->id }}">Pokaż szczegóły</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            @endforeach
+        @endif
+    </div>
+</div>
+
 
 
 <h4 class="expand">Lista wygasłych wydarzeń: <span class="toggle-icon">▼</span></h4>
@@ -100,6 +138,34 @@
         @endif
     </div>
 </div>
+
+<h4 class="expand">Lista wygasłych grupowych wydarzeń: <span class="toggle-icon">▼</span></h4>
+<div class="grid-wrapper3">
+    <div class="grid">
+        @if(isset($groups))
+            @foreach ($groups as $group)
+                @if ($group->date_end <= now()) 
+                    <div class="event-wrapper">
+                        <div class="event"> 
+                            <div class="text">
+                                <p class="des7">{{ $group->title }}</p>
+                                <div class="des-row">
+                                    <p class="des3">Data rozpoczęcia wydarzenia:</p>
+                                    <p class="des4">{{ $group->date_start->format('Y-m-d') }} godz. {{$group->date_start->format('H:i') }}</p> 
+                                </div>
+                                <div class="des-row">
+                                    <p class="des3">Data zakończenia wydarzenia:</p>
+                                    <p class="des4">{{ $group->date_end->format('Y-m-d') }} godz. {{$group->date_end->format('H:i') }}</p> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            @endforeach
+        @endif
+    </div>
+</div>
+
 
                 <div class="grid-wrapper2">
                     <div class="container2">
@@ -489,6 +555,17 @@ document.addEventListener('DOMContentLoaded', sprawdzDatyWydarzen);
 
 
  
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const statusMessage = document.getElementById('status-message');
+
+        if (statusMessage) {
+            setTimeout(function() {
+                statusMessage.style.display = 'none';
+            }, 2000); 
+        }
+    });
+
 
 </script>
 

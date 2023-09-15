@@ -36,16 +36,27 @@ Route::get('/leave/{entryId}',[eventParticipantController::class,'leave']);
 Route::post('/signup', [eventParticipantController::class, 'signup']);
 
 
-Route::post('/add_group_submit',  [EventGroupController::class,'add_group_submit'])->name('add_group_submit');
-Route::get('/add_group',[EventGroupController::class,'addGroup'])->name('add_group');
 
-
+Route::get('/zapisz/{id}',[eventParticipantController::class,'zapisz'])->name('zapisz');
+Route::get('/list/{id}',[eventParticipantController::class,'list'])->name('list');
+Route::post('/zapisz',[eventParticipantController::class,'store']);
 
 
 Route::get('/events/search', [EventController::class,'search'])->name('events.search');
+
 Auth::routes(['verify'=>true]);
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+
+
+
+
+
+
+
+
 
 
 

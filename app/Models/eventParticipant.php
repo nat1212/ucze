@@ -35,5 +35,6 @@ class eventParticipant extends Model
     {
         return $this->hasMany(eventParticipantList::class, 'event_participants_id');
     }
+    
 }
 
