@@ -23,9 +23,11 @@ use App\Http\Controllers\eventParticipantController;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Auth::routes(['verify'=>true]);
 
 
-
+Route::middleware(['auth','verified'])->group(function(){
 
 Route::get('/szkola', [DictionarySchoolController::class, 'showForm']);
 
@@ -42,22 +44,9 @@ Route::get('/list/{id}',[eventParticipantController::class,'list'])->name('list'
 Route::post('/zapisz',[eventParticipantController::class,'store']);
 Route::post('/edit',[eventParticipantController::class,'edit']);
 Route::delete('list/{id}', [eventParticipantController::class, 'destroy']);
+Route::delete('list/{id}', [eventParticipantController::class, 'des']);
 Route::delete('event-details/{id}', [eventParticipantController::class, 'delete']);
 Route::get('/events/search', [EventController::class,'search'])->name('events.search');
-
-Auth::routes(['verify'=>true]);
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -68,3 +57,4 @@ Route::post('/participant/{id}/update', [ParticipantController::class, 'updatePr
 Route::get('/change-password', [App\Http\Controllers\HomeController::class, 'changePassword'])->name('change-password');
 Route::post('/change-password', [App\Http\Controllers\HomeController::class, 'updatePassword'])->name('update-password');
 
+});

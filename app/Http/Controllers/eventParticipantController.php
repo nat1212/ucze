@@ -61,11 +61,13 @@ class eventParticipantController extends Controller
 
     $eventDetailsId = $id->event_details_id;
     $Numberseats = EventDetails::find($eventDetailsId)->number_seats;
+    $title = EventDetails::find($eventDetailsId)->title;
     return view('list',[
         'event_details_id'=>$eventDetailsId,
         'names'=>$eventParticipants,
         'seats'=>$Numberseats,
         'event_id'=>$list,
+        'event_details_title'=>$title,
        ]);
     }
 
@@ -258,9 +260,9 @@ class eventParticipantController extends Controller
 
         $eventParticipants = EventParticipantList::where('event_participants_id', $event_participant_id)
     ->whereNull('deleted_at')
-    ->get(); // Retrieve all matching event participants
+    ->get(); 
 
-// Retrieve the first names and last names from the request
+
 $firstNames = [];
 $lastNames = [];
 $i = 0;
@@ -271,7 +273,6 @@ while ($request->has("first{$i}")) {
     $i++;
 }
 
-// Update all event participants with the same first names and last names
 foreach ($eventParticipants as $key => $eventParticipant) {
     $eventParticipant->update([
         'first_name' => $firstNames[$key],
@@ -287,7 +288,7 @@ foreach ($eventParticipants as $key => $eventParticipant) {
             $first_name = $request->input($first_name_key);
             $last_name = $request->input($last_name_key);
     
-            // Sprawdź, czy oba pola Imie i nazwisko są wypełnione
+        
             if ($first_name && $last_name) {
                 $participants[] = [
                     'first_name' => $first_name,
@@ -297,10 +298,14 @@ foreach ($eventParticipants as $key => $eventParticipant) {
         }
         if(count($participants)==0)
         {
-            return redirect()->route('home');
+            $statusMessage = 'Grupa została zaktualizowana!';
+            return redirect()->route('home')->with([
+                'status' => $statusMessage,
+                'status_duration' => 2000, 
+            ]);
         }
         $event_details_id = $request->input('event_details_id');
-        //$events = EventDetails::find($event_details_id);
+
        
         $NumberParticipants=count($participants);
         
@@ -327,8 +332,11 @@ foreach ($eventParticipants as $key => $eventParticipant) {
                 $eventParticipantList->save();
                 
             }
-            $statusMessage = 'Udało Ci się zapisać grupę wydarzenie!';
-            return redirect()->route('home')->with('status', $statusMessage);
+            $statusMessage = 'Grupa została zaktualizowana!';
+            return redirect()->route('home')->with([
+                'status' => $statusMessage,
+                'status_duration' => 2000, 
+            ]);
         }
         
 
@@ -336,8 +344,27 @@ foreach ($eventParticipants as $key => $eventParticipant) {
     public function destroy($id){
         $currentDateTime = Carbon::now();
         eventParticipantList::where('id', $id)->update(['deleted_at' => $currentDateTime]);
+        $event_id = eventParticipantList::where('id', $id)->value('event_participants_id');
+        $Parti_id = eventParticipant::where('id', $event_id)->value('event_details_id');
+
+        $eventDetails = EventDetails::find($Parti_id);
+        $eventDetails->number_seats += 1;
+        $eventDetails->save();
+        
     }
     
+    public function des($id){
+        $currentDateTime = Carbon::now();
+        eventParticipant::where('id', $id)->update(['deleted_at' => $currentDateTime]);
+        eventParticipantList::where('event_participants_id',$id)->update(['deleted_at' => $currentDateTime]);
+
+        $Parti_id = eventParticipant::where('id', $id)->value('event_details_id');
+
+        $eventDetails = EventDetails::find($Parti_id);
+        $eventDetails->number_seats += 1;
+        $eventDetails->save();
+    }
+
     public function leave($id){
         $userId=Auth::id(); 
         $currentDateTime = Carbon::now();

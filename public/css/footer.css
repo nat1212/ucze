@@ -1,3 +1,36 @@
+
+.numeracja-label {
+  text-align: left; /* Możesz zostawić text-align jako left */
+  font-weight: bold;
+  margin-top: 5px; /* Dodaj odstęp od góry */
+  margin-right: -35px; /* Dodaj odstęp od prawej strony numeracji */
+}
+
+
+
+.row.mb-2 {
+  display: flex;
+  align-items: center;
+  margin:25px;
+}
+
+
+.container2 {
+  text-align: center;
+}
+
+.center-align {
+  display: inline-block;
+  text-align: left;
+  margin: 10px;
+}
+
+.btn-spacing {
+  margin-left: 15px; 
+  margin-top:5px;
+}
+
+
 .footer {
     position: fixed;
     left: 0;

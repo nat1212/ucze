@@ -11,7 +11,7 @@
             <div class="card card-left">
             <div class="card-header">
                 <span>{{ __('Twój profil') }}</span>
-                <span class="toggle-icon2" onclick="toggleExpand()">Edycja⚙️</span>
+                <span class="toggle-icon2" onclick="toggleExpand()">Edycja ⚙️</span>
             </div>
                 
                 <div class="card-body">
@@ -75,7 +75,7 @@
     </div>
 </div>
 
-
+@if(Auth::user() && Auth::user()->role == '2')
 <h4 class="expand-toggle">Lista wydarzeń na które jest zapisana grupa: <span class="toggle-icon">▼</span></h4>
 <div class="grid-wrapper">
     <div class="grid">
@@ -111,7 +111,7 @@
         @endif
     </div>
 </div>
-
+@endif
 
 
 <h4 class="expand">Lista wygasłych wydarzeń: <span class="toggle-icon">▼</span></h4>
@@ -141,6 +141,7 @@
     </div>
 </div>
 
+@if(Auth::user() && Auth::user()->role == '2')
 <h4 class="expand">Lista wygasłych grupowych wydarzeń: <span class="toggle-icon">▼</span></h4>
 <div class="grid-wrapper3">
     <div class="grid">
@@ -167,7 +168,7 @@
         @endif
     </div>
 </div>
-
+@endif
 
                 <div class="grid-wrapper2">
                     <div class="container2">
@@ -558,11 +559,18 @@ setInterval(sprawdzDatyWydarzen, 1000);
 document.addEventListener('DOMContentLoaded', sprawdzDatyWydarzen);
 
 
+    $(document).ready(function() {
  
+        var statusDuration = {{ session('status_duration', 3000) }};
+
+
+        setTimeout(function() {
+            $("#status-message").fadeOut();
+        }, statusDuration);
+    });
+
 
  
-
-    
 
 </script>
 
