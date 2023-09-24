@@ -31,14 +31,17 @@
       @endif
 
 
-    <div class="row3">
+      <div class="row3">
     <div class="col-10">
-        <form action="{{ route('events.search') }}" method="GET" class="d-flex align-items-center">
-            <input type="text" class="form-control" name="search_name" placeholder="Szukaj po nazwie" value="" autocomplete="off">
+        <form action="{{ route('events.search') }}" method="GET" class="d-flex align-items-center" >
+            <input type="text" class="form-control" name="search_name" id="search_name" placeholder="Szukaj po nazwie" value="" autocomplete="off">
             <button type="submit" class="btn btn-primary">Szukaj</button>
         </form>
+        @if ($searchMessage)
+            <p id="searchMessage">{{ $searchMessage }}</p>
+        @endif
     </div>
-    </div>
+</div>
 
     @foreach ($events as $event)
     @if (strtotime($event->date_start_publi) < strtotime('now') && strtotime($event->date_end_publi) > strtotime('now'))
@@ -148,7 +151,12 @@
             </div>
             </div>
             @if(Auth::user() && Auth::user()->role == '2')
-            <a href="{{ route('zapisz', $info->id) }}"class=" hidden btn">Zapis Grupowy</a>
+              @if (strtotime($info->date_start_rek) < strtotime('now') && strtotime($info->date_end_rek) > strtotime('now'))
+                  <a href="{{ route('zapisz', $info->id) }}" class="hidden btn">Zapis Grupowy</a>
+
+              @else
+              <span class="btn disabled">Zapis Grupowy</span>
+              @endif
             @endif
           </div>
         </div>

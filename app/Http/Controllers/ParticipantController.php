@@ -31,11 +31,11 @@ public function updateProfile(Request $request, $id)
         'first_name' => 'nullable|string|max:255',
         'last_name' => 'nullable|string|max:255',
         'sex' => ['nullable', Rule::in(['m', 'k', 'n'])],
-        'birth_date' => 'nullable|date|before_or_equal:2010-01-01',
+        'birth_date' => 'nullable|date|',
     ]);
 
     if ($validator->fails()) {
-        return new JsonResponse(['success' => false, 'message' => 'Wystąpił błąd walidacji danych.']);
+        return new JsonResponse(['message' => 'Wystąpił błąd podczas aktualizacji danych.']);
     }
 
     $dataToUpdate = [];

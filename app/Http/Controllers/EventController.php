@@ -17,6 +17,7 @@ class EventController extends Controller
     public function index(Request $request): View
     {
         $specificEventId = null;
+        $searchMessage = null;
 
         if ($request->has('specific_event_id')) {
             $specificEventId = $request->input('specific_event_id');
@@ -61,6 +62,7 @@ class EventController extends Controller
     return view('event.list', [
         'events' => $events,
         'specificEventId' => $specificEventId,
+        'searchMessage' => $searchMessage,
     ]);
     
     }
@@ -76,8 +78,13 @@ class EventController extends Controller
     public function search(Request $request)
     {
         $searchTerm = $request->input('search_name');
-    
+
+        if (empty($searchTerm)) {
+            return redirect()->route('event.list');
+        }
+          
         $currentDateTime = Carbon::now();
+ 
     
         $events = Event::where('date_start_publi', '<', $currentDateTime)
                        ->where('date_end_publi', '>', $currentDateTime)
@@ -86,34 +93,41 @@ class EventController extends Controller
                        ->where('name', 'LIKE', "%{$searchTerm}%")
                        ->orderBy('date_start', 'asc')
                        ->paginate(2);
-    
-        
-    
-    foreach ($events as $event) {
-        $event->date_start = Carbon::parse($event->date_start);
-        $event->date_end = Carbon::parse($event->date_end);
-        $event->date_start_rek = Carbon::parse($event->date_start_rek);
-        $event->date_end_rek = Carbon::parse($event->date_end_rek);
+   
 
-        foreach($event->info as $info)
-        {
-            $info->date_start = Carbon::parse($info->date_start);
-            $info->date_end = Carbon::parse($info->date_end);
-            $info->date_start_rek = Carbon::parse($info->date_start_rek);
-            $info->date_end_rek = Carbon::parse($info->date_end_rek);
+        if ($events->isEmpty()) {
+            
+            $searchMessage = 'Brak wyników dla wprowadzonej nazwy.';
+        } else {
+          
+            $searchMessage = null;
+       
+            
+            // Zaktualizuj daty w znalezionych wydarzeniach
+            foreach ($events as $event) {
+                $event->date_start = Carbon::parse($event->date_start);
+                $event->date_end = Carbon::parse($event->date_end);
+                $event->date_start_rek = Carbon::parse($event->date_start_rek);
+                $event->date_end_rek = Carbon::parse($event->date_end_rek);
+    
+                foreach($event->info as $info)
+                {
+                    $info->date_start = Carbon::parse($info->date_start);
+                    $info->date_end = Carbon::parse($info->date_end);
+                    $info->date_start_rek = Carbon::parse($info->date_start_rek);
+                    $info->date_end_rek = Carbon::parse($info->date_end_rek);
+                }
+            }
         }
-
-    }
     
         
-    
-    
         return view('event.list', [
             'events' => $events,
             'searchTerm' => $searchTerm,
-
+            'searchMessage' => $searchMessage, // Przekaż zmienną informacyjną do widoku
         ]);
     }
+    
     
     
 }

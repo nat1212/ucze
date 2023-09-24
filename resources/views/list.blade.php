@@ -8,46 +8,50 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __(' Zapisana grupa na wydarzenie:') }}   {{ $event_details_title }}</div>
+                <div class="card-header">{{ __('Wydarzenie') }}</div>
 
                 <div class="card-body">
                 <div class="row">
-                       <label>Wolne miejsca = {{ $seats }}</label>
+                       <label>Wolne miejsca=>{{ $seats }}</label>
                     </div>  
                 <div class="row">
                         <div class="col-md-6">
                             <input id="number_input" class="form-control" type="number" placeholder="Liczba">
                         </div>
                         <div class="col-md-6">
-                            <button onclick="addInputs()">Dodaj</button>
+                            <button onclick="addInputss()">Dodaj</button>
+                            
                         </div>
                     </div>
-                    <form method="POST" action="/zapisz">
+                    <form method="POST" action="/edit">
                         @csrf
 
                         <div class="row mb-3">
     <label for="name" class=" col-form-label text-md-auto">{{ __('Imię ') }}{{ __('nazwisko') }}</label>
 
     <div  class="row" id="dynamic-inputs" style="margin-bottom: 15px;">
-        @foreach($names as $participant)
-            <div style="margin-bottom:15px;" class="col-md-6">
-                <input class="form-control" type="text" name="first_name[]" value="{{ $participant->first_name }}" placeholder="Imię" autocomplete="nazwa1" autofocus>
-            </div>
-            <div class="col-md-6">
-                <input class="form-control" type="text" name="last_name[]" value="{{ $participant->last_name }}" placeholder="Nazwisko" autocomplete="nazwa2" autofocus>
-            </div>
-        @endforeach
+    @foreach($names as $i => $participant)
+    <div style="margin-bottom:15px;" class="col-md-5">
+        <input class="form-control" type="text" name="first{{ $i }}" value="{{ $participant->first_name }}" placeholder="Imię" autocomplete="nazwa1" autofocus>
+    </div>
+    <div class="col-md-5">
+        <input class="form-control" type="text" name="last{{ $i }}" value="{{ $participant->last_name }}" placeholder="Nazwisko" autocomplete="nazwa2" autofocus>
+    </div>
+    <div class="col-md-1" >
+        <button data-id="{{ $participant->id }}" class="btn btn-danger des">Usuń</button>
+    </div>
+@endforeach
     </div>
 </div>
                        
-                   
+                        <input type="hidden" name="id" value="{{ $event_id }}">
                        
                         <input type="hidden" name="event_details_id" value="{{ $event_details_id }}">
 
                         <div class="row mb-0">
-                            <div class="col-md-6 offset-md-4   ">
+                            <div class="col-md-6 offset-md-5    ">
                                 <button type="submit" class="btn btn-primary">
-                                    {{ __('Zapisz edycje') }}
+                                    {{ __('Stwórz') }}
                                 </button>
                                 <a href="{{ route('event.list') }}" class="btn btn-primary">
                                     {{ __('Wróć') }}
@@ -64,9 +68,10 @@
 <div class="footer">
     <p class="footer-text">@Sławek&Natan Company</p>
     </div>
-@endsection
-@section('javascript')
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const firstNameInputs = document.querySelectorAll("input[name^='first_name']");
@@ -96,7 +101,7 @@
 <script>
     let counter = 1;
 
-    function addInputs() {
+    function addInputss() {
     const numberInput = document.getElementById("number_input");
     const numberOfInputsToAdd = parseInt(numberInput.value);
 
@@ -143,6 +148,28 @@
         parentDiv.appendChild(divRow); // Dodaj divRow do diva o klasie "row mb-3"
     }
 }
+
+            // Get the CSRF token from the meta tag
+            var csrfToken = $('meta[name="csrf-token"]').attr('content');
+          
+            $('.des').click(function() {
+                var userId = $(this).data("id");
+                $.ajax({
+                    method: "DELETE",
+                    url: "http://szkola.test/list/" + userId,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken // Include the CSRF token in the request headers
+                    }
+                })
+                
+                .done(function(response) {
+                    alert("Success");
+                    window.location.reload();
+                })
+                .fail(function(response) {
+                    alert("Error");
+                });
+            });
 
 </script>
 @endsection

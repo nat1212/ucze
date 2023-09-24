@@ -40,8 +40,9 @@ Route::post('/signup', [eventParticipantController::class, 'signup']);
 Route::get('/zapisz/{id}',[eventParticipantController::class,'zapisz'])->name('zapisz');
 Route::get('/list/{id}',[eventParticipantController::class,'list'])->name('list');
 Route::post('/zapisz',[eventParticipantController::class,'store']);
-
-
+Route::post('/edit',[eventParticipantController::class,'edit']);
+Route::delete('list/{id}', [eventParticipantController::class, 'destroy']);
+Route::delete('event-details/{id}', [eventParticipantController::class, 'delete']);
 Route::get('/events/search', [EventController::class,'search'])->name('events.search');
 
 Auth::routes(['verify'=>true]);

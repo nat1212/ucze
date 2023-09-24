@@ -11,7 +11,7 @@
             <div class="card card-left">
             <div class="card-header">
                 <span>{{ __('Twój profil') }}</span>
-                <span class="toggle-icon2" onclick="toggleExpand()">⚙️</span>
+                <span class="toggle-icon2" onclick="toggleExpand()">Edycja⚙️</span>
             </div>
                 
                 <div class="card-body">
@@ -23,6 +23,7 @@
 
                     <div id="update-message" class="alert alert-success" style="display: none;"></div>
                  
+                    <div id="update-message2" class="alert alert-danger" style="display: none;"></div>
                     @if(isset($error) && !empty($error))
                         <div class="link-frame">
                             <p>{{ $error }} -> <a href="/szkola">Kliknij tutaj</a></p>
@@ -55,15 +56,16 @@
                                     <p class="des3">Data zakończenia wydarzenia:</p>
                                     <p class="des4">{{ $result->date_end->format('Y-m-d') }} godz. {{$result->date_end->format('H:i') }}</p> 
                                 </div>
+                                
                                 <div class="btn-container">
                                     @if ($result->date_start > now())
-                                        <a href="/leave/{{ $result->id }}" id="leaveEventBtn"  class="btn btn-primary leave-button" data-date-start="{{ $result->date_start->format('Y-m-d H:i:s') }}" onclick="return confirmWypisz({{ $result->id }})">Wypisz się</a>
+                                    <a href="/leave/{{ $result->id }}" class="btn btn-primary leave-button leave-event-btn" data-date-start="{{ $result->date_start->format('Y-m-d H:i:s') }}" >Wypisz się</a>
                                     @else
                                         <a href="javascript:void(0)"  class="btn btn-primary disabled">Wypisz się</a>
                                     @endif
                                     <button class="btn btn-primary show-sub-event" data-result-id="{{ $result->id }}">Pokaż szczegóły</button>
                                 </div>
-
+                               
                             </div>
                         </div>
                     </div>
@@ -94,7 +96,7 @@
                                 </div>
                                 <div class="btn-container">
                                     @if ($group->date_start > now())
-                                    <a href="{{ route('list', $group->id) }}" class="btn btn-danger">Lista</a>
+                                    <a href="{{ route('list',$group->participant_id,) }}" class="btn btn-danger">Lista</a>
                                     @else
                                     <a href="{{ route('list', $group->id) }}" class="btn btn-danger disabled">Lista</a>
                                     @endif
@@ -279,6 +281,7 @@
 
 
     <script>
+        
 
 
  const expandToggles = document.querySelectorAll('.expand, .expand-toggle');
@@ -371,11 +374,15 @@ document.getElementById('confirm-button').addEventListener('click', function() {
                         location.reload();
                     }, 1500); 
                 } else {
-                    alert('Wystąpił błąd podczas aktualizacji profilu.');
+                    var updateMessage = document.getElementById('update-message2');
+                    updateMessage.textContent = response.message;
+                    updateMessage.style.display = 'block'; 
+                    setTimeout(function() {
+                        updateMessage.style.display = 'none'; 
+                        location.reload();
+                    }, 3000);
                 }
-            } else {
-                alert('Wystąpił błąd podczas wysyłania żądania.');
-            }
+            } 
         }
     };
 
@@ -416,28 +423,30 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-  
+var leaveButtons = document.querySelectorAll('.leave-event-btn');
 
-document.getElementById('leaveEventBtn').addEventListener('click', function(event) {
-        event.preventDefault(); 
+
+leaveButtons.forEach(function(button) {
+    button.addEventListener('click', function(event) {
+        event.preventDefault();
 
         var dialog = document.getElementById('leave-dialog');
         dialog.style.display = 'flex';
 
-      
-        var entryId = this.getAttribute('href').split('/').pop();
-        dialog.setAttribute('data-entry-id', entryId);
+        var id = this.getAttribute('href').split('/').pop();
+        dialog.setAttribute('data-entry-id', id);
     });
+});
 
     document.getElementById('confirm-leave-button').addEventListener('click', function() {
         var dialog = document.getElementById('leave-dialog');
         dialog.style.display = 'none';
 
-        var entryId = dialog.getAttribute('data-entry-id');
+        var id = dialog.getAttribute('data-entry-id');
 
-     
+
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/leave/' + entryId, true);
+        xhr.open('GET', '/leave/' + id, true);
         xhr.onreadystatechange = function() {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
@@ -450,12 +459,8 @@ document.getElementById('leaveEventBtn').addEventListener('click', function(even
                         updateMessage.style.display = 'none'; 
                         location.reload();
                     }, 1500); 
-                } else {
-                    alert('Wystąpił błąd podczas aktualizacji profilu.');
-                }
-            } else {
-                alert('Wystąpił błąd podczas wysyłania żądania.');
-            }
+                } 
+            } 
         }
     };
         xhr.send();
@@ -467,7 +472,6 @@ document.getElementById('leaveEventBtn').addEventListener('click', function(even
         var dialog = document.getElementById('leave-dialog');
         dialog.style.display = 'none';
     });
-
 
 
     function cancelChanges() {
@@ -556,16 +560,9 @@ document.addEventListener('DOMContentLoaded', sprawdzDatyWydarzen);
 
  
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const statusMessage = document.getElementById('status-message');
+ 
 
-        if (statusMessage) {
-            setTimeout(function() {
-                statusMessage.style.display = 'none';
-            }, 2000); 
-        }
-    });
-
+    
 
 </script>
 

@@ -8,36 +8,29 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card">
-                <div class="card-header">{{ __(' Zapis grupowy na wydarzenie:') }}   {{ $event_details_title }}</div>
+                <div class="card-header">{{ __('Wydarzenie') }}</div>
 
                 <div class="card-body">
                 <div class="row">
-                       <label>Wolne miejsca = {{ $seats }}</label>
+                       <label>Wolne miejsca=>{{ $seats }}</label>
                     </div>  
                 <div class="row">
                         <div class="col-md-6">
                             <input id="number_input" class="form-control" type="number" placeholder="Liczba">
                         </div>
                         <div class="col-md-6">
-                            <button onclick="addInputs()">Dodaj</button>
+                            <button onclick="addInputss()">Dodaj</button>
+                            <button onclick="alert2()">Dodaj2</button>
                         </div>
                     </div>
                     <form method="POST" action="/zapisz">
                         @csrf
 
                         <div class="row mb-3">
-                            <label for="name" class="col-md-4 col-form-label text-md-end">{{ __('Imie i nazwisko') }}</label>
+    <label for="name" class=" col-form-label text-md-auto">{{ __('Imię ') }}{{ __('nazwisko') }}</label>
 
-                            <div class="row" id="dynamic-inputs" style="margin-bottom:15px;">
-                            <div class="col-md-6">
-                                <input id="first_name1"  class="form-control @error('city') is-invalid @enderror" type="text"  name="first_name1" value="{{ session('name') }}" placeholder="Imię"  autocomplete="nazwa1" autofocus>
-                            </div>
-                            <div class="col-md-6">
-                                <input id="last_name1" class="form-control @error('city') is-invalid @enderror" type="text"  name="last_name1" value="{{ session('name') }}" placeholder="Nazwisko"  autocomplete="nazwa2" autofocus>
-                            </div>
-                        </div>
-
-                        </div>
+    
+</div>
                        
                    
                        
@@ -63,9 +56,14 @@
 <div class="footer">
     <p class="footer-text">@Sławek&Natan Company</p>
     </div>
-@endsection
-@section('javascript')
+
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function alert2(){
+        alert("Hello! I am an alert box!!");
+    }
+</script>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const firstNameInputs = document.querySelectorAll("input[name^='first_name']");
@@ -95,7 +93,7 @@
 <script>
     let counter = 1;
 
-    function addInputs() {
+    function addInputss() {
     const numberInput = document.getElementById("number_input");
     const numberOfInputsToAdd = parseInt(numberInput.value);
 

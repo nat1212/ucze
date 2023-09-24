@@ -7,6 +7,7 @@ use App\Models\eventParticipant;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Collection;
 use App\Models\Participant;
+use Illuminate\Support\Carbon;
 use Illuminate\Http\Request;
 use App\Models\eventParticipantList;
 use Illuminate\Support\Facades\DB;
@@ -35,7 +36,7 @@ class eventParticipantController extends Controller
             }
 
         
-            public function zapisz($id) : View
+    public function zapisz($id) : View
     {   
         $event = EventDetails::find($id);
         $Numberseats = EventDetails::find($id)->number_seats;
@@ -46,20 +47,25 @@ class eventParticipantController extends Controller
            'seats'=>$Numberseats,
           ]);
     }
-    public function list($id){
-        $eventParticipants = EventParticipantList::select('first_name', 'last_name')
-    ->join('event_participants', 'event_participant_lists.event_participants_id', '=', 'event_participants.id')
-    ->where('event_participants.event_details_id',$id )
-
+    public function list($list){
+        $eventParticipants = EventParticipantList::select('id','first_name', 'last_name')
+    ->where('event_participants_id', $list)
+    ->whereNull('deleted_at')
     ->get();
+       
+    $id = DB::table('event_participants')
+    ->select('event_details_id')
+    ->where('id', $list)
+    ->first();
+    
 
-    $Numberseats = EventDetails::find($id)->number_seats;
-    $title = EventDetails::find($id)->title;
+    $eventDetailsId = $id->event_details_id;
+    $Numberseats = EventDetails::find($eventDetailsId)->number_seats;
     return view('list',[
-        'event_details_title'=>$title,
-        'event_details_id'=>$id,
+        'event_details_id'=>$eventDetailsId,
         'names'=>$eventParticipants,
         'seats'=>$Numberseats,
+        'event_id'=>$list,
        ]);
     }
 
@@ -179,7 +185,7 @@ class eventParticipantController extends Controller
         }
 
         $participants = [];
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 100; $i++) {
             $first_name_key = "first_name{$i}";
             $last_name_key = "last_name{$i}";
     
@@ -243,23 +249,107 @@ class eventParticipantController extends Controller
       
     }
 
+    public function edit(Request $request)
+    {
+       
+         $event_participant_id = $request->input('id');
+       
+        $events = eventParticipant::find($event_participant_id);
 
+        $eventParticipants = EventParticipantList::where('event_participants_id', $event_participant_id)
+    ->whereNull('deleted_at')
+    ->get(); // Retrieve all matching event participants
 
-    public function leave($entryId)
-{
-    $entry = eventParticipant::find($entryId);
+// Retrieve the first names and last names from the request
+$firstNames = [];
+$lastNames = [];
+$i = 0;
 
-    if ($entry) {
-        $entry->deleted_at = now();
-        $entry->save();
+while ($request->has("first{$i}")) {
+    $firstNames[] = $request->input("first{$i}");
+    $lastNames[] = $request->input("last{$i}");
+    $i++;
+}
 
-        $eventDetails = EventDetails::find($entry->event_details_id);
-        if ($eventDetails) {
-            $eventDetails->number_seats += 1;
-            $eventDetails->save();
+// Update all event participants with the same first names and last names
+foreach ($eventParticipants as $key => $eventParticipant) {
+    $eventParticipant->update([
+        'first_name' => $firstNames[$key],
+        'last_name' => $lastNames[$key],
+    ]);
+}
+
+        $participants = [];
+        for ($i = 1; $i <= 100; $i++) {
+            $first_name_key = "first_name{$i}";
+            $last_name_key = "last_name{$i}";
+    
+            $first_name = $request->input($first_name_key);
+            $last_name = $request->input($last_name_key);
+    
+            // Sprawdź, czy oba pola Imie i nazwisko są wypełnione
+            if ($first_name && $last_name) {
+                $participants[] = [
+                    'first_name' => $first_name,
+                    'last_name' => $last_name,
+                ];
+            }
         }
-    }
+        if(count($participants)==0)
+        {
+            return redirect()->route('home');
+        }
+        $event_details_id = $request->input('event_details_id');
+        //$events = EventDetails::find($event_details_id);
+       
+        $NumberParticipants=count($participants);
+        
 
+        $result=$this->freeSeets($event_details_id,$NumberParticipants);
+        if($result==1){
+            
+            $events->number_of_people += count($participants);
+            $events->updated_at = now();
+           
+        
+        
+            
+            $events->save();
+            $eventDetails = EventDetails::find($event_details_id);
+            $eventDetails->number_seats -= $NumberParticipants;
+            $eventDetails->save();
+
+            foreach ($participants as $participantData){
+                $eventParticipantList = new EventParticipantList();
+                $eventParticipantList->event_participants_id=$event_participant_id;
+                $eventParticipantList->first_name= $participantData['first_name'];
+                $eventParticipantList->last_name=$participantData['last_name'];
+                $eventParticipantList->save();
+                
+            }
+            $statusMessage = 'Udało Ci się zapisać grupę wydarzenie!';
+            return redirect()->route('home')->with('status', $statusMessage);
+        }
+        
+
+    }
+    public function destroy($id){
+        $currentDateTime = Carbon::now();
+        eventParticipantList::where('id', $id)->update(['deleted_at' => $currentDateTime]);
+    }
+    
+    public function leave($id){
+        $userId=Auth::id(); 
+        $currentDateTime = Carbon::now();
+        eventParticipant::where('event_details_id', $id)
+    ->where('participants_id', $userId)
+    ->whereNull('number_of_people')
+    ->update(['deleted_at' => $currentDateTime]);
+
+    $eventDetails = EventDetails::where('id', $id)->first();
+    if ($eventDetails) {
+    $eventDetails->update(['number_seats' => $eventDetails->number_seats + 1]);
     return new JsonResponse(['success' => true, 'message' => 'Udało się wypisać z wydarzenia!']);
+}
 }
 }
