@@ -30,9 +30,8 @@
                         </div>
                     @endif
 
-                    <div id="update-message-container">
+                    <div id="update-message-container"></div>
 
-                    </div>
                   
                     <h4 class="expand-toggle3" onclick="redirectToEventList(event)">Lista wszystkich aktualnych wydarzeń:  <span class="toggle-icon">►</span></h4>
 

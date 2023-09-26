@@ -48,6 +48,8 @@ Route::delete('list/{id}', [eventParticipantController::class, 'des']);
 Route::delete('event-details/{id}', [eventParticipantController::class, 'delete']);
 Route::get('/events/search', [EventController::class,'search'])->name('events.search');
 
+Route::delete('list-xd/{id}', [eventParticipantController::class, 'delete']);
+
 
 
 Route::get('/participant/edit/{id}', [ParticipantController::class, 'edit'])->name('participant.edit');

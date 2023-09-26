@@ -205,6 +205,7 @@ class eventParticipantController extends Controller
         if(count($participants)==0)
         {
             return redirect()->route('home');
+            
         }
         $event_details_id = $request->input('event_details_id');
         $events_id = EventDetails::find($event_details_id)->events_id;
@@ -353,18 +354,27 @@ foreach ($eventParticipants as $key => $eventParticipant) {
         
     }
     
-    public function des($id){
-        $currentDateTime = Carbon::now();
-        eventParticipant::where('id', $id)->update(['deleted_at' => $currentDateTime]);
-        eventParticipantList::where('event_participants_id',$id)->update(['deleted_at' => $currentDateTime]);
+    public function delete($id)
+    {
+        try {
+            $currentDateTime = Carbon::now();
+    
+            $Parti_id = eventParticipant::where('id', $id)->value('event_details_id');
+    
+            eventParticipant::where('id', $id)->update(['deleted_at' => $currentDateTime]);
+            $updatedCount = eventParticipantList::where('event_participants_id', $id)->update(['deleted_at' => $currentDateTime]);
+    
+            $eventDetails = EventDetails::find($Parti_id);
+            $eventDetails->number_seats += $updatedCount;
+            $eventDetails->save();
+    
+            return redirect()->route('home')->with('status', 'Udało się usunąć listę!');
+        } catch (\Exception) {
 
-        $Parti_id = eventParticipant::where('id', $id)->value('event_details_id');
-
-        $eventDetails = EventDetails::find($Parti_id);
-        $eventDetails->number_seats += 1;
-        $eventDetails->save();
+            return response()->json(['success' => false, 'message' => 'Wystąpił błąd podczas usuwania listy']);
+        }
     }
-
+    
     public function leave($id){
         $userId=Auth::id(); 
         $currentDateTime = Carbon::now();

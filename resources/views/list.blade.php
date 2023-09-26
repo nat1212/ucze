@@ -62,6 +62,7 @@
                                 <a href="{{ route('event.list') }}" class="btn btn-primary">
                                     {{ __('Wróć') }}
                                 </a>
+                                <button data-id="{{ $event_id }}" class="btn btn-danger del">Usuń liste</button>
                             </div>
                         </div>
                     </form>
@@ -74,6 +75,7 @@
 <div class="footer">
     <p class="footer-text">@Sławek&Natan Company</p>
     </div>
+
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -217,4 +219,36 @@ function addInputss() {
 });
 
 </script>
+<script>
+    var csrfToken = $('meta[name="csrf-token"]').attr('content');
+
+    $('.del').click(function() {
+        var eventId = $(this).data("id");
+        var confirmed = window.confirm("Czy na pewno chcesz usunąć listę?");
+        if (confirmed) {
+            $.ajax({
+                method: "DELETE",
+                url: "http://szkola.test/list-xd/" + eventId,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken 
+                },
+                success: function(data) {
+                    if (data.success) {
+            
+                        window.location.href = "{{ route('home') }}";
+                    } else {
+               
+                        alert("Wystąpił błąd: " + data.message);
+                    }
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                
+                    alert("Wystąpił błąd podczas żądania: " + textStatus);
+                }
+            });
+        }
+    });
+</script>
+
+
 @endsection
