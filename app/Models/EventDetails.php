@@ -21,6 +21,7 @@ class EventDetails extends Model
         'description',
         'comments',
         'number_seats',
+        'type',
         'events_id',
         ];
       

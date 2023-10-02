@@ -84,9 +84,17 @@
 	<h3>Data: <span>{{ $dataWydarzenia }} </span> </h3>
 	<h3>Godzina: <span> {{$godzinaWydarzenia }}</span> </h3>
 	<h3>Prowadzący: <span>{{ $Imie }} {{ $Nazwisko }}</span> </h3>
+
+	<div class = "tak4"></div>
+	<h3><span>Aby przejść do naszej aplikacji, kliknij poniższy link:</span></h3>
+	<h3><span><a href="http://szkola.test/home">Przejdź do aplikacji</a></span></h3>
+
 	<div class = "tak7"></div>
 	  <div class="tak3">Ta wiadomość została wygenerowana automatycznie,prosimy na nią nie odpowiadać.</div>
 	  <p>Pozdrawiamy,</p>
 	  <p>SN</p>
+
+	
+
 </body>
 </html>

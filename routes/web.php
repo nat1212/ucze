@@ -25,7 +25,7 @@ Route::get('/', function () {
 });
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Auth::routes(['verify'=>true]);
-
+Route::get('/event/list',[EventController::class,'index'])->name('event.list');
 
 Route::middleware(['auth','verified'])->group(function(){
 
@@ -33,23 +33,32 @@ Route::get('/szkola', [DictionarySchoolController::class, 'showForm']);
 
 Route::post('/szkola', [DictionarySchoolController::class, 'schollssave']);
 
-Route::get('/event/list',[EventController::class,'index'])->name('event.list');
+
 Route::get('/leave/{entryId}',[eventParticipantController::class,'leave']);
 Route::post('/signup', [eventParticipantController::class, 'signup']);
 
 
 
 Route::get('/zapisz/{id}',[eventParticipantController::class,'zapisz'])->name('zapisz');
-Route::get('/list/{id}',[eventParticipantController::class,'list'])->name('list');
+Route::get('/zapisznr/{id}',[eventParticipantController::class,'zapisznr'])->name('zapisznr');
 Route::post('/zapisz',[eventParticipantController::class,'store']);
+Route::post('/zapisznr',[eventParticipantController::class,'storenr']);
+
+Route::get('/list/{id}',[eventParticipantController::class,'list'])->name('list');
+Route::get('/listnr/{id}',[eventParticipantController::class,'listnr'])->name('listnr');
+
+
 Route::post('/edit',[eventParticipantController::class,'edit']);
+
+
 Route::delete('list/{id}', [eventParticipantController::class, 'destroy']);
-Route::delete('list/{id}', [eventParticipantController::class, 'des']);
+
 Route::delete('event-details/{id}', [eventParticipantController::class, 'delete']);
 Route::get('/events/search', [EventController::class,'search'])->name('events.search');
 
 Route::delete('list-xd/{id}', [eventParticipantController::class, 'delete']);
 
+Route::delete('listnr-nr/{id}', [eventParticipantController::class, 'deletenr']);
 
 
 Route::get('/participant/edit/{id}', [ParticipantController::class, 'edit'])->name('participant.edit');

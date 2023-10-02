@@ -45,7 +45,7 @@ class WyslijPrzypomnienia extends Command
                   
                     if ($uczestnik) {
                     // Wysyłanie powiadomienia do każdego uczestnika
-                    $this->sendPrzypomnienieEmail($email, $wydarzenie->title, Carbon::parse($wydarzenie->date_start)->format('Y-m-d'), Carbon::parse($wydarzenie->date_start)->format('H:i'),$wydarzenie->speaker_first_name,$wydarzenie->speaker_last_name, $uczestnik->first_name);
+                    $this->sendPrzypomnienieEmail($email, $wydarzenie->title, Carbon::parse($wydarzenie->date_start)->format('d-m-Y'), Carbon::parse($wydarzenie->date_start)->format('H:i'),$wydarzenie->speaker_first_name,$wydarzenie->speaker_last_name, $uczestnik->first_name);
             }
             else {
                 $this->error("Nie znaleziono uczestnika o adresie email");

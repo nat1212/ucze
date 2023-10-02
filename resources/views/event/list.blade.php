@@ -58,43 +58,41 @@
             <div class="des-row">
             <div class="left-content">
             
-            <div class="des-row">
-    <p scope="col" class="des">Data rozpoczęcia:</p>
-    <p scope="col" class="des2">{{ $event->date_start->format('Y-m-d') }} </p>
-    <p scope="col" class="des2">godz.{{ $event->date_start->format('H:i') }}</p>
-</div>
-<div class="des-row">
-    <p scope="col" class="des">Data zakończenia:</p>
-    <p scope="col" class="des2">{{ $event->date_end->format('Y-m-d') }}</p>
-    <p scope="col" class="des2">godz.{{ $event->date_end->format('H:i') }}</p>
+            <div class="des-row55">
+    <p scope="col" class="des">Rozpoczęcie:</p>
+    <p scope="col" class="des2">{{ $event->date_start->format('d-m-Y')}} godz.{{ $event->date_start->format('H:i') }}</p>
 </div>
 
-            <div class="des-row">
-   
-                    <p scope="col" class="des" >Status wydarzenia:</p>
-                    <p scope="col" class="des2" >{{ $event->status->name }}</p>
-            </div>
-            <div class="des-row">
-                        <p scope="col" class="des">Skrót:</p>
+<div class="des-row55">
+    <p scope="col" class="des">Zakończenie:</p>
+    <p scope="col" class="des2">{{ $event->date_end->format('d-m-Y') }} godz.{{ $event->date_end->format('H:i') }}</p>
+</div>
+
+    
+            <div class="des-row55">
+                        <p scope="col" class="des">Lokalizacja:</p>
                         <p scope="col" class="des2">{{ $event->location_shortcut }}</p>
                     </div>
             
             </div>
         
-                <div class="right-content expandable-content1"style="display:none;">
-            
-                    <div class="des-row">
-                        <p scope="col" class="des5">Sala:</p>
-                        <p scope="col" class="des6">{{ $event->no_room }}</p>
-                    </div>
-            
+                <div class="expandable-content1">
+          
                     <div class="des-row2">
                         <p scope="col" class="des5">Opis wydarzenia głównego:</p>
-                        <p scope="col" class="des22">{{ $event->description }}</p>
-                    </div>
-                    </div>
-             
-                </div>
+                        <p scope="col" class="des22" id="short-description"> 
+                          {{ substr($event->description, 0, 500) }}
+                          <a href="#" class="read-more-link">Czytaj dalej</a>
+            <span class="more-content" style="display: none;">
+           {{ substr($event->description, 500) }}
+                <a href="#" class="hide-content-link" style="display: none;">Schowaj</a>
+                
+            </span></p>
+        </div>
+    
+     
+    </div>
+</div>
 <div class="expandable-content" >
   <table class="table table-bordered">
     <thead>
@@ -114,19 +112,19 @@
             <p scope="col" class="des7">{{ $info->title }}</p>
             <div class="des-row2">
               <p scope="col" class="des3">Data rozpoczęcia:</p>
-              <p scope="col" class="des4">{{ $info->date_start->format('Y-m-d') }} godz. {{$info->date_start->format('H:i') }}</p>
+              <p scope="col" class="des4">{{ $info->date_start->format('d-m-Y') }} godz. {{$info->date_start->format('H:i') }}</p>
             </div>
             <div class="des-row2">
               <p scope="col" class="des3">Data zakończenia:</p>
-              <p scope="col" class="des4">{{ $info->date_end->format('Y-m-d') }} godz. {{$info->date_end->format('H:i') }}</p>
+              <p scope="col" class="des4">{{ $info->date_end->format('d-m-Y') }} godz. {{$info->date_end->format('H:i') }}</p>
             </div>
             <div class="des-row2">
               <p scope="col" class="des3">Data rozpoczęcia zapisów:</p>
-              <p scope="col" class="des4">{{ $info->date_start_rek->format('Y-m-d') }} godz. {{$info->date_start_rek->format('H:i') }}</p>
+              <p scope="col" class="des4">{{ $info->date_start_rek->format('d-m-Y')}} godz. {{$info->date_start_rek->format('H:i') }}</p>
             </div>
             <div class="des-row2">
               <p scope="col" class="des3">Data zakończenia zapisów:</p>
-              <p scope="col" class="des4">{{ $info->date_end_rek->format('Y-m-d') }} godz. {{$info->date_end_rek->format('H:i') }}</p>
+              <p scope="col" class="des4">{{ $info->date_end_rek->format('d-m-Y') }} godz. {{$info->date_end_rek->format('H:i') }}</p>
             </div>
             <div class="des-row2">
               <p scope="col" class="des3">Prowadzący: {{ $info->speaker_first_name }}  {{ $info->speaker_last_name }}</p>
@@ -136,25 +134,48 @@
             </div>
        
             <div class="btn-container">
-            @if (strtotime($info->date_start_rek) < strtotime('now') && strtotime($info->date_end_rek) > strtotime('now'))
-                                <form method="POST" action="/signup">
-                                    @csrf
-                                    <input type="hidden" name="event_id" value="{{ $event->id }}">
-                                    <input type="hidden" name="event_details_id" value="{{ $info->id }}">
-                                    <button type="submit" class="btn sign">Zapisz się</button>
-                                </form>
-                                @else
-                                    <button  class="btn sign" type="button" disabled>Zapisz się</button>
-            @endif
-              <button class="btn show-sub-events" data-info-id="{{ $info->id }}">Pokaż szczegóły</button>
-   
-            </div>
+    @if (strtotime($info->date_start_rek) < strtotime('now') && strtotime($info->date_end_rek) > strtotime('now'))
+        @php
+            $participantId = Auth::id();
+            $eventDetailsId = $info->id;
+            
+            $registration = DB::table('event_participants')
+                ->where('participants_id', $participantId)
+                ->where('event_details_id', $eventDetailsId)
+                ->whereNull('deleted_at')
+                ->whereNull('event_participants.number_of_people')
+                ->get();
+        @endphp
+
+        @if ($registration->isNotEmpty())
+            <button class="btn sign" type="button" disabled>Jesteś już zapisany/a</button>
+        @else
+            <form method="POST" action="/signup">
+                @csrf
+                <input type="hidden" name="event_id" value="{{ $event->id }}">
+                <input type="hidden" name="event_details_id" value="{{ $info->id }}">
+                <button type="submit" class="btn sign">Zapisz się</button>
+            </form>
+        @endif
+    @else
+        <button class="btn sign" type="button" disabled>Zapisz się</button>
+    @endif
+    <button class="btn show-sub-events" data-info-id="{{ $info->id }}">Pokaż szczegóły</button>
+
+</div>
+
+
+
             </div>
             @if(Auth::user() && Auth::user()->role == '2')
               @if (strtotime($info->date_start_rek) < strtotime('now') && strtotime($info->date_end_rek) > strtotime('now'))
+                @if($info->type == 1)
                   <a href="{{ route('zapisz', $info->id) }}" class="hidden btn">Zapis Grupowy</a>
-
+                  @else
+                  <a href="{{ route('zapisznr', $info->id) }}" class="hidden btn">Zapis Grupowy</a>
+                @endif
               @else
+            
               <span class="btn disabled">Zapis Grupowy</span>
               @endif
             @endif
@@ -182,7 +203,6 @@
 
                 <div class="d-flex justify-content-end align-items-center">
                     <button class="btn btn-primary expand-button ">Pokaż wydarzenia</button>
-                    <button class="btn btn-primary details-button" data-event-id="{{ $event->id }}" >Pokaż szczegóły</button>
                 </div>
              
             </div>
@@ -219,6 +239,31 @@
 <script>
 
 
+    document.addEventListener('DOMContentLoaded', function () {
+        const readMoreButton = document.querySelector('.read-more-link');
+        const hideContentButton = document.querySelector('.hide-content-link');
+        const moreContent = document.querySelector('.more-content');
+
+        readMoreButton.addEventListener('click', function (e) {
+            e.preventDefault();
+            moreContent.style.display = 'inline'; // Pokazuje resztę tekstu
+            readMoreButton.style.display = 'none'; // Ukrywa przycisk "Czytaj dalej"
+            hideContentButton.style.display = 'inline'; // Pokazuje przycisk "Schowaj"
+
+            
+        });
+
+        hideContentButton.addEventListener('click', function (e) {
+          e.preventDefault();
+            moreContent.style.display = 'none'; // Ukrywa resztę tekstu
+            readMoreButton.style.display = 'inline'; // Pokazuje przycisk "Czytaj dalej"
+            hideContentButton.style.display = 'none'; // Ukrywa przycisk "Schowaj"
+        });
+    });
+
+
+
+
   document.addEventListener('DOMContentLoaded', function() {
     function toggleDetails(event) {
       event.preventDefault();
@@ -226,25 +271,6 @@
       var eventWrapper = button.closest('.table-wrapper');
       var eventId = eventWrapper.getAttribute('data-event-id');
 
-      if (button.classList.contains('details-button')) {
-        var expandableContent1 = eventWrapper.querySelector('.expandable-content1');
-        if (expandableContent1) {
-          expandableContent1.style.display = expandableContent1.style.display === 'none' ? 'block' : 'none';
-          button.textContent = expandableContent1.style.display === 'none' ? 'Pokaż szczegóły' : 'Ukryj szczegóły';
-
-          var desElements = eventWrapper.querySelectorAll('.des');
-          var des2Elements = eventWrapper.querySelectorAll('.des2');
-          var isDetailsVisible = expandableContent1.style.display !== 'none';
-
-          desElements.forEach(function(element) {
-            element.classList.toggle('des-small', isDetailsVisible);
-          });
-
-          des2Elements.forEach(function(element) {
-            element.classList.toggle('des-small', isDetailsVisible);
-          });
-        }
-      } 
     }
     
 
@@ -277,7 +303,6 @@
   });
 
  
-
 
 
   document.addEventListener('DOMContentLoaded', function() {

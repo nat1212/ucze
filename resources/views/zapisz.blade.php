@@ -14,10 +14,11 @@
               <div class="container2">
     <div class="center-align">
         <label for="number_input">Dostępne miejsca:</label>
-        <span id="available_seats">{{ $seats }}</span>
+        <span id="available_seats">{{ $seats }} </span>
     </div>
     <div class="center-align">
         <div class="input-group">
+        <input type="hidden" name="numeric_only" value="{{ $type }}">
             <input id="number_input" class="form-control" type="number" placeholder="Dodaj osoby" min="1">
             <div class="input-group-append">
                 <button onclick="addInputss()" class="btn-spacing">Dodaj</button>
@@ -33,8 +34,7 @@
 
                         <div class="row mb-3"></div>
 
-<div id="participantInputs"> 
-</div>
+<div id="participantInputs"></div>
                      
                    
                        
@@ -43,7 +43,7 @@
                         <div class="row mb-0 mt-4">
                             <div class="col-md-6 offset-md-5    ">
                                 <button type="submit" class="btn btn-primary">
-                                    {{ __('Stwórz') }}
+                                    {{ __('Dodaj') }}
                                 </button>
                                 <a href="{{ route('event.list') }}" class="btn btn-primary">
                                     {{ __('Wróć') }}

@@ -31,6 +31,22 @@
 }
 
 
+.des
+{
+  margin-top:10px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.des2
+{
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+}
+
+
+
 .footer {
     position: fixed;
     left: 0;

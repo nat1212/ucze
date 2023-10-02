@@ -69,7 +69,7 @@ class HomeController extends Controller
         ->where('event_participants.participants_id', $participantId)
         ->whereNull('event_participants.deleted_at')
         ->whereNotNull('event_participants.number_of_people')
-        ->select('event_details.title', 'event_details.date_start', 'event_details.date_end', 'event_details.description', 'event_participants.id as participant_id','event_details.number_seats','event_details.id','event_participants.created_at')
+        ->select('event_details.title', 'event_details.date_start', 'event_details.date_end', 'event_details.description', 'event_participants.id as participant_id','event_details.number_seats','event_details.id','event_participants.created_at','event_details.type')
         ->orderBy('event_details.date_start', 'asc')
         ->get();
 
@@ -78,11 +78,27 @@ class HomeController extends Controller
         $group->date_end = Carbon::parse($group->date_end);
     }
 
+    $numeric = DB::table('event_participants')
+        ->join('events', 'event_participants.events_id', '=', 'events.id')
+        ->join('event_details', 'event_participants.event_details_id', '=', 'event_details.id')
+        ->where('event_participants.participants_id', $participantId)
+        ->whereNull('event_participants.deleted_at')
+        ->whereNotNull('event_participants.number_of_people')
+        ->select('event_details.title', 'event_details.date_start', 'event_details.date_end', 'event_details.description', 'event_participants.id as participant_id','event_details.number_seats','event_details.id','event_participants.created_at','event_details.type')
+        ->orderBy('event_details.date_start', 'asc')
+        ->get();
+
+    foreach ($numeric as $liste) {
+        $liste->date_start = Carbon::parse($liste->date_start);
+        $liste->date_end = Carbon::parse($liste->date_end);
+    }
+
     $checkSchool = $this->school($participantId);
 
     return view('home', [
         'results' => $results,
         'groups' => $groups,
+        'numeric' => $numeric,
         'participant' => $participant,
         'error' => ($checkSchool == 1) ? null : 'Proszę uzupełnić szkołę!'
     ]);

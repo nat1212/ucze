@@ -11,11 +11,17 @@ use App\Models\Participant;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
 {
+
+   
+
     public function index(Request $request): View
     {
+
+        
         $specificEventId = null;
         $searchMessage = null;
 
@@ -24,8 +30,6 @@ class EventController extends Controller
         }
 
 
-
-       
         $currentDateTime = Carbon::now();
         $events = Event::where('date_start_publi', '<', $currentDateTime)
         ->where('date_end_publi', '>', $currentDateTime)
@@ -58,23 +62,31 @@ class EventController extends Controller
 
     }
     
-    
+ 
     return view('event.list', [
         'events' => $events,
         'specificEventId' => $specificEventId,
         'searchMessage' => $searchMessage,
+        
+    
+
+        
     ]);
     
     }
+
     public function show($id)
     {
         // Pobierz szczegóły wydarzenia na podstawie identyfikatora
         $event = Event::findOrFail($id);
 
+        
         // Przekaż szczegóły wydarzenia do widoku event.list
         return view('event.list', compact('event'));
     }
   
+
+    
     public function search(Request $request)
     {
         $searchTerm = $request->input('search_name');
@@ -102,8 +114,7 @@ class EventController extends Controller
           
             $searchMessage = null;
        
-            
-            // Zaktualizuj daty w znalezionych wydarzeniach
+           
             foreach ($events as $event) {
                 $event->date_start = Carbon::parse($event->date_start);
                 $event->date_end = Carbon::parse($event->date_end);

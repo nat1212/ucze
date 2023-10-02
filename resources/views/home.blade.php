@@ -48,12 +48,12 @@
                             <div class="text">
                                 <p class="des7">{{ $result->title }}</p>
                                 <div class="des-row">
-                                    <p class="des3">Data rozpoczęcia wydarzenia:</p>
-                                    <p class="des4">{{ $result->date_start->format('Y-m-d') }} godz. {{$result->date_start->format('H:i') }}</p> 
+                                    <p class="des3">Rozpoczęcie wydarzenia:</p>
+                                    <p class="des4">{{ $result->date_start->format('d-m-Y') }} godz. {{$result->date_start->format('H:i') }}</p> 
                                 </div>
                                 <div class="des-row">
-                                    <p class="des3">Data zakończenia wydarzenia:</p>
-                                    <p class="des4">{{ $result->date_end->format('Y-m-d') }} godz. {{$result->date_end->format('H:i') }}</p> 
+                                    <p class="des3">Zakończenie wydarzenia:</p>
+                                    <p class="des4">{{ $result->date_end->format ('d-m-Y')}} godz. {{$result->date_end->format('H:i') }}</p> 
                                 </div>
                                 
                                 <div class="btn-container">
@@ -80,18 +80,19 @@
     <div class="grid">
         @if(isset($groups))
             @foreach ($groups as $group)
+            @if($group->type == 1)
                 @if ($group->date_end > now())
                     <div class="event-wrapper" data-end-date="{{ $group->date_end }}"  data-description="{{ $group->description }}">
                         <div class="event"> 
                             <div class="text">
                                 <p class="des7">{{ $group->title }}</p>
                                 <div class="des-row">
-                                    <p class="des3">Data rozpoczęcia wydarzenia:</p>
-                                    <p class="des4">{{ $group->date_start->format('Y-m-d') }} godz. {{$group->date_start->format('H:i') }}</p> 
+                                    <p class="des3">Rozpoczęcie wydarzenia:</p>
+                                    <p class="des4">{{ $group->date_start->format('d-m-Y') }} godz. {{$group->date_start->format('H:i') }}</p> 
                                 </div>
                                 <div class="des-row">
-                                    <p class="des3">Data zakończenia wydarzenia:</p>
-                                    <p class="des4">{{ $group->date_end->format('Y-m-d') }} godz. {{$group->date_end->format('H:i') }}</p> 
+                                    <p class="des3">Zakończenie wydarzenia:</p>
+                                    <p class="des4">{{ $group->date_end->format('d-m-Y') }} godz. {{$group->date_end->format('H:i') }}</p> 
                                 </div>
                                 <div class="btn-container">
                                     @if ($group->date_start > now())
@@ -106,6 +107,39 @@
                         </div>
                     </div>
                 @endif
+             @endif
+            @endforeach
+        @endif
+        @if(isset($numeric))
+            @foreach ($numeric as $liste)
+            @if($liste->type == 2)
+                @if ($liste->date_end > now())
+                    <div class="event-wrapper" data-end-date="{{ $liste->date_end }}"  data-description="{{ $liste->description }}">
+                        <div class="event"> 
+                            <div class="text">
+                                <p class="des7">{{ $liste->title }}</p>
+                                <div class="des-row">
+                                    <p class="des3">Rozpoczęcie wydarzenia:</p>
+                                    <p class="des4">{{ $liste->date_start->format('d-m-Y') }} godz. {{$liste->date_start->format('H:i') }}</p> 
+                                </div>
+                                <div class="des-row">
+                                    <p class="des3">Zakończenie wydarzenia:</p>
+                                    <p class="des4">{{ $liste->date_end->format('d-m-Y') }} godz. {{$liste->date_end->format('H:i') }}</p> 
+                                </div>
+                                <div class="btn-container">
+                                    @if ($liste->date_start > now())
+                                    <a href="{{ route('listnr',$liste->participant_id,) }}" class="btn btn-danger">Lista</a>
+                                    @else
+                                    <a href="{{ route('listnr', $liste->id) }}" class="btn btn-danger disabled">Lista</a>
+                                    @endif
+                                    <button class="btn btn-primary show-sub-event" data-result-id="{{ $liste->id }}">Pokaż szczegóły</button>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                @endif
+             @endif
             @endforeach
         @endif
     </div>
@@ -124,12 +158,12 @@
                             <div class="text">
                                 <p class="des7">{{ $result->title }}</p>
                                 <div class="des-row">
-                                    <p class="des3">Data rozpoczęcia wydarzenia:</p>
-                                    <p class="des4">{{ $result->date_start->format('Y-m-d') }} godz. {{$result->date_start->format('H:i') }}</p> 
+                                    <p class="des3">Rozpoczęcie wydarzenia:</p>
+                                    <p class="des4">{{ $result->date_start->format('d-m-Y') }} godz. {{$result->date_start->format('H:i') }}</p> 
                                 </div>
                                 <div class="des-row">
-                                    <p class="des3">Data zakończenia wydarzenia:</p>
-                                    <p class="des4">{{ $result->date_end->format('Y-m-d') }} godz. {{$result->date_end->format('H:i') }}</p> 
+                                    <p class="des3">Zakończenie wydarzenia:</p>
+                                    <p class="des4">{{ $result->date_end->format('d-m-Y') }} godz. {{$result->date_end->format('H:i') }}</p> 
                                 </div>
                             </div>
                         </div>
@@ -152,12 +186,12 @@
                             <div class="text">
                                 <p class="des7">{{ $group->title }}</p>
                                 <div class="des-row">
-                                    <p class="des3">Data rozpoczęcia wydarzenia:</p>
-                                    <p class="des4">{{ $group->date_start->format('Y-m-d') }} godz. {{$group->date_start->format('H:i') }}</p> 
+                                    <p class="des3">Rozpoczęcie wydarzenia:</p>
+                                    <p class="des4">{{ $group->date_start->format('d-m-Y') }} godz. {{$group->date_start->format('H:i') }}</p> 
                                 </div>
                                 <div class="des-row">
-                                    <p class="des3">Data zakończenia wydarzenia:</p>
-                                    <p class="des4">{{ $group->date_end->format('Y-m-d') }} godz. {{$group->date_end->format('H:i') }}</p> 
+                                    <p class="des3">Zakończenie wydarzenia:</p>
+                                    <p class="des4">{{ $group->date_end->format('d-m-Y') }} godz. {{$group->date_end->format('H:i') }}</p> 
                                 </div>
                             </div>
                         </div>

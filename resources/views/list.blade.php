@@ -37,6 +37,7 @@
 
 
     @foreach($names as $i => $participant)
+    <label class="numeracja-label">{{ $i + 1 }}.</label>
     <div style="margin-bottom:15px;" class="col-md-5">
         <input class="form-control" type="text" name="first{{ $i }}" value="{{ $participant->first_name }}" placeholder="Imię" autocomplete="nazwa1" autofocus>
     </div>
