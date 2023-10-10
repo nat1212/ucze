@@ -386,9 +386,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     function resetDialog() {
     var descriptionElement = document.getElementById('eve_dese');
-    descriptionElement.textContent = ''; // Wyczyść zawartość
+    descriptionElement.textContent = ''; 
 
-    // Przewiń okno dialogowe na samą górę
+
     var dialogContent = document.querySelector('.dialog-content2');
     dialogContent.scrollTop = 0;
 }

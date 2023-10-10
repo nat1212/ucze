@@ -466,27 +466,41 @@ document.getElementById('cancel-button').addEventListener('click', function() {
 
 
 
-
 document.addEventListener('DOMContentLoaded', function() {
     var showDetailsButtons = document.querySelectorAll('.show-sub-event');
+    var dialog = document.getElementById('agreed2');
+    var cancelButton = document.getElementById('cancel2-button');
 
     showDetailsButtons.forEach(function(button) {
         button.addEventListener('click', function() {
-            var dialog = document.getElementById('agreed2');
-            dialog.style.display = 'flex';
-
             var description = this.closest('.event-wrapper').getAttribute('data-description');
             var descriptionElement = document.getElementById('eve_dese');
             descriptionElement.textContent = description;
-  
-            var cancelButton = document.getElementById('cancel2-button');
 
-            cancelButton.addEventListener('click', function() {
-                dialog.style.display = 'none';
-                
-            });
+            dialog.style.display = 'flex';
         });
     });
+
+  
+    dialog.addEventListener('click', function(event) {
+        if (event.target === dialog) {
+            dialog.style.display = 'none';
+            resetDialog();
+        }
+    });
+
+    cancelButton.addEventListener('click', function() {
+        dialog.style.display = 'none';
+        resetDialog();
+    });
+    function resetDialog() {
+    var descriptionElement = document.getElementById('eve_dese');
+    descriptionElement.textContent = ''; 
+
+
+    var dialogContent = document.querySelector('.dialog-content2');
+    dialogContent.scrollTop = 0;
+}
 });
 
 
