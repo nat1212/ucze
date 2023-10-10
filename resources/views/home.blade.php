@@ -22,14 +22,18 @@
                     @endif
 
                     <div id="update-message" class="alert alert-success" style="display: none;"></div>
-                 
+                    @if ($errors->has('status'))
+    <div id="update-message2" class="alert alert-danger">
+        {{ $errors->first('status') }}
+    </div>
+@endif
                     <div id="update-message2" class="alert alert-danger" style="display: none;"></div>
                     @if(isset($error) && !empty($error))
                         <div class="link-frame">
                             <p>{{ $error }} -> <a href="/szkola">Kliknij tutaj</a></p>
                         </div>
                     @endif
-
+     
                     <div id="update-message-container"></div>
 
                   
@@ -96,7 +100,7 @@
                                 </div>
                                 <div class="btn-container">
                                     @if ($group->date_start > now())
-                                    <a href="{{ route('list',$group->participant_id,) }}" class="btn btn-danger">Lista</a>
+                                    <a href="{{ route('list',$group->participant_id,) }}" data-date-start="{{ $group->date_start->format('Y-m-d H:i:s') }}" class="btn btn-danger leave">Lista</a>
                                     @else
                                     <a href="{{ route('list', $group->id) }}" class="btn btn-danger disabled">Lista</a>
                                     @endif
@@ -128,7 +132,7 @@
                                 </div>
                                 <div class="btn-container">
                                     @if ($liste->date_start > now())
-                                    <a href="{{ route('listnr',$liste->participant_id,) }}" class="btn btn-danger">Lista</a>
+                                    <a href="{{ route('listnr',$liste->participant_id,) }}"data-date-start="{{ $liste->date_start->format('Y-m-d H:i:s') }}" class="btn btn-danger leave">Lista</a>
                                     @else
                                     <a href="{{ route('listnr', $liste->id) }}" class="btn btn-danger disabled">Lista</a>
                                     @endif
@@ -180,6 +184,7 @@
     <div class="grid">
         @if(isset($groups))
             @foreach ($groups as $group)
+            @if($group->type == 1)
                 @if ($group->date_end <= now()) 
                     <div class="event-wrapper">
                         <div class="event"> 
@@ -196,6 +201,31 @@
                             </div>
                         </div>
                     </div>
+                @endif
+                @endif
+            @endforeach
+        @endif
+
+        @if(isset($numeric))
+            @foreach ($numeric as $liste)
+            @if($liste->type == 2)
+                @if ($liste->date_end <= now()) 
+                    <div class="event-wrapper">
+                        <div class="event"> 
+                            <div class="text">
+                                <p class="des7">{{ $liste->title }}</p>
+                                <div class="des-row">
+                                    <p class="des3">Rozpoczęcie wydarzenia:</p>
+                                    <p class="des4">{{ $liste->date_start->format('d-m-Y') }} godz. {{$liste->date_start->format('H:i') }}</p> 
+                                </div>
+                                <div class="des-row">
+                                    <p class="des3">Zakończenie wydarzenia:</p>
+                                    <p class="des4">{{ $liste->date_end->format('d-m-Y') }} godz. {{$liste->date_end->format('H:i') }}</p> 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
                 @endif
             @endforeach
         @endif
@@ -301,7 +331,7 @@
     </div>
 </div>
 
-<div id="agreed2" class="dialog2" >
+<div id="agreed2" class="dialog2" style="display: none;">
     <div class="dialog-content2">
         <p id="dese">Opis wydarzenia:</p>
         <p id="eve_dese"></p>
@@ -315,7 +345,8 @@
 
 
     <script>
-        
+
+
 
 
  const expandToggles = document.querySelectorAll('.expand, .expand-toggle');
@@ -447,15 +478,18 @@ document.addEventListener('DOMContentLoaded', function() {
             var description = this.closest('.event-wrapper').getAttribute('data-description');
             var descriptionElement = document.getElementById('eve_dese');
             descriptionElement.textContent = description;
-
+  
             var cancelButton = document.getElementById('cancel2-button');
 
             cancelButton.addEventListener('click', function() {
                 dialog.style.display = 'none';
+                
             });
         });
     });
 });
+
+
 
 var leaveButtons = document.querySelectorAll('.leave-event-btn');
 
@@ -592,6 +626,35 @@ setInterval(sprawdzDatyWydarzen, 1000);
 document.addEventListener('DOMContentLoaded', sprawdzDatyWydarzen);
 
 
+function disableLeaveButtonsBasedOnTime() {
+  const leaveButtons = document.querySelectorAll('.leave');
+
+  leaveButtons.forEach(button => {
+    const startDate = new Date(button.dataset.dateStart);
+    const currentTime = new Date();
+
+    const timeDifference = startDate - currentTime;
+
+    if (timeDifference <= 0) {
+      button.classList.add('disabled');
+      button.removeEventListener('click', confirmWypisz);
+    } else {
+      button.classList.remove('disabled');
+      button.addEventListener('click', confirmWypisz);
+
+      setTimeout(() => {
+        button.classList.add('disabled');
+        button.removeEventListener('click', confirmWypisz);
+      }, timeDifference);
+    }
+  });
+}
+
+// Call the function on DOMContentLoaded and set an interval to continuously check
+document.addEventListener('DOMContentLoaded', disableLeaveButtonsBasedOnTime);
+setInterval(disableLeaveButtonsBasedOnTime, 1000);
+
+
     $(document).ready(function() {
  
         var statusDuration = {{ session('status_duration', 3000) }};
@@ -602,7 +665,12 @@ document.addEventListener('DOMContentLoaded', sprawdzDatyWydarzen);
         }, statusDuration);
     });
 
-
+    setTimeout(function() {
+            var updateMessage2 = document.getElementById('update-message2');
+            if (updateMessage2) {
+                updateMessage2.style.display = 'none';
+            }
+        }, 2000); 
  
 
 </script>

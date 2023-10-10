@@ -49,6 +49,8 @@ Route::get('/listnr/{id}',[eventParticipantController::class,'listnr'])->name('l
 
 
 Route::post('/edit',[eventParticipantController::class,'edit']);
+Route::post('/edit2',[eventParticipantController::class,'edit2']);
+Route::post('/edit3',[eventParticipantController::class,'edit3']);
 
 
 Route::delete('list/{id}', [eventParticipantController::class, 'destroy']);

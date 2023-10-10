@@ -37,17 +37,22 @@
 
 
     @foreach($names as $i => $participant)
-    <label class="numeracja-label">{{ $i + 1 }}.</label>
-    <div style="margin-bottom:15px;" class="col-md-5">
-        <input class="form-control" type="text" name="first{{ $i }}" value="{{ $participant->first_name }}" placeholder="Imię" autocomplete="nazwa1" autofocus>
-    </div>
-    <div class="col-md-5">
-        <input class="form-control" type="text" name="last{{ $i }}" value="{{ $participant->last_name }}" placeholder="Nazwisko" autocomplete="nazwa2" autofocus>
-    </div>
-    <div class="col-md-1" >
-        <button data-id="{{ $participant->id }}" class="btn btn-danger des">Usuń</button>
+    <div class="row mb-3">
+        <div class="col-md-1">
+            <label class="numeracja-label">{{ $i + 1 }}.</label>
+        </div>
+        <div class="col-md-4"> 
+            <input class="form-control" type="text" name="first{{ $i }}" value="{{ $participant->first_name }}" placeholder="Imię" autocomplete="nazwa1" autofocus>
+        </div>
+        <div class="col-md-4">
+            <input class="form-control" type="text" name="last{{ $i }}" value="{{ $participant->last_name }}" placeholder="Nazwisko" autocomplete="nazwa2" autofocus>
+        </div>
+        <div class="col-md-1">
+            <button data-id="{{ $participant->id }}" class="btn btn-danger des">Usuń</button>
+        </div>
     </div>
 @endforeach
+
     </div>
 </div>
                        
@@ -86,6 +91,7 @@
         const firstNameInputs = document.querySelectorAll("input[name^='first_name']");
         const lastNameInputs = document.querySelectorAll("input[name^='last_name']");
         
+        
         firstNameInputs.forEach(function(input, index) {
             input.addEventListener("input", function() {
                 countParticipants();
@@ -108,7 +114,7 @@
     });
 </script>
 <script>
-  let counter = 0; 
+  let counter = {{ count($names) }};
 
 function addInputss() {
     const numberInput = document.getElementById("number_input");
@@ -235,8 +241,8 @@ function addInputss() {
                 },
                 success: function(data) {
                     if (data.success) {
-            
-                        window.location.href = "{{ route('home') }}";
+                        alert("Udało się usunąć listę!");
+                        window.location.replace("{{ route('home') }}");
                     } else {
                
                         alert("Wystąpił błąd: " + data.message);

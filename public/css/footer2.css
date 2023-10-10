@@ -1,12 +1,15 @@
 
 .numeracja-label {
-    text-align: left; /* Możesz zostawić text-align jako left */
+    text-align: left; 
     font-weight: bold;
-    margin-top: 5px; /* Dodaj odstęp od góry */
-    margin-right: -35px; /* Dodaj odstęp od prawej strony numeracji */
+    margin-top: 5px; 
+   
   }
   
-  
+  .col-md-1
+  {
+    margin-right: -25px; 
+  }
   
   .row.mb-3 {
     display: flex;
@@ -31,7 +34,7 @@
   }
   
   #form-control {
-    width: 600px; /* Dostosuj szerokość według potrzeb */
+    width: 600px; 
   }
   
   

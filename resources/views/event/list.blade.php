@@ -76,22 +76,25 @@
             
             </div>
         
-                <div class="expandable-content1">
-          
-                    <div class="des-row2">
-                        <p scope="col" class="des5">Opis wydarzenia głównego:</p>
-                        <p scope="col" class="des22" id="short-description"> 
-                          {{ substr($event->description, 0, 500) }}
-                          <a href="#" class="read-more-link">Czytaj dalej</a>
-            <span class="more-content" style="display: none;">
-           {{ substr($event->description, 500) }}
-                <a href="#" class="hide-content-link" style="display: none;">Schowaj</a>
-                
-            </span></p>
-        </div>
-    
-     
+            <div class="expandable-content1">
+    <div class="des-row2">
+        <p scope="col" class="des5">Opis wydarzenia głównego:</p>
+        <p scope="col" class="des22" id="short-description">
+            @if (strlen($event->description) > 1200)
+                {{ substr($event->description, 0, 1200) }}
+                <a href="#" class="read-more-link">Czytaj dalej</a>
+                <span class="more-content" style="display: none;">
+                    {{ substr($event->description, 1200) }}
+                    <a href="#" class="hide-content-link" style="display: none;">Schowaj</a>
+                </span>
+            @else
+                {{ $event->description }}
+            @endif
+        </p>
     </div>
+</div>
+
+
 </div>
 <div class="expandable-content" >
   <table class="table table-bordered">
@@ -211,13 +214,14 @@
 </div>
 
 <div id="agreed22" class="dialog" style="display: none;">
+<div class="dialog-background">
     <div class="dialog-content">
         <p id="dese">Opis wydarzenia:</p>
         <p id="eve_dese"></p>
         <button id="cancel-button">Wróć</button>
     </div>
 </div>
-
+</div>
 
 
 @endif
@@ -230,8 +234,9 @@
 
     @endforeach
  
-
+    <div class="container content-container">
     {{ $events->links() }}
+    </div>
 </div>
 
 
@@ -239,27 +244,27 @@
 <script>
 
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const readMoreButton = document.querySelector('.read-more-link');
-        const hideContentButton = document.querySelector('.hide-content-link');
-        const moreContent = document.querySelector('.more-content');
+document.addEventListener('DOMContentLoaded', function () {
+    const readMoreButtons = document.querySelectorAll('.read-more-link');
+    const hideContentButtons = document.querySelectorAll('.hide-content-link');
+    const moreContents = document.querySelectorAll('.more-content');
 
+    readMoreButtons.forEach(function (readMoreButton, index) {
         readMoreButton.addEventListener('click', function (e) {
             e.preventDefault();
-            moreContent.style.display = 'inline'; // Pokazuje resztę tekstu
-            readMoreButton.style.display = 'none'; // Ukrywa przycisk "Czytaj dalej"
-            hideContentButton.style.display = 'inline'; // Pokazuje przycisk "Schowaj"
-
-            
+            moreContents[index].style.display = 'inline'; 
+            readMoreButton.style.display = 'none'; 
+            hideContentButtons[index].style.display = 'inline'; 
         });
 
-        hideContentButton.addEventListener('click', function (e) {
-          e.preventDefault();
-            moreContent.style.display = 'none'; // Ukrywa resztę tekstu
-            readMoreButton.style.display = 'inline'; // Pokazuje przycisk "Czytaj dalej"
-            hideContentButton.style.display = 'none'; // Ukrywa przycisk "Schowaj"
+        hideContentButtons[index].addEventListener('click', function (e) {
+            e.preventDefault();
+            moreContents[index].style.display = 'none'; 
+            readMoreButton.style.display = 'inline'; 
+            hideContentButtons[index].style.display = 'none'; 
         });
     });
+});
 
 
 
@@ -341,27 +346,54 @@
 
 
 
-
 document.addEventListener('DOMContentLoaded', function() {
-      
-        var showDetailsButtons = document.querySelectorAll('.show-sub-events');
 
-        showDetailsButtons.forEach(function(button) {
-            button.addEventListener('click', function() {
-                var dialog = document.getElementById('agreed22');
-                dialog.style.display = 'flex'; 
-                var description = this.closest('.event-wrapper').getAttribute('data-description');
-            var descriptionElement = document.getElementById('eve_dese');
-            descriptionElement.textContent = description;
-                var cancelButton = document.getElementById('cancel-button');
+    function showDescription(description) {
+        var dialog = document.getElementById('agreed22');
+        var dialogContent = dialog.querySelector('.dialog-content');
+        var descriptionElement = document.getElementById('eve_dese');
+        descriptionElement.textContent = description;
+        dialog.style.display = 'flex';
 
-                cancelButton.addEventListener('click', function() {
-             
-                    dialog.style.display = 'none'; 
-                });
-            });
+        var cancelButton = document.getElementById('cancel-button');
+
+        cancelButton.addEventListener('click', function() {
+            dialog.style.display = 'none';
+            resetDialog();
+        });
+    }
+
+ 
+    var showDetailsButtons = document.querySelectorAll('.show-sub-events');
+
+    showDetailsButtons.forEach(function(button) {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            var description = this.closest('.event-wrapper').getAttribute('data-description');
+            showDescription(description);
+            
         });
     });
+
+    var dialog = document.getElementById('agreed22');
+    var dialogBackground = dialog.querySelector('.dialog-background');
+
+    dialogBackground.addEventListener('click', function(event) {
+        if (event.target === dialogBackground) {
+            dialog.style.display = 'none';
+            resetDialog();
+        }
+    });
+    function resetDialog() {
+    var descriptionElement = document.getElementById('eve_dese');
+    descriptionElement.textContent = ''; // Wyczyść zawartość
+
+    // Przewiń okno dialogowe na samą górę
+    var dialogContent = document.querySelector('.dialog-content2');
+    dialogContent.scrollTop = 0;
+}
+
+});
 
 
 

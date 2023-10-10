@@ -89,7 +89,7 @@ class eventParticipantController extends Controller
     public function listnr($list){
 
     $id = DB::table('event_participants')
-    ->select('event_details_id')
+    ->select('event_details_id','number_of_people')
     ->where('id', $list)
     ->first();
     
@@ -97,37 +97,44 @@ class eventParticipantController extends Controller
     $eventDetailsId = $id->event_details_id;
     $Numberseats = EventDetails::find($eventDetailsId)->number_seats;
     $title = EventDetails::find($eventDetailsId)->title;
+    $numberOfPeople = $id->number_of_people;
+
     return view('listnr',[
         'event_details_id'=>$eventDetailsId,
         'seats'=>$Numberseats,
         'event_id'=>$list,
         'event_details_title'=>$title,
+        'number_of_people' => $numberOfPeople,
        ]);
     }
 
-    public function freeSeets($id,$registrationCount){
-       
+    public function freeSeets($id, $NumberParticipants){
         $eventDetailsId = $id;
-
+    
         $eventDetails = EventDetails::find($id);
-
-        $registrationCount = DB::table('event_participants')
-        ->where('event_details_id', $eventDetailsId)
-        ->whereNull('deleted_at')
-        ->count();
-
-        $availableSeats = $eventDetails->number_seats - $registrationCount;
-
-        if($availableSeats <= 0)
-        {
+    
+        $availableSeats = $eventDetails->number_seats - $NumberParticipants;
+    
+        if ($availableSeats < 0) {
             return 0;
-
-        }
-        else{
+        } else {
             return 1;
         }
     }
-
+    
+    public function freeSeets3($id, $NumberParticipants,$idd){
+        $eventDetailsId = $id;
+    
+        $eventParti = eventParticipant::find($idd);
+    
+        $availableSeats = $eventParti->number_of_people - $NumberParticipants;
+    
+        if ($availableSeats < 0) {
+            return 0;
+        } else {
+            return 1;
+        }
+    }
 
     public function freeSeets2($id){
        
@@ -137,6 +144,7 @@ class eventParticipantController extends Controller
 
         $registrationCount = DB::table('event_participants')
         ->where('event_details_id', $eventDetailsId)
+        ->whereNull('event_participants.number_of_people')
         ->whereNull('deleted_at')
         ->count();
 
@@ -339,13 +347,13 @@ class eventParticipantController extends Controller
             $eventDetails->number_seats -= $NumberParticipants;
             $eventDetails->save();
             
-            $statusMessage = 'Udało Ci się zapisać grupę wydarzenie!';
+            $statusMessage = 'Udało Ci się zapisać grupę na wydarzenie!';
             return redirect()->route('home')->with('status', $statusMessage);
 
         }
         else{
                  $error = 'Nie ma już wolnych miejsc.';
-                return redirect()->route('home')->withErrors(['message' => $error]);
+                return redirect()->route('event.list')->withErrors(['message' => $error]);
         }
       
     }
@@ -439,6 +447,93 @@ foreach ($eventParticipants as $key => $eventParticipant) {
         
 
     }
+
+    public function edit2(Request $request)
+{
+    $request->validate([
+        'number_of_peoplee' => 'required|integer|min:1',
+    ], [
+        'number_of_peoplee.required' => 'Proszę wprowadzić liczbę.',
+    ]);
+
+    $event_participant_id = $request->input('id');
+
+    $event_details_id = $request->input('event_details_id');
+  
+
+
+    $NumberParticipants = $request->input('number_of_peoplee');
+
+ 
+    $result=$this->freeSeets($event_details_id,$NumberParticipants);
+    if($result==1){
+  
+        $eventDetails = EventDetails::find($event_details_id);
+        $eventDetails->number_seats -= $NumberParticipants;
+        $eventDetails->save();
+
+        $events = eventParticipant::find($event_participant_id);
+        $events->number_of_people += $NumberParticipants;
+        $events->updated_at = now();
+        $events->save();
+
+     
+
+        $statusMessage = 'Dodano osoby do grupy!';
+        return redirect()->route('home')->with([
+            'status' => $statusMessage,
+            'status_duration' => 2000,
+        ]);
+    }
+    else{
+        $error = 'Nie ma już wolnych miejsc.';
+       return redirect()->route('home')->withErrors(['status' => $error]);
+}
+}
+
+
+public function edit3(Request $request)
+{
+    $request->validate([
+        'delete_people' => 'required|integer|min:1',
+    ], [
+        'delete_people.required' => 'Proszę wprowadzić liczbę.',
+    ]);
+
+    $event_participant_id = $request->input('id');
+
+    $event_details_id = $request->input('event_details_id');
+  
+
+
+    $NumberParticipants = $request->input('delete_people');
+
+ 
+    $result=$this->freeSeets3($event_details_id,$NumberParticipants,$event_participant_id);
+    if($result==1){
+        $eventDetails = EventDetails::find($event_details_id);
+        $eventDetails->number_seats += $NumberParticipants;
+        $eventDetails->save();
+
+        $events = eventParticipant::find($event_participant_id);
+        $events->number_of_people -= $NumberParticipants;
+        $events->updated_at = now();
+        $events->save();
+
+     
+
+        $statusMessage = 'Usunieto osoby z grupy!';
+        return redirect()->route('home')->with([
+            'status' => $statusMessage,
+            'status_duration' => 2000,
+        ]);
+    }
+    else{
+        $error = 'Nie możesz odjąć wiecej osób niż masz zapisanych.';
+       return redirect()->route('home')->withErrors(['status' => $error]);
+}
+    
+}
     public function destroy($id){
         $currentDateTime = Carbon::now();
         eventParticipantList::where('id', $id)->update(['deleted_at' => $currentDateTime]);
@@ -465,7 +560,9 @@ foreach ($eventParticipants as $key => $eventParticipant) {
             $eventDetails->number_seats += $updatedCount;
             $eventDetails->save();
     
-            return redirect()->route('home')->with('status', 'Udało się usunąć listę!');
+            
+          return response()->json(['success' => true, 'message' => 'Udało się usunąć listę!']);
+
         } catch (\Exception) {
 
             return response()->json(['success' => false, 'message' => 'Wystąpił błąd podczas usuwania listy']);
@@ -488,7 +585,8 @@ foreach ($eventParticipants as $key => $eventParticipant) {
             $eventDetails->number_seats += $number_of_people;
             $eventDetails->save();
     
-            return redirect()->route('home')->with('status', 'Udało się usunąć listę!');
+          return response()->json(['success' => true, 'message' => 'Udało się usunąć listę!']);
+
         } catch (\Exception) {
 
             return response()->json(['success' => false, 'message' => 'Wystąpił błąd podczas usuwania listy']);
