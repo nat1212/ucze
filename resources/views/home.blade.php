@@ -2,11 +2,43 @@
 
 @section('styles')
 <link rel="stylesheet" href="{{asset('css/list2.css')}}">
+<link rel="stylesheet" href="{{asset('css/table.css')}}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
 @endsection
 
 @section('content')
 
 <div class="container">
+<div class="side-bar">
+        <div onclick="rat(1)" class="side-bar-info">
+            Profil
+        </div>
+        <div  onclick="toggleExpand()" class="side-bar-underinfo" data-id="1">
+            Edycja profilu
+        </div>
+        <div onclick="rat(2)"class="side-bar-info">
+            Lista wydarzeń
+        </div>
+        <div onclick="rating(1)" class="side-bar-underinfo" data-id="2">
+            Zapis indywidualny
+        </div>
+        <div onclick="rating(2)" class="side-bar-underinfo"data-id="2">
+            Zapis grupowy
+        </div>
+        <div onclick="rat(3)" class="side-bar-info">
+           Wygasłe wydarzenia
+        </div>
+        <div onclick="rating(3)" class="side-bar-underinfo"data-id="3">
+            Zapis indywidualny
+        </div>
+        <div onclick="rating(4)" class="side-bar-underinfo" data-id="3">
+            Zapis grupowy
+        </div>
+        <div  onclick="redirectToEventList(event)" class="side-bar-info">
+            Wszyskie wydarzenia
+        </div>
+    </div>
         <div class="col-md-12"> 
             <div class="card card-left">
             <div class="card-header">
@@ -15,6 +47,208 @@
             </div>
                 
                 <div class="card-body">
+
+ <div class="table-info" data-id="1">
+                
+                <table id="example"  class="table table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>Nazwa wydarzenia</th>
+                <th>Tytuł wydarzenia</th>
+                <th>Prowadzący</th>
+                <th>Data wydarzenia</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+           
+            @foreach ($results as $result)
+            @if ($result->date_end > now())
+            <tr>
+            <td>{{  $result->name}}</td>
+            <td>{{  $result->title}}</td>
+            <td>{{  $result->speaker_first_name}} {{  $result->speaker_last_name}}</td>
+            <td> {{  $result->date_start->format('d-m-Y')}} godz. {{$result->date_start->format('H:i') }}<br>{{  $result->date_end->format('d-m-Y')}} godz. {{$result->date_end->format('H:i') }}</td>
+            <td> 
+            @if ($result->date_start > now())
+            <a href="/leave/{{ $result->id }}" class="btn btn-primary leave-button leave-event-btn" data-date-start="{{ $result->date_start->format('Y-m-d H:i:s') }}" >Wypisz się</a>
+            @else
+                <a href="javascript:void(0)"  class="btn btn-primary disabled">Wypisz się</a>
+            @endif
+            <button class="btn btn-primary show-sub-event" data-result-id="{{ $result->id }}">Pokaż szczegóły</button>
+            </td>
+             </tr>
+
+            @endif
+            @endforeach
+            
+           
+            </tbody>
+        <tfoot>
+        <tr>
+        <th>Nazwa wydarzenia</th>
+                <th>Tytuł wydarzenia</th>
+                <th>Prowadzący</th>
+                <th>Data wydarzenia</th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+<div class="table-info" data-id="2">
+                
+        <table id="example1"  class="table table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>Nazwa wydarzenia</th>
+                <th>Liczba osób</th>
+                <th>Typ listy</th>
+                <th>Data wydarzenia</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+       
+     
+            @foreach ($groups as $group)
+            @if ($group->date_end > now())
+          
+            <tr>
+            <td>{{  $group->title}}</td>
+            <td>{{  $group->number_of_people}}</td>
+            <td>{{  $group->type}}</td>
+            <td> {{  $group->date_start->format('d-m-Y')}} godz. {{$group->date_start->format('H:i') }}<br>{{  $group->date_end->format('d-m-Y')}} godz. {{$group->date_end->format('H:i') }}</td>
+            <td>@if ($group->date_start > now())
+                                    <a href="{{ route('list',$group->participant_id,) }}" class="btn btn-danger">Lista</a>
+                                    @else
+                                    <a href="{{ route('list', $group->id) }}" class="btn btn-danger disabled">Lista</a>
+                                    @endif
+                                    <button class="btn btn-primary show-sub-event" data-result-id="{{ $group->id }}">Pokaż szczegóły</button> </td>
+             </tr>
+          
+            
+            @endif
+            @endforeach
+            
+            
+           
+            </tbody>
+        <tfoot>
+        <tr>
+        <th>Nazwa wydarzenia</th>
+                <th>Liczba osób</th>
+                <th>Typ listy</th>
+                <th>Data wydarzenia</th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+<div class="table-info" data-id="3">
+                
+                <table id="example"  class="table table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>Nazwa wydarzenia</th>
+                <th>Tytuł wydarzenia</th>
+                <th>Prowadzący</th>
+                <th>Data wydarzenia</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+           
+            @foreach ($results as $result)
+            @if ($result->date_end <= now())
+            <tr>
+            <td>{{  $result->name}}</td>
+            <td>{{  $result->title}}</td>
+            <td>{{  $result->speaker_first_name}} {{  $result->speaker_last_name}}</td>
+            <td> {{  $result->date_start->format('d-m-Y')}} godz. {{$result->date_start->format('H:i') }}<br>{{  $result->date_end->format('d-m-Y')}} godz. {{$result->date_end->format('H:i') }}</td>
+            <td> </td>
+          
+             </tr>
+
+            @endif
+            @endforeach
+            
+           
+            </tbody>
+        <tfoot>
+        <tr>
+        <th>Nazwa wydarzenia</th>
+                <th>Tytuł wydarzenia</th>
+                <th>Prowadzący</th>
+                <th>Data wydarzenia</th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+<div class="table-info" data-id="4">
+                
+        <table id="example1"  class="table table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>Nazwa wydarzenia</th>
+                <th>Liczba osób</th>
+                <th>Typ listy</th>
+                <th>Data wydarzenia</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+       
+     
+            @foreach ($groups as $group)
+            @if ($group->date_end <= now())
+          
+            <tr>
+            <td>{{  $group->title}}</td>
+            <td>{{  $group->number_of_people}}</td>
+            <td>{{  $group->type}}</td>
+            <td> {{  $group->date_start->format('d-m-Y')}} godz. {{$group->date_start->format('H:i') }}<br>{{  $group->date_end->format('d-m-Y')}} godz. {{$group->date_end->format('H:i') }}</td>
+            <td>
+                        </td>
+             </tr>
+          
+            
+            @endif
+            @endforeach
+            
+            
+           
+            </tbody>
+        <tfoot>
+        <tr>
+        <th>Nazwa wydarzenia</th>
+                <th>Liczba osób</th>
+                <th>Typ listy</th>
+                <th>Data wydarzenia</th>
+                <th></th>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     @if (session('status'))
                         <div id="status-message" class="alert alert-success" role="alert">
                             {{ session('status') }}
@@ -342,8 +576,51 @@
 
 </div>
 
+<script defer src="https://code.jquery.com/jquery-3.7.0.js"></script>
+<script defer src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script defer src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script defer >$(document).ready(function () {
+    var table = $('#example').DataTable();
+    
+});
+$(document).ready(function () {
+    var table = $('#example1').DataTable();
+    
+});
+</script>
+<script>
+function rat(x) {
+ 
+    const dataId = `[data-id="${x}"]`;
+    const side_bar = document.querySelectorAll(`.side-bar-underinfo${dataId}`);
 
+    side_bar.forEach(div => {
+    if (div.classList.contains("selected")) {
+        div.classList.remove("selected");
+    } else {
+        div.classList.add("selected");
+    }
+    });
+  
+}
 
+</script>
+<script>
+function rating(x) {
+    number = x;
+    console.log(number);
+    const dataId = `[data-id="${x}"]`;
+    const buttons = document.querySelectorAll(".table-info");
+    buttons.forEach(div => div.classList.remove("selected"));
+  
+   // const selectedButton = document.querySelector(`.side-bar-info${dataId}`);
+    const underinfoElements = document.querySelectorAll(`.table-info${dataId}`);
+    
+   // selectedButton.classList.add("selected");
+    underinfoElements.forEach(div => div.classList.add("selected"));
+}
+
+</script>
     <script>
 
 
