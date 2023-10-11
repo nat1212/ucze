@@ -54,7 +54,7 @@ class HomeController extends Controller
         ->where('event_participants.participants_id', $participantId)
         ->whereNull('event_participants.deleted_at')
         ->whereNull('event_participants.number_of_people')
-        ->select('event_details.title', 'event_details.date_start', 'event_details.date_end', 'event_details.speaker_first_name','event_details.speaker_last_name', 'event_details.description', 'event_participants.id','events.name','event_details.id')
+        ->select('event_details.title', 'event_details.date_start', 'event_details.date_end', 'event_details.description', 'event_participants.id','event_details.id')
         ->orderBy('event_details.date_start', 'asc')
         ->get();
 
@@ -72,6 +72,7 @@ class HomeController extends Controller
     ->select('event_details.title', 'event_details.date_start', 'event_details.date_end', 'event_details.speaker_first_name','event_details.speaker_last_name','event_details.description', 'event_participants.id as participant_id','event_participants.number_of_people','event_details.id','event_participants.created_at','event_details.type')
     ->orderBy('event_details.date_start', 'asc')
     ->get();
+
 
     foreach ($groups as $group) {
         $group->date_start = Carbon::parse($group->date_start);
