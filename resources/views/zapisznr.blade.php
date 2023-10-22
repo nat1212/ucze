@@ -70,6 +70,18 @@
 
 <script>
 
+
+document.addEventListener("DOMContentLoaded", function() {
+        const numberInput = document.getElementById("number_input");
+        const addButton = document.getElementById("addButton");
+
+        numberInput.addEventListener("keydown", function(event) {
+            if (event.key === "Enter" && !addButton.disabled) {
+                event.preventDefault(); // Zapobiegaj domyślnemu zachowaniu Enter
+                addButton.click(); // Wywołaj zdarzenie kliknięcia przycisku "Dodaj"
+            }
+        });
+
 function validateNumber() {
     var numberOfPeople = parseInt(document.getElementById('number_input').value);
     var availableSeats = parseInt(document.getElementById('available_seats').textContent);
@@ -86,6 +98,10 @@ function validateNumber() {
         addButton.disabled = false;
     }
 }
+
+
+numberInput.addEventListener("input", validateNumber);
+    });
 function hideErrors() {
     var alertElement = document.querySelector('.alert');
     if (alertElement) {

@@ -58,7 +58,10 @@
 
                             <div class="col-md-6">
                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
-
+                                <div class="form-check mt-2">
+                                    <input type="checkbox" class="form-check-input" id="showOldPassword">
+                                    <label class="form-check-label" for="showOldPassword">Pokaż hasło</label>
+                                </div>
                                 @error('password')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -72,7 +75,12 @@
 
                             <div class="col-md-6">
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
+                                <div class="form-check mt-2">
+                                        <input type="checkbox" class="form-check-input" id="showNewPassword">
+                                        <label class="form-check-label" for="showNewPassword">Pokaż hasło</label>
+                                    </div>
                             </div>
+                            
                         </div>
                         <div class="row mb-3">
                             <label for="sex" class="col-md-4 col-form-label text-md-end">{{ __('Płeć') }}</label>
@@ -113,4 +121,33 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const showOldPasswordCheckbox = document.getElementById("showOldPassword");
+        const oldPasswordInput = document.getElementById("password");
+
+        showOldPasswordCheckbox.addEventListener("change", function () {
+            if (this.checked) {
+                oldPasswordInput.type = "text";
+            } else {
+                oldPasswordInput.type = "password";
+            }
+        });
+    });
+
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const showNewPasswordCheckbox = document.getElementById("showNewPassword");
+        const newPasswordInput = document.getElementById("password-confirm");
+
+        showNewPasswordCheckbox.addEventListener("change", function () {
+            if (showNewPasswordCheckbox.checked) {
+                newPasswordInput.type = "text";
+            } else {
+                newPasswordInput.type = "password";
+            }
+        });
+    });
+    </script>
 @endsection

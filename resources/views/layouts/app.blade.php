@@ -52,7 +52,7 @@
                         @else
                         <li class="nav-item">
                         @if(Auth::check())
-                <div class="nav-link">{{ __('Witaj,') }} {{ Auth::user()->first_name }}</div>
+                <div style="font-size:16px;" class="nav-link">{{ __('Witaj,') }} {{ Auth::user()->first_name }}</div>
                         @endif
 
                         </li>
@@ -62,14 +62,36 @@
                                 </a>
                                
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a class="dropdown-item" href="{{ route('home') }}">
+                                <a style="font-size:18px;" class="dropdown-item" href="{{ route('home') }}">
                                     {{ __('Profil') }}
                                 </a>
-                                <a class="dropdown-item" href="{{ route('event.list') }}">
+                                <a style="font-size:18px;"class="dropdown-item" href="{{ route('event.list') }}">
                                     {{ __('Wydarzenia') }}
                                 </a>
+                                @if(Request::is('home*'))
+                                    <div class="H2p">
+                                    <a  onclick="toggleExpand()" class="dropdown-item"  href="#">
+                                    {{ ('Edycja profilu') }}
+                                    </a>
+                                    <a onclick="rating(1)" class="dropdown-item"  href="#">
+                                    {{ ('Wydarzenia indywidulane') }}
+                                    </a>
+                                    <a onclick="rating(2)" class="dropdown-item"  href="#">
+                                    {{ (' Zapis grupowy') }}
+                                    </a>
+                                    <a onclick="rating(3)" class="dropdown-item"  href="#">
+                                    {{ ('Zapis indywidualny-wygasłe') }}
+                                    </a>
+                                    <a onclick="rating(4)" class="dropdown-item"  href="#">
+                                    {{ ('Zapis grupowy-wygasłe') }}
+                                    </a>
+                                    <a  onclick="redirectToEventList(event)" class="dropdown-item"  href="#">
+                                    {{ ('Wszyskie wydarzenia') }}
+                                    </a>
+                                    </div>
 
-                                    <a class="dropdown-item" href="{{ route('logout') }}"
+                                    @endif
+                                    <a style="font-size:18px;" class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                         {{ __('Wyloguj') }}

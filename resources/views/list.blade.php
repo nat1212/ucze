@@ -13,21 +13,27 @@
 <div class="card-body">
 <div class="container2">
 <div class="center-align">
+@if (strtotime($date) > strtotime('now'))
 <label for="number_input">Dostępne miejsca:</label>
 <span id="available_seats">{{ $seats }}</span>
 </div>
 <div class="center-align">
+
 <div class="input-group">
 <input id="number_input" class="form-control" type="number" placeholder="Dodaj nowe osoby" min="1">
 <div class="input-group-append">
 <button onclick="addInputss()" class="btn-spacing">Dodaj</button>
 </div>
-</div>
 
 </div>
+@endif
+</div>
+
 <div id="update-message2" class="alert" style="display: none;"></div>
 </div>
-                    <form method="POST" action="/edit">
+
+        <form id="myForm" method="POST" action="/edit">
+
                         @csrf
 
                         <div class="row mb-3">
@@ -41,15 +47,27 @@
         <div class="col-md-1">
             <label class="numeracja-label">{{ $i + 1 }}.</label>
         </div>
+        @if (strtotime($date) > strtotime('now'))
         <div class="col-md-4"> 
             <input class="form-control" type="text" name="first{{ $i }}" value="{{ $participant->first_name }}" placeholder="Imię" autocomplete="nazwa1" autofocus>
         </div>
         <div class="col-md-4">
             <input class="form-control" type="text" name="last{{ $i }}" value="{{ $participant->last_name }}" placeholder="Nazwisko" autocomplete="nazwa2" autofocus>
         </div>
+        @else
+        <div class="col-md-4">
+    <input class="form-control" type="text" name="first{{ $i }}" value="{{ $participant->first_name }}" placeholder="Imię" autocomplete="nazwa1" autofocus readonly>
+</div>
+<div class="col-md-4">
+    <input class="form-control" type="text" name="last{{ $i }}" value="{{ $participant->last_name }}" placeholder="Nazwisko" autocomplete="nazwa2" autofocus readonly>
+</div>
+
+        @endif
+        @if (strtotime($date) > strtotime('now'))
         <div class="col-md-1">
             <button data-id="{{ $participant->id }}" class="btn btn-danger des">Usuń</button>
         </div>
+        @endif
     </div>
 @endforeach
 
@@ -62,13 +80,17 @@
 
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-5    ">
-                                <button type="submit" class="btn btn-primary">
+                            @if (strtotime($date) > strtotime('now'))
+                                <button type="submit" class="btn btn-primary"  >
                                     {{ __('Edytuj') }}
                                 </button>
-                                <a href="{{ route('event.list') }}" class="btn btn-primary">
+                                @endif
+                                <a href="{{ route('home') }}" class="btn btn-primary">
                                     {{ __('Wróć') }}
                                 </a>
+                                @if (strtotime($date) > strtotime('now'))
                                 <button data-id="{{ $event_id }}" class="btn btn-danger del">Usuń liste</button>
+                                @endif
                             </div>
                         </div>
                     </form>
@@ -255,6 +277,20 @@ function addInputss() {
             });
         }
     });
+
+
+    const form = document.getElementById('myForm');
+
+// Nasłuchuj zdarzenia naciśnięcia klawisza w formularzu
+form.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { // Sprawdź, czy naciśnięty klawisz to Enter
+        e.preventDefault(); // Zapobiegaj domyślnemu zachowaniu Enter (np. przejście do nowej linii)
+        form.submit(); // Wyślij formularz
+    }
+});
+
+
+
 </script>
 
 

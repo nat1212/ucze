@@ -9,8 +9,29 @@
 
 @section('content')
 
+
+
+
 <div class="container">
+    
+
+@if (session('status'))
+                        <div id="status-message" class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+
+                    <div id="update-message" class="alert alert-success" style="display: none;"></div>
+                    @if ($errors->has('status'))
+    <div id="update-message2" class="alert alert-danger">
+        {{ $errors->first('status') }}
+    </div>
+@endif
+                   
+     
+                    <div id="update-message-container"></div>
 <div class="side-bar">
+    
         <div onclick="rat(1)" class="side-bar-info">
             Profil
         </div>
@@ -20,36 +41,48 @@
         <div onclick="rat(2)"class="side-bar-info">
             Lista wydarzeń
         </div>
-        <div onclick="rating(1)" class="side-bar-underinfo" data-id="2">
+        <div onclick="rating(1); closeExpand();" class="side-bar-underinfo" data-id="2">
             Zapis indywidualny
         </div>
-        <div onclick="rating(2)" class="side-bar-underinfo"data-id="2">
+        @if(Auth::user() && Auth::user()->role == '2')
+        <div onclick="rating(2); closeExpand();" class="side-bar-underinfo"data-id="2">
             Zapis grupowy
         </div>
+        @endif
         <div onclick="rat(3)" class="side-bar-info">
            Wygasłe wydarzenia
         </div>
-        <div onclick="rating(3)" class="side-bar-underinfo"data-id="3">
+        <div onclick="rating(3); closeExpand();" class="side-bar-underinfo"data-id="3">
             Zapis indywidualny
         </div>
-        <div onclick="rating(4)" class="side-bar-underinfo" data-id="3">
+        @if(Auth::user() && Auth::user()->role == '2')
+        <div onclick="rating(4); closeExpand();" class="side-bar-underinfo" data-id="3">
             Zapis grupowy
         </div>
+        @endif
         <div  onclick="redirectToEventList(event)" class="side-bar-info">
-            Wszyskie wydarzenia
+            Wszystkie wydarzenia
         </div>
     </div>
         <div class="col-md-12"> 
             <div class="card card-left">
             <div class="card-header">
                 <span>{{ __('Twój profil') }}</span>
-                <span class="toggle-icon2" onclick="toggleExpand()">Edycja ⚙️</span>
+                
             </div>
-                
+         
                 <div class="card-body">
-
+                <div id="update-message2" class="alert alert-danger" style="display: none;"></div>
+                    @if(isset($error) && !empty($error))
+                        <div class="link-frame">
+                            <p>{{ $error }} -> <a href="/szkola">Kliknij tutaj</a></p>
+                        </div>
+                    @endif
+   
+                   
  <div class="table-info" data-id="1">
-                
+ <h3 style="text-align: center; margin: 20px 0;">Zapis indywidualny:</h3>
+
                 <table id="example"  class="table table-striped" style="width:100%">
         <thead>
             <tr>
@@ -61,9 +94,11 @@
             </tr>
         </thead>
         <tbody>
-           
+       
+        @if(isset($results))
             @foreach ($results as $result)
             @if ($result->date_end > now())
+
             <tr>
             <td>{{  $result->name}}</td>
             <td>{{  $result->title}}</td>
@@ -75,28 +110,20 @@
             @else
                 <a href="javascript:void(0)"  class="btn btn-primary disabled">Wypisz się</a>
             @endif
-            <button class="btn btn-primary show-sub-event" data-result-id="{{ $result->id }}">Pokaż szczegóły</button>
+            <button class="btn btn-primary show-sub-event" data-result-id="{{ $result->id }}" data-description="{{ $result->description }}">Pokaż szczegóły</button>
             </td>
-             </tr>
 
             @endif
             @endforeach
-            
+            @endif
            
             </tbody>
-        <tfoot>
-        <tr>
-        <th>Nazwa wydarzenia</th>
-                <th>Tytuł wydarzenia</th>
-                <th>Prowadzący</th>
-                <th>Data wydarzenia</th>
-                <th></th>
-            </tr>
-        </tfoot>
+      
     </table>
 </div>
+@if(Auth::user() && Auth::user()->role == '2')
 <div class="table-info" data-id="2">
-                
+<h3 style="text-align: center;margin: 20px 0;">Zapis grupowy:</h3>
         <table id="example1"  class="table table-striped" style="width:100%">
         <thead>
             <tr>
@@ -109,43 +136,42 @@
         </thead>
         <tbody>
        
-     
+        @if(isset($groups))
             @foreach ($groups as $group)
             @if ($group->date_end > now())
           
             <tr>
             <td>{{  $group->title}}</td>
             <td>{{  $group->number_of_people}}</td>
-            <td>{{  $group->type}}</td>
+            @if ($group->type == 1)
+            <td>Imienna</td>
+            @else
+            <td>Liczbowa</td>
+            @endif
             <td> {{  $group->date_start->format('d-m-Y')}} godz. {{$group->date_start->format('H:i') }}<br>{{  $group->date_end->format('d-m-Y')}} godz. {{$group->date_end->format('H:i') }}</td>
-            <td>@if ($group->date_start > now())
-                                    <a href="{{ route('list',$group->participant_id,) }}" class="btn btn-danger">Lista</a>
-                                    @else
-                                    <a href="{{ route('list', $group->id) }}" class="btn btn-danger disabled">Lista</a>
-                                    @endif
-                                    <button class="btn btn-primary show-sub-event" data-result-id="{{ $group->id }}">Pokaż szczegóły</button> </td>
+            <td>
+            @if ($group->type == 1)
+            <a href="{{ route('list',$group->participant_id,) }}" class="btn btn-danger listunia">Lista</a>
+            @else
+            <a href="{{ route('listnr',$group->participant_id,) }}" class="btn btn-danger leave">Lista</a>
+            @endif               
+                 <button class="btn btn-primary show-sub-event" data-result-id="{{ $group->id }}" data-description="{{ $group->description }}">Pokaż szczegóły</button> </td>
+
              </tr>
           
             
             @endif
             @endforeach
-            
+            @endif
             
            
             </tbody>
-        <tfoot>
-        <tr>
-        <th>Nazwa wydarzenia</th>
-                <th>Liczba osób</th>
-                <th>Typ listy</th>
-                <th>Data wydarzenia</th>
-                <th></th>
-            </tr>
-        </tfoot>
+       
     </table>
 </div>
+@endif
 <div class="table-info" data-id="3">
-                
+<h3 style="text-align: center;margin: 30px 0;">Wygasłe wydarzenia indywidualne:</h3>
                 <table id="example"  class="table table-striped" style="width:100%">
         <thead>
             <tr>
@@ -157,7 +183,7 @@
             </tr>
         </thead>
         <tbody>
-           
+        @if(isset($results))
             @foreach ($results as $result)
             @if ($result->date_end <= now())
             <tr>
@@ -171,22 +197,15 @@
 
             @endif
             @endforeach
-            
+            @endif
            
             </tbody>
-        <tfoot>
-        <tr>
-        <th>Nazwa wydarzenia</th>
-                <th>Tytuł wydarzenia</th>
-                <th>Prowadzący</th>
-                <th>Data wydarzenia</th>
-                <th></th>
-            </tr>
-        </tfoot>
+       
     </table>
 </div>
+@if(Auth::user() && Auth::user()->role == '2')
 <div class="table-info" data-id="4">
-                
+<h3 style="text-align: center;margin: 30px 0;">Wygasłe wydarzenia grupowe:</h3>
         <table id="example1"  class="table table-striped" style="width:100%">
         <thead>
             <tr>
@@ -199,14 +218,18 @@
         </thead>
         <tbody>
        
-     
+        @if(isset($groups))
             @foreach ($groups as $group)
             @if ($group->date_end <= now())
           
             <tr>
             <td>{{  $group->title}}</td>
             <td>{{  $group->number_of_people}}</td>
-            <td>{{  $group->type}}</td>
+            @if ($group->type == 1)
+            <td>Imienna</td>
+            @else
+            <td>Liczbowa</td>
+            @endif
             <td> {{  $group->date_start->format('d-m-Y')}} godz. {{$group->date_start->format('H:i') }}<br>{{  $group->date_end->format('d-m-Y')}} godz. {{$group->date_end->format('H:i') }}</td>
             <td>
                         </td>
@@ -215,257 +238,17 @@
             
             @endif
             @endforeach
-            
+            @endif
             
            
             </tbody>
-        <tfoot>
-        <tr>
-        <th>Nazwa wydarzenia</th>
-                <th>Liczba osób</th>
-                <th>Typ listy</th>
-                <th>Data wydarzenia</th>
-                <th></th>
-            </tr>
-        </tfoot>
+      
     </table>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    @if (session('status'))
-                        <div id="status-message" class="alert alert-success" role="alert">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
-                    <div id="update-message" class="alert alert-success" style="display: none;"></div>
-                    @if ($errors->has('status'))
-    <div id="update-message2" class="alert alert-danger">
-        {{ $errors->first('status') }}
-    </div>
 @endif
-                    <div id="update-message2" class="alert alert-danger" style="display: none;"></div>
-                    @if(isset($error) && !empty($error))
-                        <div class="link-frame">
-                            <p>{{ $error }} -> <a href="/szkola">Kliknij tutaj</a></p>
-                        </div>
-                    @endif
-     
-                    <div id="update-message-container"></div>
+
 
                   
-                    <h4 class="expand-toggle3" onclick="redirectToEventList(event)">Lista wszystkich aktualnych wydarzeń:  <span class="toggle-icon">►</span></h4>
-
-
-
-<h4 class="expand-toggle">Lista wydarzeń na które jesteś zapisany/a: <span class="toggle-icon">▼</span></h4>
-<div class="grid-wrapper">
-    <div class="grid">
-        @if(isset($results))
-            @foreach ($results as $result)
-                @if ($result->date_end > now())
-                    <div class="event-wrapper" data-end-date="{{ $result->date_end }}"  data-description="{{ $result->description }}">
-                        <div class="event"> 
-                            <div class="text">
-                                <p class="des7">{{ $result->title }}</p>
-                                <div class="des-row">
-                                    <p class="des3">Rozpoczęcie wydarzenia:</p>
-                                    <p class="des4">{{ $result->date_start->format('d-m-Y') }} godz. {{$result->date_start->format('H:i') }}</p> 
-                                </div>
-                                <div class="des-row">
-                                    <p class="des3">Zakończenie wydarzenia:</p>
-                                    <p class="des4">{{ $result->date_end->format ('d-m-Y')}} godz. {{$result->date_end->format('H:i') }}</p> 
-                                </div>
-                                
-                                <div class="btn-container">
-                                    @if ($result->date_start > now())
-                                    <a href="/leave/{{ $result->id }}" class="btn btn-primary leave-button leave-event-btn" data-date-start="{{ $result->date_start->format('Y-m-d H:i:s') }}" >Wypisz się</a>
-                                    @else
-                                        <a href="javascript:void(0)"  class="btn btn-primary disabled">Wypisz się</a>
-                                    @endif
-                                    <button class="btn btn-primary show-sub-event" data-result-id="{{ $result->id }}">Pokaż szczegóły</button>
-                                </div>
-                               
-                            </div>
-                        </div>
-                    </div>
-                @endif
-            @endforeach
-        @endif
-    </div>
-</div>
-
-@if(Auth::user() && Auth::user()->role == '2')
-<h4 class="expand-toggle">Lista wydarzeń na które jest zapisana grupa: <span class="toggle-icon">▼</span></h4>
-<div class="grid-wrapper">
-    <div class="grid">
-        @if(isset($groups))
-            @foreach ($groups as $group)
-            @if($group->type == 1)
-                @if ($group->date_end > now())
-                    <div class="event-wrapper" data-end-date="{{ $group->date_end }}"  data-description="{{ $group->description }}">
-                        <div class="event"> 
-                            <div class="text">
-                                <p class="des7">{{ $group->title }}</p>
-                                <div class="des-row">
-                                    <p class="des3">Rozpoczęcie wydarzenia:</p>
-                                    <p class="des4">{{ $group->date_start->format('d-m-Y') }} godz. {{$group->date_start->format('H:i') }}</p> 
-                                </div>
-                                <div class="des-row">
-                                    <p class="des3">Zakończenie wydarzenia:</p>
-                                    <p class="des4">{{ $group->date_end->format('d-m-Y') }} godz. {{$group->date_end->format('H:i') }}</p> 
-                                </div>
-                                <div class="btn-container">
-                                    @if ($group->date_start > now())
-                                    <a href="{{ route('list',$group->participant_id,) }}" data-date-start="{{ $group->date_start->format('Y-m-d H:i:s') }}" class="btn btn-danger leave">Lista</a>
-                                    @else
-                                    <a href="{{ route('list', $group->id) }}" class="btn btn-danger disabled">Lista</a>
-                                    @endif
-                                    <button class="btn btn-primary show-sub-event" data-result-id="{{ $group->id }}">Pokaż szczegóły</button>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                @endif
-             @endif
-            @endforeach
-        @endif
-        @if(isset($numeric))
-            @foreach ($numeric as $liste)
-            @if($liste->type == 2)
-                @if ($liste->date_end > now())
-                    <div class="event-wrapper" data-end-date="{{ $liste->date_end }}"  data-description="{{ $liste->description }}">
-                        <div class="event"> 
-                            <div class="text">
-                                <p class="des7">{{ $liste->title }}</p>
-                                <div class="des-row">
-                                    <p class="des3">Rozpoczęcie wydarzenia:</p>
-                                    <p class="des4">{{ $liste->date_start->format('d-m-Y') }} godz. {{$liste->date_start->format('H:i') }}</p> 
-                                </div>
-                                <div class="des-row">
-                                    <p class="des3">Zakończenie wydarzenia:</p>
-                                    <p class="des4">{{ $liste->date_end->format('d-m-Y') }} godz. {{$liste->date_end->format('H:i') }}</p> 
-                                </div>
-                                <div class="btn-container">
-                                    @if ($liste->date_start > now())
-                                    <a href="{{ route('listnr',$liste->participant_id,) }}"data-date-start="{{ $liste->date_start->format('Y-m-d H:i:s') }}" class="btn btn-danger leave">Lista</a>
-                                    @else
-                                    <a href="{{ route('listnr', $liste->id) }}" class="btn btn-danger disabled">Lista</a>
-                                    @endif
-                                    <button class="btn btn-primary show-sub-event" data-result-id="{{ $liste->id }}">Pokaż szczegóły</button>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-                @endif
-             @endif
-            @endforeach
-        @endif
-    </div>
-</div>
-@endif
-
-
-<h4 class="expand">Lista wygasłych wydarzeń: <span class="toggle-icon">▼</span></h4>
-<div class="grid-wrapper3">
-    <div class="grid">
-        @if(isset($results))
-            @foreach ($results as $result)
-                @if ($result->date_end <= now()) 
-                    <div class="event-wrapper">
-                        <div class="event"> 
-                            <div class="text">
-                                <p class="des7">{{ $result->title }}</p>
-                                <div class="des-row">
-                                    <p class="des3">Rozpoczęcie wydarzenia:</p>
-                                    <p class="des4">{{ $result->date_start->format('d-m-Y') }} godz. {{$result->date_start->format('H:i') }}</p> 
-                                </div>
-                                <div class="des-row">
-                                    <p class="des3">Zakończenie wydarzenia:</p>
-                                    <p class="des4">{{ $result->date_end->format('d-m-Y') }} godz. {{$result->date_end->format('H:i') }}</p> 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-            @endforeach
-        @endif
-    </div>
-</div>
-
-@if(Auth::user() && Auth::user()->role == '2')
-<h4 class="expand">Lista wygasłych grupowych wydarzeń: <span class="toggle-icon">▼</span></h4>
-<div class="grid-wrapper3">
-    <div class="grid">
-        @if(isset($groups))
-            @foreach ($groups as $group)
-            @if($group->type == 1)
-                @if ($group->date_end <= now()) 
-                    <div class="event-wrapper">
-                        <div class="event"> 
-                            <div class="text">
-                                <p class="des7">{{ $group->title }}</p>
-                                <div class="des-row">
-                                    <p class="des3">Rozpoczęcie wydarzenia:</p>
-                                    <p class="des4">{{ $group->date_start->format('d-m-Y') }} godz. {{$group->date_start->format('H:i') }}</p> 
-                                </div>
-                                <div class="des-row">
-                                    <p class="des3">Zakończenie wydarzenia:</p>
-                                    <p class="des4">{{ $group->date_end->format('d-m-Y') }} godz. {{$group->date_end->format('H:i') }}</p> 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-                @endif
-            @endforeach
-        @endif
-
-        @if(isset($numeric))
-            @foreach ($numeric as $liste)
-            @if($liste->type == 2)
-                @if ($liste->date_end <= now()) 
-                    <div class="event-wrapper">
-                        <div class="event"> 
-                            <div class="text">
-                                <p class="des7">{{ $liste->title }}</p>
-                                <div class="des-row">
-                                    <p class="des3">Rozpoczęcie wydarzenia:</p>
-                                    <p class="des4">{{ $liste->date_start->format('d-m-Y') }} godz. {{$liste->date_start->format('H:i') }}</p> 
-                                </div>
-                                <div class="des-row">
-                                    <p class="des3">Zakończenie wydarzenia:</p>
-                                    <p class="des4">{{ $liste->date_end->format('d-m-Y') }} godz. {{$liste->date_end->format('H:i') }}</p> 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endif
-                @endif
-            @endforeach
-        @endif
-    </div>
-</div>
-@endif
 
                 <div class="grid-wrapper2">
                     <div class="container2">
@@ -613,13 +396,25 @@ function rating(x) {
     const buttons = document.querySelectorAll(".table-info");
     buttons.forEach(div => div.classList.remove("selected"));
   
-   // const selectedButton = document.querySelector(`.side-bar-info${dataId}`);
+
     const underinfoElements = document.querySelectorAll(`.table-info${dataId}`);
     
-   // selectedButton.classList.add("selected");
+
     underinfoElements.forEach(div => div.classList.add("selected"));
 }
 
+document.addEventListener('DOMContentLoaded', function() {
+    const underinfoElements = document.querySelectorAll('.side-bar-underinfo');
+
+    underinfoElements.forEach(element => {
+        element.addEventListener('click', function() {
+     
+            underinfoElements.forEach(div => div.classList.remove('active'));
+
+            this.classList.add('active');
+        });
+    });
+});
 </script>
     <script>
 
@@ -650,10 +445,17 @@ function toggleExpand() {
     }
 }
 
+function closeExpand() {
+    const gridWrapper2 = document.querySelector('.grid-wrapper2');
+    gridWrapper2.style.display = 'none';
+}
+
  function redirectToEventList(event) {
         event.stopPropagation(); 
         window.location.href = "{{ route('event.list') }}";
     }
+
+
 
     document.addEventListener('DOMContentLoaded', function() {
     var csrfToken = '{{ csrf_token() }}';
@@ -750,7 +552,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     showDetailsButtons.forEach(function(button) {
         button.addEventListener('click', function() {
-            var description = this.closest('.event-wrapper').getAttribute('data-description');
+            var description = this.closest('.show-sub-event').getAttribute('data-description');
             var descriptionElement = document.getElementById('eve_dese');
             descriptionElement.textContent = description;
 
@@ -852,42 +654,6 @@ leaveButtons.forEach(function(button) {
 }
 
 
-    document.addEventListener('DOMContentLoaded', function() {
-    let lastUpdateTime = 0;
-    const updateInterval = 1000;
-    const expiredEventsGrid = document.querySelector('.grid-wrapper3 .grid');
-
-    function moveExpiredEvents(timestamp) {
-        if (timestamp - lastUpdateTime >= updateInterval) {
-            lastUpdateTime = timestamp;
-
-            const now = new Date();
-
-            const activeEvents = document.querySelectorAll('.grid-wrapper .event-wrapper');
-            activeEvents.forEach(event => {
-                const endDate = new Date(event.dataset.endDate);
-
-                if (endDate <= now) {
-
-                    const btnContainer = event.querySelector('.btn-container');
-                    if (btnContainer) {
-                        btnContainer.remove();
-                    }
-
-                    expiredEventsGrid.appendChild(event);
-                }
-            });
-        }
-
-        requestAnimationFrame(moveExpiredEvents);
-    }
-
-    moveExpiredEvents(0);
-});
-
-    
-
-
 
 function sprawdzDatyWydarzen() {
   const przyciskiWypiszSie = document.querySelectorAll('.leave-button');
@@ -916,34 +682,6 @@ function sprawdzDatyWydarzen() {
 setInterval(sprawdzDatyWydarzen, 1000);
 document.addEventListener('DOMContentLoaded', sprawdzDatyWydarzen);
 
-
-function disableLeaveButtonsBasedOnTime() {
-  const leaveButtons = document.querySelectorAll('.leave');
-
-  leaveButtons.forEach(button => {
-    const startDate = new Date(button.dataset.dateStart);
-    const currentTime = new Date();
-
-    const timeDifference = startDate - currentTime;
-
-    if (timeDifference <= 0) {
-      button.classList.add('disabled');
-      button.removeEventListener('click', confirmWypisz);
-    } else {
-      button.classList.remove('disabled');
-      button.addEventListener('click', confirmWypisz);
-
-      setTimeout(() => {
-        button.classList.add('disabled');
-        button.removeEventListener('click', confirmWypisz);
-      }, timeDifference);
-    }
-  });
-}
-
-// Call the function on DOMContentLoaded and set an interval to continuously check
-document.addEventListener('DOMContentLoaded', disableLeaveButtonsBasedOnTime);
-setInterval(disableLeaveButtonsBasedOnTime, 1000);
 
 
     $(document).ready(function() {

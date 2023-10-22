@@ -14,6 +14,7 @@
 <label for="number_input1">Zapisane przez ciebie osoby na to wydarzenie:  </label>
 <span id="available_seats2">{{ $number_of_people }}</span>
 <br>
+@if (strtotime($date) > strtotime('now'))
 <label for="number_input55">Dostępne miejsca:</label> <span id="available_seats">{{ $seats }}</span>
 <br>
 
@@ -64,13 +65,15 @@
                         <input type="hidden" name="event_details_id" value="{{ $event_details_id }}">
 
                         </form>
-
+                        @endif
                         <div class="row mb-0" style="margin-top: 30px;">
                             <div class="col-md-6 offset-md-5    ">
                                 <a href="{{ route('home') }}" class="btn btn-primary">
                                     {{ __('Wróć') }}
                                 </a>
+                                @if (strtotime($date) > strtotime('now'))
                                 <button data-id="{{ $event_id }}" class="btn btn-danger dele">Usuń liste</button>
+                                @endif
                             </div>
                         </div>
                
@@ -176,7 +179,17 @@ function hideErrors() {
         hideErrors();
     };
 
+    document.addEventListener("DOMContentLoaded", function() {
+        const preventEnterFields = document.querySelectorAll("input[type='number']");
 
+        preventEnterFields.forEach(function(field) {
+            field.addEventListener('keydown', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                }
+            });
+        });
+    });
 
 </script>
 

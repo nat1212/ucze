@@ -27,7 +27,10 @@ class DictionarySchoolController extends Controller
         $participant->dictionary_schools_id = $dictionarySchool->id;
         $participant->save();
 
-        return redirect()->route('home');
+
+        $statusMessage = 'Udało Ci się dodać szkołę!';
+        return redirect()->route('home')->with('status', $statusMessage);
+
         
     }
     

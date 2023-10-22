@@ -9,12 +9,16 @@
   justify-content: space-between;
   align-items: center;
   font-size: 20px;
+ 
 }
 .card-body p,
 .card-body a {
     margin-bottom: 10px;
 }
-
+.card-body {
+  flex: 1; /* Elastyczność, aby dostosować się do zmiany zawartości */
+  overflow-y: auto; /* Włącz pasek przewijania, jeśli zawartość jest zbyt duża */
+}
 button {
     background-color: #007bff;
     color: #fff;
@@ -216,7 +220,15 @@ button:hover {
   width: 50%;
 }
 
+.listunia
+{
+  margin-top: 10px;
+}
 
+.leave
+{
+  margin-top: 10px;
+}
 .footer {
   position: fixed;
   left: 0;

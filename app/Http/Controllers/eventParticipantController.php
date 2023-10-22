@@ -77,11 +77,13 @@ class eventParticipantController extends Controller
 
     $eventDetailsId = $id->event_details_id;
     $Numberseats = EventDetails::find($eventDetailsId)->number_seats;
+    $date = EventDetails::find($eventDetailsId)->date_start;
     $title = EventDetails::find($eventDetailsId)->title;
     return view('list',[
         'event_details_id'=>$eventDetailsId,
         'names'=>$eventParticipants,
         'seats'=>$Numberseats,
+        'date'=>$date,
         'event_id'=>$list,
         'event_details_title'=>$title,
        ]);
@@ -96,6 +98,7 @@ class eventParticipantController extends Controller
 
     $eventDetailsId = $id->event_details_id;
     $Numberseats = EventDetails::find($eventDetailsId)->number_seats;
+    $date = EventDetails::find($eventDetailsId)->date_start;
     $title = EventDetails::find($eventDetailsId)->title;
     $numberOfPeople = $id->number_of_people;
 
@@ -103,6 +106,7 @@ class eventParticipantController extends Controller
         'event_details_id'=>$eventDetailsId,
         'seats'=>$Numberseats,
         'event_id'=>$list,
+        'date'=>$date,
         'event_details_title'=>$title,
         'number_of_people' => $numberOfPeople,
        ]);
@@ -270,7 +274,7 @@ class eventParticipantController extends Controller
             $eventParticipant->date_approval = null; // Ustawiamy datę zatwierdzenia na null
             $eventParticipant->number_of_people = count($participants);
             $eventParticipant->comments = null;
-            $eventParticipant->dictionary_schools_id = $dictionarySchool->id;
+            $eventParticipant->dictionary_schools_id = Participant::find($participantId)->dictionary_schools_id;
             $eventParticipant->participants_id = $participantId;
             $eventParticipant->events_id = $events_id;
             $eventParticipant->event_details_id = $event_details_id;
@@ -336,7 +340,7 @@ class eventParticipantController extends Controller
             $eventParticipant->date_approval = null; // Ustawiamy datę zatwierdzenia na null
             $eventParticipant->number_of_people = $NumberParticipants;
             $eventParticipant->comments = null;
-            $eventParticipant->dictionary_schools_id = $dictionarySchool->id;
+            $eventParticipant->dictionary_schools_id = Participant::find($participantId)->dictionary_schools_id;
             $eventParticipant->participants_id = $participantId;
             $eventParticipant->events_id = $events_id;
             $eventParticipant->event_details_id = $event_details_id;

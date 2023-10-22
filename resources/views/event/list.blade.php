@@ -113,22 +113,30 @@
         <div class="event"> 
           <div class="text">
             <p scope="col" class="des7">{{ $info->title }}</p>
+            @if (strtotime($info->date_start) > strtotime('now'))
             <div class="des-row2">
-              <p scope="col" class="des3">Data rozpoczęcia:</p>
+              <p scope="col" class="des3">Rozpoczęcie:</p>
               <p scope="col" class="des4">{{ $info->date_start->format('d-m-Y') }} godz. {{$info->date_start->format('H:i') }}</p>
             </div>
+            @endif
+
             <div class="des-row2">
-              <p scope="col" class="des3">Data zakończenia:</p>
+              <p scope="col" class="des3">Zakończenie:</p>
               <p scope="col" class="des4">{{ $info->date_end->format('d-m-Y') }} godz. {{$info->date_end->format('H:i') }}</p>
             </div>
+     
+            @if (strtotime($info->date_start) > strtotime('now'))
             <div class="des-row2">
-              <p scope="col" class="des3">Data rozpoczęcia zapisów:</p>
+              <p scope="col" class="des3">Rozpoczęcie zapisów:</p>
               <p scope="col" class="des4">{{ $info->date_start_rek->format('d-m-Y')}} godz. {{$info->date_start_rek->format('H:i') }}</p>
             </div>
+            @endif
+            @if (strtotime($info->date_start) > strtotime('now'))
             <div class="des-row2">
-              <p scope="col" class="des3">Data zakończenia zapisów:</p>
+              <p scope="col" class="des3">Zakończenie zapisów:</p>
               <p scope="col" class="des4">{{ $info->date_end_rek->format('d-m-Y') }} godz. {{$info->date_end_rek->format('H:i') }}</p>
             </div>
+            @endif
             <div class="des-row2">
               <p scope="col" class="des3">Prowadzący: {{ $info->speaker_first_name }}  {{ $info->speaker_last_name }}</p>
             </div>
@@ -137,6 +145,7 @@
             </div>
        
             <div class="btn-container">
+            @if (strtotime($info->date_start) > strtotime('now'))
     @if (strtotime($info->date_start_rek) < strtotime('now') && strtotime($info->date_end_rek) > strtotime('now'))
         @php
             $participantId = Auth::id();
@@ -157,11 +166,12 @@
                 @csrf
                 <input type="hidden" name="event_id" value="{{ $event->id }}">
                 <input type="hidden" name="event_details_id" value="{{ $info->id }}">
-                <button type="submit" class="btn sign">Zapisz się</button>
+                <button type="submit" class="btn sign" >Zapisz się</button>
             </form>
         @endif
     @else
         <button class="btn sign" type="button" disabled>Zapisz się</button>
+    @endif
     @endif
     <button class="btn show-sub-events" data-info-id="{{ $info->id }}">Pokaż szczegóły</button>
 
@@ -170,6 +180,7 @@
 
 
             </div>
+            @if (strtotime($info->date_start) > strtotime('now'))
             @if(Auth::user() && Auth::user()->role == '2')
               @if (strtotime($info->date_start_rek) < strtotime('now') && strtotime($info->date_end_rek) > strtotime('now'))
                 @if($info->type == 1)
@@ -182,22 +193,10 @@
               <span class="btn disabled">Zapis Grupowy</span>
               @endif
             @endif
+            @endif
           </div>
         </div>
       @endif
-
-      <div id="agreed" class="dialog" style="display: none;">
-    <div class="dialog-content2">
-        <p>Czy na pewno chcesz się zapisać na wydarzenie?</p>
-        <button id="confirm-agreed-button">Tak</button>
-        <button id="cancel-agreed-button">Nie</button>
-    </div>
-    </div>
-
-
-
-
-    
       @endforeach
     </div>
   </div>
@@ -223,6 +222,14 @@
 </div>
 </div>
 
+
+<div id="agreed" class="dialog" style="display: none;">
+    <div class="dialog-content2">
+        <p>Czy na pewno chcesz się zapisać na wydarzenie?</p>
+        <button id="confirm-agreed-button">Tak</button>
+        <button id="cancel-agreed-button">Nie</button>
+    </div>
+    </div>
 
 @endif
 
@@ -269,6 +276,50 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
+
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    function obslugaZapisu(event) {
+        event.preventDefault();
+        var dialog = document.getElementById('agreed');
+        dialog.style.display = 'flex'; 
+        
+      
+
+        var przyciskPotwierdzenia = document.getElementById('confirm-agreed-button');
+        var przyciskAnulowania = document.getElementById('cancel-agreed-button');
+        
+        przyciskPotwierdzenia.addEventListener('click', function() {
+
+            var formularz = event.target.closest('form');
+            if (formularz) {
+                formularz.submit();
+            }
+            dialog.style.display = 'none'; 
+        });
+        
+        przyciskAnulowania.addEventListener('click', function() {
+       
+            dialog.style.display = 'none'; 
+        });
+    }
+
+    var przyciskiZapisu = document.querySelectorAll('.sign');
+    przyciskiZapisu.forEach(function(przycisk) {
+        przycisk.addEventListener('click', obslugaZapisu);
+    });
+
+ 
+});
+
+
+
+
+
+
+
   document.addEventListener('DOMContentLoaded', function() {
     function toggleDetails(event) {
       event.preventDefault();
@@ -310,40 +361,6 @@ document.addEventListener('DOMContentLoaded', function () {
  
 
 
-  document.addEventListener('DOMContentLoaded', function() {
-    function obslugaZapisu(event) {
-        event.preventDefault();
-        var dialog = document.getElementById('agreed');
-        dialog.style.display = 'flex'; 
-        
-      
-
-        var przyciskPotwierdzenia = document.getElementById('confirm-agreed-button');
-        var przyciskAnulowania = document.getElementById('cancel-agreed-button');
-        
-        przyciskPotwierdzenia.addEventListener('click', function() {
-
-            var formularz = event.target.closest('form');
-            if (formularz) {
-                formularz.submit();
-            }
-            dialog.style.display = 'none'; 
-        });
-        
-        przyciskAnulowania.addEventListener('click', function() {
-       
-            dialog.style.display = 'none'; 
-        });
-    }
-
-    var przyciskiZapisu = document.querySelectorAll('.sign');
-    przyciskiZapisu.forEach(function(przycisk) {
-        przycisk.addEventListener('click', obslugaZapisu);
-    });
-
- 
-});
-
 
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -384,6 +401,8 @@ document.addEventListener('DOMContentLoaded', function() {
             resetDialog();
         }
     });
+
+
     function resetDialog() {
     var descriptionElement = document.getElementById('eve_dese');
     descriptionElement.textContent = ''; 
@@ -398,10 +417,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
   
-
-
-
-
   setTimeout(function() {
         var errorMessages = document.getElementsByClassName('error-message');
         for (var i = 0; i < errorMessages.length; i++) {
