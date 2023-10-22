@@ -62,12 +62,7 @@
                                 </a>
                                
                                 <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                                <a style="font-size:18px;" class="dropdown-item" href="{{ route('home') }}">
-                                    {{ __('Profil') }}
-                                </a>
-                                <a style="font-size:18px;"class="dropdown-item" href="{{ route('event.list') }}">
-                                    {{ __('Wydarzenia') }}
-                                </a>
+                              
                                 @if(Request::is('home*'))
                                     <div class="H2p">
                                     <a  onclick="toggleExpand()" class="dropdown-item"  href="#">
@@ -91,7 +86,7 @@
                                     </div>
 
                                     @endif
-                                    <a style="font-size:18px;" class="dropdown-item" href="{{ route('logout') }}"
+                                    <a style="font-size:14px;" class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                         {{ __('Wyloguj') }}
