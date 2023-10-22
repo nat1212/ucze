@@ -11,6 +11,8 @@
                 <div class="card-header">{{ __('Zapis grupowy na wydarzenie:')}}   {{$event_details_title}} </div>
 
                 <div class="card-body">
+                <div class="des2">Uwaga!</div>
+                <div class="des">W tym zapisie jeśli pole imię oraz nazwisko nie jest wypelnione to program tego nie liczy!</div>
               <div class="container2">
     <div class="center-align">
         <label for="number_input">Dostępne miejsca:</label>
