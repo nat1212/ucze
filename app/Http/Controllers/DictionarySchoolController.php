@@ -33,5 +33,44 @@ class DictionarySchoolController extends Controller
 
         
     }
+
+    public function edit()
+{
+    $schools = DictionarySchool::all();
+    return view('/szkola-edit', ['schools' => $schools]);
+}
+
+public function update(Request $request)
+{
+    $participantId = Auth::id();
+    $schoolDescription = $request->input('name'); // Pobierz pełny opis szkoły z formularza.
+
+    // Znajdź obiekt szkoły na podstawie opisu.
+    $dictionarySchool = DictionarySchool::whereRaw("CONCAT(name, ' ul.', street, ' ', zip_code) = ?", [$schoolDescription])->first();
+
+    if ($dictionarySchool) {
+        // Znaleziono szkołę, więc sprawdź, czy uczestnik jest już zapisany do tej szkoły.
+        $participant = Participant::find($participantId);
+
+        if ($participant->dictionary_schools_id == $dictionarySchool->id) {
+            // Uczestnik jest już zapisany do tej szkoły, wygeneruj komunikat o błędzie.
+            return redirect()->route('home')->withErrors(['status' => 'Jesteś już zapisany do tej szkoły.']);
+        } else {
+            // Aktualizuj uczestnika, ponieważ nie jest zapisany do tej szkoły.
+            $participant->dictionary_schools_id = $dictionarySchool->id;
+            $participant->save();
+
+            $statusMessage = 'Szkoła została zaktualizowana.';
+            return redirect()->route('home')->with('status', $statusMessage);
+        }
+    } else {
+        $statusMessage = 'Nie można znaleźć szkoły o podanym opisie.';
+        return redirect()->route('home')->withErrors(['status' => $statusMessage]);
+    }
+}
+
+
+
+
     
 }

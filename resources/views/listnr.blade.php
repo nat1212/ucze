@@ -67,9 +67,9 @@
                         </form>
                         @endif
                         <div class="row mb-0" style="margin-top: 30px;">
-                            <div class="col-md-6 offset-md-5    ">
+                            <div class="col-md-6 offset-md-5 ">
                                 <a href="{{ route('home') }}" class="btn btn-primary">
-                                    {{ __('Wróć') }}
+                                    {{ __('Anuluj') }}
                                 </a>
                                 @if (strtotime($date) > strtotime('now'))
                                 <button data-id="{{ $event_id }}" class="btn btn-danger dele">Usuń liste</button>

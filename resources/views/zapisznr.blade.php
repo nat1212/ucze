@@ -50,7 +50,7 @@
                                 </button>
                                
                                 <a href="{{ route('event.list') }}" class="btn btn-primary">
-                                    {{ __('Wróć') }}
+                                    {{ __('Anuluj') }}
                                 </a>
                             </div>
                         </div>

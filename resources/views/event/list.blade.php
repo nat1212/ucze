@@ -9,7 +9,7 @@
 <div class="container">
     <div class="row">
         <div class="col-8 text-center">
-        <h1>AKTUALNE WYDARZENIA NA UCZELNI:</h1>
+        <h1>AKTUALNE WYDARZENIA NA UCZELNI</h1>
     </div>
     </div>
 
@@ -100,7 +100,7 @@
   <table class="table table-bordered">
     <thead>
       <tr>
-        <th scope="col" class="name1">Wydarzenia:</th>
+        <th scope="col" class="name1">Wydarzenia</th>
       </tr>
     </thead>
   </table>
@@ -125,12 +125,13 @@
               <p scope="col" class="des4">{{ $info->date_end->format('d-m-Y') }} godz. {{$info->date_end->format('H:i') }}</p>
             </div>
      
-            @if (strtotime($info->date_start) > strtotime('now'))
-            <div class="des-row2">
-              <p scope="col" class="des3">Rozpoczęcie zapisów:</p>
-              <p scope="col" class="des4">{{ $info->date_start_rek->format('d-m-Y')}} godz. {{$info->date_start_rek->format('H:i') }}</p>
-            </div>
+            @if (strtotime($info->date_start) > strtotime('now') && strtotime($info->date_start_rek) > strtotime('now'))
+                <div class="des-row2">
+                    <p scope="col" class="des3">Rozpoczęcie zapisów:</p>
+                    <p scope="col" class="des4">{{ $info->date_start_rek->format('d-m-Y')}} godz. {{$info->date_start_rek->format('H:i') }}</p>
+                </div>
             @endif
+
             @if (strtotime($info->date_start) > strtotime('now'))
             <div class="des-row2">
               <p scope="col" class="des3">Zakończenie zapisów:</p>
@@ -184,9 +185,9 @@
             @if(Auth::user() && Auth::user()->role == '2')
               @if (strtotime($info->date_start_rek) < strtotime('now') && strtotime($info->date_end_rek) > strtotime('now'))
                 @if($info->type == 1)
-                  <a href="{{ route('zapisz', $info->id) }}" class="hidden btn">Zapis Grupowy</a>
+                  <a href="{{ route('zapisz', $info->id) }}"  class="hidden btn">Zapis Grupowy</a>
                   @else
-                  <a href="{{ route('zapisznr', $info->id) }}" class="hidden btn">Zapis Grupowy</a>
+                  <a href="{{ route('zapisznr', $info->id) }}"  class="hidden btn">Zapis Grupowy</a>
                 @endif
               @else
             
@@ -272,8 +273,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 });
-
-
 
 
 
@@ -432,9 +431,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }, 5000); 
         }
     });
-
-
-
 
 
 

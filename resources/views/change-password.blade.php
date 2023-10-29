@@ -53,6 +53,7 @@
                                 <input type="checkbox" class="form-check-input" id="showConfirmNewPassword">
                                 <label class="form-check-label" for="showConfirmNewPassword">Pokaż hasło</label>
                             </div>
+                            <div id="passwordMatchError" class="text-danger"></div>
                         </div>
 
                         </div>
@@ -72,6 +73,23 @@
 </div>
 
 <script>
+
+document.addEventListener("DOMContentLoaded", function () {
+        const successAlert = document.querySelector(".alert.alert-success");
+        const errorAlert = document.querySelector(".alert.alert-danger");
+
+        if (successAlert) {
+            setTimeout(function () {
+                successAlert.style.display = "none"; 
+            }, 3000);
+        }
+
+        if (errorAlert) {
+            setTimeout(function () {
+                errorAlert.style.display = "none"; 
+            }, 3000);
+        }
+    });
     document.addEventListener("DOMContentLoaded", function () {
         const showOldPasswordCheckbox = document.getElementById("showOldPassword");
         const oldPasswordInput = document.getElementById("oldPasswordInput");
@@ -99,16 +117,39 @@
     });
 
     document.addEventListener("DOMContentLoaded", function () {
-        const showConfirmNewPasswordCheckbox = document.getElementById("showConfirmNewPassword");
-        const confirmNewPasswordInput = document.getElementById("confirmNewPasswordInput");
+    const showConfirmNewPasswordCheckbox = document.getElementById("showConfirmNewPassword");
+    const confirmNewPasswordInput = document.getElementById("confirmNewPasswordInput");
+    const newPasswordInput = document.getElementById("newPasswordInput");
+    const passwordMatchError = document.getElementById("passwordMatchError");
 
-        showConfirmNewPasswordCheckbox.addEventListener("change", function () {
-            if (showConfirmNewPasswordCheckbox.checked) {
-                confirmNewPasswordInput.type = "text";
-            } else {
-                confirmNewPasswordInput.type = "password";
-            }
-        });
+    showConfirmNewPasswordCheckbox.addEventListener("change", function () {
+        if (showConfirmNewPasswordCheckbox.checked) {
+            confirmNewPasswordInput.type = "text";
+        } else {
+            confirmNewPasswordInput.type = "password";
+        }
     });
+
+    newPasswordInput.addEventListener("input", function () {
+
+        if (newPasswordInput.value !== confirmNewPasswordInput.value) {
+            passwordMatchError.textContent = "Hasła nie pasują do siebie.";
+        } else {
+            passwordMatchError.textContent = "";
+        }
+    });
+
+    confirmNewPasswordInput.addEventListener("input", function () {
+    
+        if (newPasswordInput.value !== confirmNewPasswordInput.value) {
+            passwordMatchError.textContent = "Hasła nie pasują do siebie.";
+        } else {
+            passwordMatchError.textContent = "";
+        }
+    });
+});
+
+
+
 </script>
 @endsection

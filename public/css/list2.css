@@ -2,7 +2,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 40px;
+
 }
 .card-header {
   display: flex;
@@ -112,7 +112,7 @@ button:hover {
 
 
 .grid-wrapper2 {
-  display: none; 
+  display: none;
 }
 
 .grid-wrapper {
@@ -258,4 +258,15 @@ button:hover {
 {
   font-size: 17px;
   text-align: justify;
+}
+
+.profile
+{
+  margin:20px;
+  font-weight: bold;
+  font-size: 20px;
+}
+.profile span {
+  font-weight: normal; 
+  font-size: 20px;   
 }

@@ -543,6 +543,11 @@ public function edit3(Request $request)
         eventParticipantList::where('id', $id)->update(['deleted_at' => $currentDateTime]);
         $event_id = eventParticipantList::where('id', $id)->value('event_participants_id');
         $Parti_id = eventParticipant::where('id', $event_id)->value('event_details_id');
+        
+        $eventParticipant = eventParticipant::find($event_id);
+        $eventParticipant->number_of_people -= 1;
+        $eventParticipant->save();
+
 
         $eventDetails = EventDetails::find($Parti_id);
         $eventDetails->number_seats += 1;
@@ -550,28 +555,34 @@ public function edit3(Request $request)
         
     }
     
-    public function delete($id)
-    {
-        try {
-            $currentDateTime = Carbon::now();
-    
-            $Parti_id = eventParticipant::where('id', $id)->value('event_details_id');
-    
-            eventParticipant::where('id', $id)->update(['deleted_at' => $currentDateTime]);
+   public function delete($id)
+{
+    try {
+        $currentDateTime = Carbon::now();
+
+        $Parti_id = eventParticipant::where('id', $id)->value('event_details_id');
+
+
+        $numberOfPeople = eventParticipant::where('id', $id)->value('number_of_people');
+
+        eventParticipant::where('id', $id)->update(['deleted_at' => $currentDateTime]);
+        $hasDeletedAt = eventParticipantList::where('event_participants_id', $id)->whereNotNull('deleted_at')->exists();
+
+        if (!$hasDeletedAt) {
+            // Aktualizuj datę deleted_at tylko wtedy, jeśli nie ma jeszcze ustawionej daty
             $updatedCount = eventParticipantList::where('event_participants_id', $id)->update(['deleted_at' => $currentDateTime]);
-    
-            $eventDetails = EventDetails::find($Parti_id);
-            $eventDetails->number_seats += $updatedCount;
-            $eventDetails->save();
-    
-            
-          return response()->json(['success' => true, 'message' => 'Udało się usunąć listę!']);
-
-        } catch (\Exception) {
-
-            return response()->json(['success' => false, 'message' => 'Wystąpił błąd podczas usuwania listy']);
         }
+
+        $eventDetails = EventDetails::find($Parti_id);
+        $eventDetails->number_seats += $numberOfPeople;
+        $eventDetails->save();
+
+        return response()->json(['success' => true, 'message' => 'Udało się usunąć listę!']);
+    } catch (\Exception) {
+        return response()->json(['success' => false, 'message' => 'Wystąpił błąd podczas usuwania listy']);
     }
+}
+
     
 
     public function deletenr($id)

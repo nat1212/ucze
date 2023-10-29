@@ -23,7 +23,6 @@ class Participant extends Authenticatable implements MustVerifyEmail
         'email',
         'password',
         'sex',
-        'birth_date',
         'role',
     ];
 
@@ -48,5 +47,10 @@ class Participant extends Authenticatable implements MustVerifyEmail
     public function eventParticipants()
     {
         return $this->hasMany(EventParticipant::class, 'participants_id');
+    }
+
+    public function school()
+    {
+        return $this->belongsTo(DictionarySchool::class, 'dictionary_schools_id', 'id');
     }
 }

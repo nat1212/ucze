@@ -33,6 +33,9 @@ Route::get('/szkola', [DictionarySchoolController::class, 'showForm']);
 
 Route::post('/szkola', [DictionarySchoolController::class, 'schollssave']);
 
+Route::get('/szkola-edit', [DictionarySchoolController::class, 'edit'])->name('szkola.edit');
+
+Route::post('/szkola-edit', [DictionarySchoolController::class, 'update']);
 
 Route::get('/leave/{entryId}',[eventParticipantController::class,'leave']);
 Route::post('/signup', [eventParticipantController::class, 'signup']);

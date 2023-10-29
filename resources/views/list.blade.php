@@ -22,7 +22,7 @@
 <div class="input-group">
 <input id="number_input" class="form-control" type="number" placeholder="Dodaj nowe osoby" min="1">
 <div class="input-group-append">
-<button onclick="addInputss()" class="btn-spacing">Dodaj</button>
+<button style ="margin-left:10px;" onclick="addInputss()" class="btn btn-primary">Dodaj</button>
 </div>
 
 </div>
@@ -82,11 +82,11 @@
                             <div class="col-md-6 offset-md-5    ">
                             @if (strtotime($date) > strtotime('now'))
                                 <button type="submit" class="btn btn-primary"  >
-                                    {{ __('Edytuj') }}
+                                    {{ __('Zapisz') }}
                                 </button>
                                 @endif
                                 <a href="{{ route('home') }}" class="btn btn-primary">
-                                    {{ __('Wróć') }}
+                                    {{ __('Anuluj') }}
                                 </a>
                                 @if (strtotime($date) > strtotime('now'))
                                 <button data-id="{{ $event_id }}" class="btn btn-danger del">Usuń liste</button>

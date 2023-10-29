@@ -49,6 +49,7 @@
     overflow-x:auto;
   display: block;
 }
+
 .side-bar-underinfo.active {
     background-color: #007bff; /* Zmiana koloru tła po zaznaczeniu */
     color: #fff; /* Zmiana koloru tekstu po zaznaczeniu */

@@ -10,7 +10,7 @@
                 <div class="card-header">{{ __('Szkoła') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="/szkola">
+                <form action="/szkola-edit" method="POST">
                         @csrf
 
                         <div class="row mb-3">
@@ -35,6 +35,8 @@
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('Zapisz') }}
                                 </button>
+
+                                
                                 <a style="margin: 10px 0;" href="{{ route('home') }}" class="btn btn-primary">Anuluj</a>
                             </div>
                         </div>
@@ -44,9 +46,6 @@
         </div>
     </div>
 </div>
-
-
-
 
 
 
@@ -76,6 +75,8 @@ inputField.addEventListener('change', function () {
 });
 
 </script>
+
+
 
 
 

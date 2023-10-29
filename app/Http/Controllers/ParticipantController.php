@@ -17,10 +17,6 @@ class ParticipantController extends Controller
     return view('home', compact('participant'));
 }
 
-protected $casts = [
-
-    'birth_date' => 'datetime',
-];
 
 
 public function updateProfile(Request $request, $id)
@@ -31,7 +27,7 @@ public function updateProfile(Request $request, $id)
         'first_name' => 'nullable|string|max:255',
         'last_name' => 'nullable|string|max:255',
         'sex' => ['nullable', Rule::in(['m', 'k', 'n'])],
-        'birth_date' => 'nullable|date|',
+    
     ]);
 
     if ($validator->fails()) {
@@ -51,9 +47,6 @@ public function updateProfile(Request $request, $id)
         $dataToUpdate['sex'] = $request->sex;
     }
 
-    if (!empty($request->birth_date)) {
-        $dataToUpdate['birth_date'] = $request->birth_date;
-    }
 
     $participant->update($dataToUpdate);
 

@@ -35,7 +35,7 @@
         <div onclick="rat(1)" class="side-bar-info">
             Profil
         </div>
-        <div  onclick="toggleExpand()" class="side-bar-underinfo" data-id="1">
+        <div  onclick=" rating(0);toggleExpand()" class="side-bar-underinfo" data-id="1">
             Edycja profilu
         </div>
         <div onclick="rat(2)"class="side-bar-info">
@@ -67,10 +67,29 @@
         <div class="col-md-12"> 
             <div class="card card-left">
             <div class="card-header">
-                <span>{{ __('Twój profil') }}</span>
-                
+                <span>{{ __('Twój profil') }}</span>  
             </div>
-         
+            <div class="profile-info">
+    <div class ="profile">Imię:&nbsp;<span>{{ Auth::user()->first_name }}</span></div>
+    <div class ="profile">Nazwisko:&nbsp;<span>{{ Auth::user()->last_name }}</span></div>
+    @if (Auth::user()->sex == 'n')
+        <div class ="profile">Płeć:&nbsp; <span>Nie podano</span></div>
+    @endif
+    @if (Auth::user()->sex == 'm')
+        <div class ="profile">Płeć:&nbsp; <span>Mężczyzna</span></div>
+    @endif
+    @if (Auth::user()->sex == 'k')
+        <div class ="profile">Płeć: &nbsp;<span>Kobieta</span></div>
+    @endif
+    <div class ="profile">Szkoła:&nbsp;<span>@if ($schoolName)
+    {{ $schoolName }} ul.{{ $cityName }} {{ $zipName }} 
+@else
+   Brak przypisanej szkoły
+@endif
+</span></div>
+</div>
+      
+
                 <div class="card-body">
                 <div id="update-message2" class="alert alert-danger" style="display: none;"></div>
                     @if(isset($error) && !empty($error))
@@ -106,7 +125,7 @@
             <td> {{  $result->date_start->format('d-m-Y')}} godz. {{$result->date_start->format('H:i') }}<br>{{  $result->date_end->format('d-m-Y')}} godz. {{$result->date_end->format('H:i') }}</td>
             <td> 
             @if ($result->date_start > now())
-            <a href="/leave/{{ $result->id }}" class="btn btn-primary leave-button leave-event-btn" data-date-start="{{ $result->date_start->format('Y-m-d H:i:s') }}" >Wypisz się</a>
+            <a href="/leave/{{ $result->id }}" class="btn btn-primary leave-button leave-event-btn" data-date-start="{{ $result->date_start->format('Y-m-d H:i:s') }}"  data-id="{{ $result->id }}" >Wypisz się</a>
             @else
                 <a href="javascript:void(0)"  class="btn btn-primary disabled">Wypisz się</a>
             @endif
@@ -293,11 +312,23 @@
                                         <div class="spacer"></div>
 
                                         <div class="row">
-                                            <label for="birth_date" class="col-md-4 col-form-label text-md-end ">{{ __('Data urodzin') }}</label>
+                                            <label for="last_name" class="col-md-4 col-form-label text-md-end">{{ __('Szkoła') }}</label>
                                             <div class="col-md-3">
-                                                <input id="birth_date" type="date" class="form-control" name="birth_date" value="{{ $participant->birth_date }}">
+                                            <a href="{{ route('szkola.edit') }}" class="btn btn-primary">Zmień szkołę</a>
                                             </div>
                                         </div>
+
+
+                                        <div class="spacer"></div>
+
+                                        <div class="row">
+                                            <label for="last_name" class="col-md-4 col-form-label text-md-end">{{ __('Hasło') }}</label>
+                                            <div class="col-md-3">
+                                                <a href="change-password" class="btn btn-primary">Zmień hasło</a>
+                                            </div>
+                                        </div>
+                                            </div>
+                                    
 
                                         <div class="spacer"></div>
 
@@ -315,11 +346,7 @@
                     
                                         <div class="spacer"></div>
 
-                                        <div class="row align-items-center justify-content-start">
-                                            <div class="col-md-3">
-                                                <a href="change-password" class="btn btn-primary">Zmień hasło</a>
-                                            </div>
-                                        </div>
+                                       
                             </div>
                         </div>
                     </div>
@@ -387,6 +414,7 @@ function rat(x) {
   
 }
 
+
 </script>
 <script>
 function rating(x) {
@@ -401,6 +429,15 @@ function rating(x) {
     
 
     underinfoElements.forEach(div => div.classList.add("selected"));
+
+    
+    const profileInfo = document.querySelector(".profile-info");
+if (x === 1 || x === 2 || x === 3 || x === 4) {
+    profileInfo.style.display = "none";
+} else {
+    profileInfo.style.display = "block";
+}
+
 }
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -439,11 +476,21 @@ document.addEventListener('DOMContentLoaded', function() {
 function toggleExpand() {
     const gridWrapper2 = document.querySelector('.grid-wrapper2');
     if (gridWrapper2.style.display === 'block') {
-        gridWrapper2.style.display = 'none';
     } else {
         gridWrapper2.style.display = 'block';
     }
-}
+
+        const profileInfo = document.querySelector('.profile-info');
+    if (profileInfo.style.display === 'none' || profileInfo.style.display === '') {
+        profileInfo.style.display = 'block';
+    } 
+
+   
+    }
+
+    
+
+
 
 function closeExpand() {
     const gridWrapper2 = document.querySelector('.grid-wrapper2');

@@ -1,5 +1,8 @@
 @extends('layouts.app')
+@section('styles')
 
+<link rel="stylesheet" href="{{asset('css/loading.css')}}">
+@endsection
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -96,18 +99,7 @@
                                 
                             </div>
                         </div>
-                        <div class="row mb-3">
-                            <label for="birth_date" class="col-md-4 col-form-label text-md-end">{{ __('Data urodzin') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="birth_date" type="date" class="form-control @error('birth_date') is-invalid @enderror" name="birth_date" value="{{ old('first_name') }}" required autocomplete="birth_date" autofocus>
-                                @error('birth_date')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
+                       
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-6">
                                 <button type="submit" class="btn btn-primary">
@@ -119,9 +111,16 @@
                 </div>
             </div>
         </div>
+        <div id="loading" class="loading">
+        <div class="loading-spinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Przetwarzanie...</span>
+            </div>
+            <p>Proszę czekać...</p>
+        </div>
     </div>
-</div>
-
+    </div>
+   
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const showOldPasswordCheckbox = document.getElementById("showOldPassword");
@@ -148,6 +147,16 @@
                 newPasswordInput.type = "password";
             }
         });
+    });
+
+    const registerForm = document.querySelector("form");
+    const loadingSpinner = document.getElementById("loading");
+
+    registerForm.addEventListener("submit", function () {
+        loadingSpinner.style.display = "block";
+        setTimeout(function () {
+            loadingSpinner.style.display = "none";
+        }, 10000);
     });
     </script>
 @endsection

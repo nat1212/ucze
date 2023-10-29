@@ -82,10 +82,26 @@ class HomeController extends Controller
 
     $checkSchool = $this->school($participantId);
 
+    if ($participant->school) {
+        $school = $participant->school;
+        $schoolName = $school->name;
+        $cityName = $school->street;
+        $zipName = $school->zip_code;
+    } else {
+
+        $schoolName = '';
+        $cityName = '';
+        $zipName = '';
+    }
+
+
     return view('home', [
         'results' => $results,
         'groups' => $groups,
         'participant' => $participant,
+        'schoolName' => $schoolName,
+        'cityName' => $cityName,
+        'zipName' => $zipName,
         'error' => ($checkSchool == 1) ? null : 'Proszę uzupełnić szkołę!'
     ]);
 }
@@ -97,18 +113,18 @@ class HomeController extends Controller
         return view('change-password');
     }
     public function updatePassword(Request $request)
-{
+{   #Match The Old Password
+    
+    
+    
+    if(!Hash::check($request->old_password, auth()->user()->password)){
+        return back()->with("error", "Stare hasło jest niepoprawne!");
+    }
         # Validation
         $request->validate([
             'old_password' => 'required',
             'new_password' => 'required|confirmed',
         ]);
-
-
-        #Match The Old Password
-        if(!Hash::check($request->old_password, auth()->user()->password)){
-            return back()->with("error", "Stare hasło jest niepoprawne!");
-        }
 
 
         #Update the new Password

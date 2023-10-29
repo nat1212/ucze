@@ -12,7 +12,7 @@
 
                 <div class="card-body">
                 <div class="des2">Uwaga!</div>
-                <div class="des">W tym zapisie jeśli pole imię oraz nazwisko nie jest wypelnione to program tego nie liczy!</div>
+                <div class="des">W tym zapisie jeśli pole imię oraz nazwisko nie jest wypełnione to program tego nie liczy!</div>
               <div class="container2">
     <div class="center-align">
         <label for="number_input">Dostępne miejsca:</label>
@@ -27,7 +27,7 @@
         <input type="hidden" name="numeric_only" value="{{ $type }}">
             <input id="number_input" class="form-control" type="number" placeholder="Dodaj osoby" min="1">
             <div class="input-group-append">
-                <button onclick="addInputss()" class="btn-spacing" id="addPeopleButton">Dodaj</button>
+                <button style ="margin-left:10px;" onclick="addInputss()" class="btn btn-primary" id="addPeopleButton">Dodaj</button>
             </div>
         </div>
       
@@ -49,13 +49,13 @@
                         <div class="row mb-0 mt-4">
                             <div class="col-md-6 offset-md-5    ">
                             <button type="submit" class="btn btn-primary" id="submitButton" disabled>
-    {{ __('Dodaj') }}
+    {{ __('Zapisz') }}
 </button>
 
 
 
                                 <a href="{{ route('event.list') }}" class="btn btn-primary">
-                                    {{ __('Wróć') }}
+                                    {{ __('Anuluj') }}
                                 </a>
                             </div>
                         </div>

@@ -165,6 +165,7 @@ return [
     'custom' => [
         'birth_date' => [
             'before_or_equal' => 'The :attribute must be a date before or equal to January 1, 2010.',
+            
         ],
     ],
 
