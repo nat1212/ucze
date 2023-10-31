@@ -77,14 +77,15 @@
                         <input type="hidden" name="id" value="{{ $event_id }}">
                        
                         <input type="hidden" name="event_details_id" value="{{ $event_details_id }}">
-
+                        </form>
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-5    ">
                             @if (strtotime($date) > strtotime('now'))
                                 <button type="submit" class="btn btn-primary"  >
                                     {{ __('Zapisz') }}
                                 </button>
-                                @endif
+                                @endif   
+                  
                                 <a href="{{ route('home') }}" class="btn btn-primary">
                                     {{ __('Anuluj') }}
                                 </a>
@@ -93,7 +94,7 @@
                                 @endif
                             </div>
                         </div>
-                    </form>
+              
                     </div>
                 </div>
             </div>
@@ -104,7 +105,13 @@
     <p class="footer-text">@Sławek&Natan Company</p>
     </div>
 
-
+    <div id="leave-dialog" class="dialog"  style="display: none;">
+    <div class="dialog-content">
+        <p>Czy na pewno chesz usunąć grupę?</p>
+        <button id="confirm-leave-button">Tak</button>
+        <button id="cancel-leave-button">Nie</button>
+    </div>
+</div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -249,34 +256,32 @@ function addInputss() {
 
 </script>
 <script>
-    var csrfToken = $('meta[name="csrf-token"]').attr('content');
+   var csrfToken = $('meta[name="csrf-token"]').attr('content');
 
-    $('.del').click(function() {
-        var eventId = $(this).data("id");
-        var confirmed = window.confirm("Czy na pewno chcesz usunąć listę?");
-        if (confirmed) {
-            $.ajax({
-                method: "DELETE",
-                url: "http://szkola.test/list-xd/" + eventId,
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken 
-                },
-                success: function(data) {
-                    if (data.success) {
-                        alert("Udało się usunąć listę!");
-                        window.location.replace("{{ route('home') }}");
-                    } else {
-               
-                        alert("Wystąpił błąd: " + data.message);
-                    }
-                },
-                error: function(xhr, textStatus, errorThrown) {
-                
-                    alert("Wystąpił błąd podczas żądania: " + textStatus);
-                }
-            });
-        }
+$('.del').click(function() {
+    var eventId = $(this).data("id");
+
+    $('#leave-dialog').show();
+
+    $('#confirm-leave-button').click(function() {
+        $('#leave-dialog').hide();
+        $.ajax({
+            method: "DELETE",
+            url: "http://szkola.test/list-xd/" + eventId,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            complete: function() {
+                window.location.href = '/home';
+            }
+        });
     });
+
+    $('#cancel-leave-button').click(function() {
+        $('#leave-dialog').hide();
+    });
+});
+
 
 
     const form = document.getElementById('myForm');

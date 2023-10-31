@@ -577,9 +577,12 @@ public function edit3(Request $request)
         $eventDetails->number_seats += $numberOfPeople;
         $eventDetails->save();
 
-        return response()->json(['success' => true, 'message' => 'Udało się usunąć listę!']);
+        $statusMessage = 'Udało Ci się usunąć grupę!';
+            return redirect()->route('home')->with('status', $statusMessage);
+
     } catch (\Exception) {
-        return response()->json(['success' => false, 'message' => 'Wystąpił błąd podczas usuwania listy']);
+        $error = 'Wystąpił błąd podczas usuwania listy:';
+        return redirect()->route('home')->withErrors(['status' => $error]);
     }
 }
 
@@ -600,11 +603,13 @@ public function edit3(Request $request)
             $eventDetails->number_seats += $number_of_people;
             $eventDetails->save();
     
-          return response()->json(['success' => true, 'message' => 'Udało się usunąć listę!']);
+             $statusMessage = 'Udało Ci się usunąć grupę!';
+            return redirect()->route('home')->with('status', $statusMessage);
 
         } catch (\Exception) {
 
-            return response()->json(['success' => false, 'message' => 'Wystąpił błąd podczas usuwania listy']);
+            $error = 'Wystąpił błąd podczas usuwania listy:';
+        return redirect()->route('home')->withErrors(['status' => $error]);
         }
     }
     public function leave($id){

@@ -227,7 +227,7 @@ font-size: 25px;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 999; 
+    z-index: 9998; 
 }
   .dialog-content2 {
     background-color: white;
@@ -248,7 +248,7 @@ font-size: 25px;
       display: flex;
       justify-content: center;
       align-items: center;
-      z-index: 1000; 
+      z-index: 9999;
       overflow: auto;
   }
   

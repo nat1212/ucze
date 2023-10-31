@@ -23,11 +23,14 @@ use App\Http\Controllers\eventParticipantController;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 Auth::routes(['verify'=>true]);
+
 Route::get('/event/list',[EventController::class,'index'])->name('event.list');
 
 Route::middleware(['auth','verified'])->group(function(){
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 Route::get('/szkola', [DictionarySchoolController::class, 'showForm']);
 

@@ -68,10 +68,14 @@
             <div class="card card-left">
             <div class="card-header">
                 <span>{{ __('Twój profil') }}</span>  
+                <div class="profile2">Ostatnio wylogowano:&nbsp;<span>{{ date('d-m-Y H:i', strtotime(Auth::user()->last_logout)) }}</span></div>
             </div>
+            
             <div class="profile-info">
+         
     <div class ="profile">Imię:&nbsp;<span>{{ Auth::user()->first_name }}</span></div>
     <div class ="profile">Nazwisko:&nbsp;<span>{{ Auth::user()->last_name }}</span></div>
+    <div class ="profile">E-mail:&nbsp;<span>{{ Auth::user()->email }}</span></div>
     @if (Auth::user()->sex == 'n')
         <div class ="profile">Płeć:&nbsp; <span>Nie podano</span></div>
     @endif
@@ -299,6 +303,19 @@
                                         <div class="spacer"></div>
 
                                         <div class="row">
+                                        <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('E-mail') }}</label>
+                                        <div class="col-md-3">
+                                            <div class="input-container">
+                                                <input id="email" type="text" class="form-control tracked-field" name="email" value="{{ $participant->email }}" placeholder="Email" required autocomplete="Email" autofocus>
+                                                <div class="note">Uwaga! Przy zmianie e-maila potrzebna bedzie ponowna weryfikacja!</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                        <div class="spacer"></div>
+
+                                        <div class="row">
                                             <label for="sex" class="col-md-4 col-form-label text-md-end " >{{ __('Płeć') }}</label>
                                             <div class="col-md-3">
                                                 <select id="sex" class="form-control" name="sex" required autofocus>
@@ -382,7 +399,14 @@
         <button id="cancel2-button">Wróć</button>
     </div>
 </div>
-
+<div id="loading" class="loading">
+        <div class="loading-spinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Przetwarzanie...</span>
+            </div>
+            <p>Proszę czekać...</p>
+        </div>
+</div>
 
 </div>
 
@@ -432,11 +456,18 @@ function rating(x) {
 
     
     const profileInfo = document.querySelector(".profile-info");
+const profile2 = document.querySelector(".profile2");
+
 if (x === 1 || x === 2 || x === 3 || x === 4) {
     profileInfo.style.display = "none";
+    profile2.style.display = "none";
 } else {
     profileInfo.style.display = "block";
+    profile2.style.display = "block";
 }
+
+
+
 
 }
 
@@ -511,7 +542,7 @@ function closeExpand() {
     var formInputs = document.querySelectorAll('.tracked-field');
 
     var sexField = document.getElementById('sex');
-    var birthDateField = document.getElementById('birth_date');
+
 
     var originalValues = {};
 
@@ -535,9 +566,6 @@ function closeExpand() {
         updateProfileBtn.disabled = false;
     });
 
-    birthDateField.addEventListener('input', function() {
-        updateProfileBtn.disabled = false;
-    });
 });
 
 
@@ -550,6 +578,9 @@ document.getElementById('updateProfileBtn').addEventListener('click', function()
 document.getElementById('confirm-button').addEventListener('click', function() {
     var form = document.getElementById('updateProfileForm');
     var formData = new FormData(form);
+
+    var loadingElement = document.getElementById('loading');
+    loadingElement.style.display = 'block';
 
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
@@ -574,6 +605,7 @@ document.getElementById('confirm-button').addEventListener('click', function() {
                     }, 3000);
                 }
             } 
+            loadingElement.style.display = 'none';
         }
     };
 
@@ -688,14 +720,15 @@ leaveButtons.forEach(function(button) {
     
     var lastNameInput = document.getElementById("last_name");
     lastNameInput.value = "{{ $participant->last_name }}";
+
+    var emailInput = document.getElementById("email");
+    emailInput.value = "{{ $participant->email }}";
     
     var sexInput = document.getElementById("sex");
     sexInput.value = "{{ $participant->sex }}";
     
-    var birthDateInput = document.getElementById("birth_date");
-    birthDateInput.value = "{{ $participant->birth_date }}";
+
     
-  
     var updateProfileBtn = document.getElementById('updateProfileBtn');
     updateProfileBtn.disabled = true;
 }

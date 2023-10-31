@@ -60,7 +60,7 @@
 
                         <div class="card-footer">
                             <button class="btn btn-primary">Zapisz</button>
-                            <a href="{{ route('home') }}" class="btn btn-primary">Wróć</a>
+                            <a href="{{ route('home') }}" class="btn btn-primary">Anuluj</a>
                         </div>
 
                     </form>

@@ -1,6 +1,6 @@
 
 .side-bar {
-    position: fixed;
+ 
     background-color: white;
      top: 55px;
     width: 170px;
@@ -10,6 +10,7 @@
     margin-right: 200px;
     overflow-y: auto;
     height: 100%;
+    position: absolute;
 }
 
 
@@ -44,16 +45,21 @@
 }
 .table-info{
    display: none;
+   
 }
 .table-info.selected{
     overflow-x:auto;
   display: block;
+  
 }
 
 .side-bar-underinfo.active {
-    background-color: #007bff; /* Zmiana koloru tła po zaznaczeniu */
-    color: #fff; /* Zmiana koloru tekstu po zaznaczeniu */
+    background-color: #007bff; 
+    color: #fff; 
   }
+
+
+
 
   @media only screen and (max-width: 800px) {
     .side-bar{

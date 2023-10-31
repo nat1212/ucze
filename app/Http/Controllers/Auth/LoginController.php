@@ -5,6 +5,10 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
+
 
 class LoginController extends Controller
 {
@@ -37,4 +41,27 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
+
+
+    public function login(Request $request)
+    {
+   
+    
+        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+       
+            Auth::user()->update(['last_login' => now()]);
+    
+            return redirect('/home');
+           
+        }
+    }
+
+public function logout(Request $request)
+{
+    Auth::user()->update(['last_logout' => now()]);
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+    return redirect('/');
+}
 }

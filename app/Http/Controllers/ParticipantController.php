@@ -9,6 +9,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 class ParticipantController extends Controller
 {
     public function edit($id)
@@ -21,11 +24,14 @@ class ParticipantController extends Controller
 
 public function updateProfile(Request $request, $id)
 {
+
+
     $participant = Participant::findOrFail($id);
 
     $validator = Validator::make($request->all(), [
         'first_name' => 'nullable|string|max:255',
         'last_name' => 'nullable|string|max:255',
+        'email' => 'nullable|string|max:255',
         'sex' => ['nullable', Rule::in(['m', 'k', 'n'])],
     
     ]);
@@ -42,13 +48,24 @@ public function updateProfile(Request $request, $id)
     if (!empty($request->last_name)) {
         $dataToUpdate['last_name'] = $request->last_name;
     }
+    if (!empty($request->email)) {
+        $newEmail = $request->email;
+        if ($newEmail != $participant->email) {
+            $dataToUpdate['email'] = $newEmail;
+            $dataToUpdate['email_verified_at'] = null;
+            $participant->update($dataToUpdate);
+            $participant->sendEmailVerificationNotification($newEmail);
+        }
 
+    }
+    
     if (!empty($request->sex)) {
         $dataToUpdate['sex'] = $request->sex;
     }
 
-
     $participant->update($dataToUpdate);
+    
+ 
 
     return new JsonResponse(['success' => true, 'message' => 'Profil został zaktualizowany.']);
 }
