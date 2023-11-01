@@ -362,3 +362,12 @@ font-size: 25px;
       text-align: justify;
 
     }
+    
+    @media only screen and (min-width: 800px){
+      .H2p{
+          display:none;
+      }
+  
+      
+    }
+  

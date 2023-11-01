@@ -65,27 +65,40 @@
                               
                                 @if(Request::is('home*'))
                                     <div class="H2p">
-                                    <a  onclick="toggleExpand()" class="dropdown-item"  href="#">
+                                    <a  onclick="rating(0); toggleExpand()" class="dropdown-item"  href="#">
                                     {{ ('Edycja profilu') }}
                                     </a>
-                                    <a onclick="rating(1)" class="dropdown-item"  href="#">
+                                    <a onclick="rating(1);  closeExpand();" class="dropdown-item"  href="#">
                                     {{ ('Wydarzenia indywidulane') }}
                                     </a>
-                                    <a onclick="rating(2)" class="dropdown-item"  href="#">
+                                    @if(Auth::user() && Auth::user()->role == '2')
+                                    <a onclick="rating(2);  closeExpand();" class="dropdown-item"  href="#">
                                     {{ (' Zapis grupowy') }}
                                     </a>
-                                    <a onclick="rating(3)" class="dropdown-item"  href="#">
+                                    @endif
+                                    <a onclick="rating(3);  closeExpand();" class="dropdown-item"  href="#">
                                     {{ ('Zapis indywidualny-wygasłe') }}
                                     </a>
-                                    <a onclick="rating(4)" class="dropdown-item"  href="#">
+                                    @if(Auth::user() && Auth::user()->role == '2')
+                                    <a onclick="rating(4);  closeExpand();" class="dropdown-item"  href="#">
                                     {{ ('Zapis grupowy-wygasłe') }}
                                     </a>
+                                    @endif
                                     <a  onclick="redirectToEventList(event)" class="dropdown-item"  href="#">
                                     {{ ('Wszyskie wydarzenia') }}
                                     </a>
                                     </div>
 
                                     @endif
+                                    @if(Request::is('event/list*'))
+                                    <div class="H2p">
+                                    <a onclick="window.location.href = '{{ url('/home') }}';" class="dropdown-item" href="#">
+                                    {{ ('Strona głowna') }}
+                                    </a>
+                                    </div>
+
+                                    @endif
+                                    
                                     <a style="font-size:14px;" class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

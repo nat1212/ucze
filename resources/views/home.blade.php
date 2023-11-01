@@ -421,13 +421,18 @@
 <script defer src="https://code.jquery.com/jquery-3.7.0.js"></script>
 <script defer src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 <script defer src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-<script defer >$(document).ready(function () {
-    var table = $('#example').DataTable();
-    
+<script defer >
+$(document).ready(function() {
+    var table = $('#example').DataTable({
+        "scrollY": "500px", 
+        "scrollCollapse": true, 
+    });
 });
-$(document).ready(function () {
-    var table = $('#example1').DataTable();
-    
+$(document).ready(function() {
+    var table = $('#example1').DataTable({
+        "scrollY": "500px", 
+        "scrollCollapse": true, 
+    });
 });
 </script>
 <script>
