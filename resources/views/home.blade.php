@@ -68,7 +68,13 @@
             <div class="card card-left">
             <div class="card-header">
                 <span>{{ __('Twój profil') }}</span>  
-                <div class="profile2">Ostatnio wylogowano:&nbsp;<span>{{ date('d-m-Y H:i', strtotime(Auth::user()->last_logout)) }}</span></div>
+                <div class="profile2">
+                @if (Auth::user()->last_logout)
+            Ostatnio wylogowano:&nbsp;<span>{{ date('d-m-Y H:i', strtotime(Auth::user()->last_logout)) }}</span>
+            @else
+     
+             @endif
+            </div>
             </div>
             
             <div class="profile-info">
@@ -308,7 +314,9 @@
                                             <div class="input-container">
                                                 <input id="email" type="text" class="form-control tracked-field" name="email" value="{{ $participant->email }}" placeholder="Email" required autocomplete="Email" autofocus>
                                                 <div class="note">Uwaga! Przy zmianie e-maila potrzebna bedzie ponowna weryfikacja!</div>
+                                                
                                             </div>
+                                            
                                         </div>
                                     </div>
 

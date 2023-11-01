@@ -65,12 +65,64 @@
     .side-bar{
         display: none;
     }
+
+
+   
   }
   @media only screen and (min-width: 800px){
     .H2p{
         display:none;
     }
+
+    
   }
 
+  @media only screen and (max-width: 1650px) {
+    .col-md-12 {
+    margin-left: 60px;
+    }
+
+   
+}
+
+@media only screen and (max-width: 1650px) {
+    .side-bar {
+        top: 55px;
+        width: 130px;
+        bottom: 0;
+        left: 0;
+        box-shadow: 5px 3px 5px -2px rgba(0, 0, 0, 0.2);
+        margin-right: 200px;
+        overflow-y: auto;
+        height: 100%;
+        position: absolute;
+    }
+
+   
+.side-bar-info{
+    height: 76px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size:13px;
+}
+
+
+.side-bar-underinfo.selected{
+    height: 46px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size:13px;
+}
+}
+
+@media only screen and (max-width: 800px) {
+
+    .col-md-12 {
+        margin-left: 0; 
+    }
+   
+  }
 
 

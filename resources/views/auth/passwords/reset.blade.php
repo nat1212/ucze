@@ -1,5 +1,9 @@
 @extends('layouts.app')
+@section('styles')
 
+<link rel="stylesheet" href="{{asset('css/loading.css')}}">
+<link rel="stylesheet" href="{{asset('css/foot.css')}}">
+@endsection
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -62,4 +66,35 @@
         </div>
     </div>
 </div>
+
+<div class="footer">
+    <p class="footer-text">@Sławek&Natan Company</p>
+    </div>
+<div id="loading" class="loading">
+        <div class="loading-spinner">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Przetwarzanie...</span>
+            </div>
+            <p>Proszę czekać...</p>
+        </div>
+    </div>
+    </div>
+    <div id="loading-overlay" class="loading-overlay"></div>
+
+    <script>
+const registerForm = document.querySelector("form");
+const loadingSpinner = document.getElementById("loading");
+const loadingOverlay = document.getElementById("loading-overlay");
+
+registerForm.addEventListener("submit", function () {
+    loadingOverlay.style.display = "block";
+    loadingSpinner.style.display = "block";
+
+    setTimeout(function () {
+        loadingOverlay.style.display = "none";
+        loadingSpinner.style.display = "none";
+    }, 5000);
+});
+
+    </script>
 @endsection

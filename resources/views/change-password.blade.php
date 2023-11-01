@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('styles')
 <link rel="stylesheet" href="{{asset('css/list2.css')}}">
+<link rel="stylesheet" href="{{asset('css/loading.css')}}">
 @endsection
 @section('content')
     <div class="container">
@@ -59,7 +60,7 @@
                         </div>
 
                         <div class="card-footer">
-                            <button class="btn btn-primary">Zapisz</button>
+                            <button type="submit" class="btn btn-primary">Zapisz</button>
                             <a href="{{ route('home') }}" class="btn btn-primary">Anuluj</a>
                         </div>
 

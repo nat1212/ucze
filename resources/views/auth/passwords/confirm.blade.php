@@ -8,7 +8,7 @@
                 <div class="card-header">{{ __('Potwierdź hasło') }}</div>
 
                 <div class="card-body">
-                    {{ __('Uzupełnij hasło prze kontynuacją.') }}
+                    {{ __('Uzupełnij hasło przed kontynuacją.') }}
 
                     <form method="POST" action="{{ route('password.confirm') }}">
                         @csrf

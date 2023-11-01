@@ -73,6 +73,7 @@ class RegisterController extends Controller
             'password' =>HASH::make($data['password']),
             'sex'=> $data['sex'],
             'role' => 1,
+            'last_login' => now(),
         ]);
     }
 }

@@ -1,6 +1,7 @@
 @extends('layouts.app')
 @section('styles')
 <link rel="stylesheet" href="{{asset('css/szkola.css')}}">
+<link rel="stylesheet" href="{{asset('css/loading.css')}}">
 @endsection
 @section('content')
 <div class="container">
@@ -47,7 +48,9 @@
     </div>
 </div>
 
-
+<div class="footer">
+    <p class="footer-text">@Sławek&Natan Company</p>
+</div>
 
 <script>
 
@@ -74,6 +77,9 @@ inputField.addEventListener('change', function () {
     datalist.innerHTML = '';
 });
 
+
+
+
 </script>
 
 
@@ -81,6 +87,4 @@ inputField.addEventListener('change', function () {
 
 
 @endsection
-<div class="footer">
-    <p class="footer-text">@Sławek&Natan Company</p>
-</div>
+

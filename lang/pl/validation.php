@@ -31,7 +31,7 @@ return [
     "between.string"=>"Pole musi zawierać się w granicach :min - :max znaków.",
     "boolean"=>"Pole musi mieć wartość logiczną prawda albo fałsz.",
     "can"=>"Pole zawiera nieautoryzowaną wartość.",
-    "confirmed"=>"Nowe hasła się nie zgadzają.",
+    "confirmed"=>"Hasła się nie zgadzają.",
     "country"=>"To pole nie zawiera prawidłowego kraju.",
     "date"=>"Pole nie jest prawidłową datą.",
     "date_equals"=>"Pole musi być datą równą :date.",

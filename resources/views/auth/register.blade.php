@@ -2,6 +2,7 @@
 @section('styles')
 
 <link rel="stylesheet" href="{{asset('css/loading.css')}}">
+<link rel="stylesheet" href="{{asset('css/foot.css')}}">
 @endsection
 @section('content')
 <div class="container">
@@ -81,7 +82,8 @@
                                 <div class="form-check mt-2">
                                         <input type="checkbox" class="form-check-input" id="showNewPassword">
                                         <label class="form-check-label" for="showNewPassword">Pokaż hasło</label>
-                                    </div>
+                                </div>
+                                <div id="passwordMatchError" class="text-danger"></div>
                             </div>
                             
                         </div>
@@ -111,6 +113,12 @@
                 </div>
             </div>
         </div>
+
+        
+<div class="footer">
+    <p class="footer-text">@Sławek&Natan Company</p>
+    </div>
+
         <div id="loading" class="loading">
         <div class="loading-spinner">
             <div class="spinner-border text-primary" role="status">
@@ -120,7 +128,7 @@
         </div>
     </div>
     </div>
-   
+    <div id="loading-overlay" class="loading-overlay"></div>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const showOldPasswordCheckbox = document.getElementById("showOldPassword");
@@ -150,13 +158,52 @@
     });
 
     const registerForm = document.querySelector("form");
-    const loadingSpinner = document.getElementById("loading");
+const loadingSpinner = document.getElementById("loading");
+const loadingOverlay = document.getElementById("loading-overlay");
 
-    registerForm.addEventListener("submit", function () {
-        loadingSpinner.style.display = "block";
-        setTimeout(function () {
-            loadingSpinner.style.display = "none";
-        }, 10000);
+registerForm.addEventListener("submit", function () {
+    loadingOverlay.style.display = "block";
+    loadingSpinner.style.display = "block";
+
+    setTimeout(function () {
+        loadingOverlay.style.display = "none";
+        loadingSpinner.style.display = "none";
+    }, 10000);
+});
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    const showConfirmNewPasswordCheckbox = document.getElementById("showNewPassword");
+    const confirmNewPasswordInput = document.getElementById("password-confirm");
+    const newPasswordInput = document.getElementById("password");
+    const passwordMatchError = document.getElementById("passwordMatchError");
+
+    showConfirmNewPasswordCheckbox.addEventListener("change", function () {
+        if (showConfirmNewPasswordCheckbox.checked) {
+            confirmNewPasswordInput.type = "text";
+        } else {
+            confirmNewPasswordInput.type = "password";
+        }
     });
+
+    newPasswordInput.addEventListener("input", function () {
+
+        if (newPasswordInput.value !== confirmNewPasswordInput.value) {
+            passwordMatchError.textContent = "Hasła nie pasują do siebie.";
+        } else {
+            passwordMatchError.textContent = "";
+        }
+    });
+
+    confirmNewPasswordInput.addEventListener("input", function () {
+    
+        if (newPasswordInput.value !== confirmNewPasswordInput.value) {
+            passwordMatchError.textContent = "Hasła nie pasują do siebie.";
+        } else {
+            passwordMatchError.textContent = "";
+        }
+    });
+});
     </script>
 @endsection
