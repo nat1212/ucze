@@ -16,11 +16,11 @@
 
     @if($errors->any())
     <div class="alert alert-danger error-message">
-        <ul>
+       
             @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
+               {{ $error }}
             @endforeach
-        </ul>
+       
     </div>
      @endif
                    
@@ -30,6 +30,8 @@
         </div>
       @endif
 
+
+      
 
       <div class="row3">
     <div class="col-10">
@@ -421,7 +423,7 @@ document.addEventListener('DOMContentLoaded', function() {
         for (var i = 0; i < errorMessages.length; i++) {
             errorMessages[i].style.display = 'none';
         }
-    }, 2000); 
+    }, 4000); 
     document.addEventListener('DOMContentLoaded', function() {
         const statusMessage = document.getElementById('status-message');
 

@@ -62,6 +62,11 @@
     margin-bottom: 20px; 
 }
 
+.table-container
+{
+    max-height: 650px;
+    overflow-y: auto;
+}
 
   @media only screen and (max-width: 800px) {
     .side-bar{
@@ -83,6 +88,7 @@
     .col-md-12 {
     margin-left: 60px;
        }
+   
        .spacer {
         margin-top: 5px;
       }
@@ -91,14 +97,24 @@
 {
   margin-left: 280px;
 }
-.card-body p,
-.card-body a {
-    margin-bottom: 0;
+
+.card-body .leave-event-btn {
+    margin-top: 0;
     width:115px;
 }
-   
 }
 
+
+@media only screen and (max-width: 1920px) {
+   
+
+.card-body .leave-event-btn {
+    margin-top: 10px;
+    width:115px;
+}
+
+
+}
 @media only screen and (max-width: 1200px) {
    
 
@@ -162,6 +178,17 @@ margin-left: 220px;
 }
 }
 
+
+@media only screen and (max-width: 1000px) {
+
+    .btn-primary.show-sub-event {
+       height: 50px; 
+       margin-top: 5px;
+    }
+   
+    
+  }
+
 @media only screen and (max-width: 800px) {
 
     .col-md-12 {
@@ -171,7 +198,10 @@ margin-left: 220px;
     {
     margin-left: 150px;
     }
-    
+    .btn-primary.show-sub-event {
+        height: 60px; 
+        margin-top: 5px;
+     }
   }
 
 

@@ -16,6 +16,13 @@
 .card-body a {
     margin-bottom: 10px;
 }
+
+.link-frame p{
+  font-size: 20px;
+  color: red;
+  margin: 5px;
+}
+
 .card-body {
   flex: 1; /* Elastyczność, aby dostosować się do zmiany zawartości */
   overflow-y: auto;
@@ -162,6 +169,7 @@ button:hover {
   padding: 5px;
   display: inline-block;
   border-radius: 5px;
+  margin-bottom: 10px;
 }
 .spacer {
   margin-top: 20px;
@@ -171,6 +179,9 @@ button:hover {
 {
   margin-left: 280px;
 }
+
+
+
 
 .dialog {
   position: fixed;
@@ -191,6 +202,7 @@ button:hover {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   text-align: center;
+  
 }
 
 .dialog-content button {
@@ -345,4 +357,14 @@ button:hover {
    left: -100px;
 
   }
+}
+
+@keyframes blink {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.blink {
+  animation: blink 5s infinite;
 }

@@ -176,7 +176,7 @@ class eventParticipantController extends Controller
             ->count();
     
         if ($result > 0) {
-            $error = 'Uzupełnij dane.';
+            $error = 'Aby odblokować profil uzupełnij dane szkoły!';
             return redirect()->route('event.list')->withErrors(['message' => $error]);
         }
     
@@ -236,7 +236,7 @@ class eventParticipantController extends Controller
             ->count();
     
         if ($result > 0) {
-            $error = 'Uzupełnij dane.';
+            $error = 'Aby odblokować profil uzupełnij dane szkoły!';
             return redirect()->route('event.list')->withErrors(['message' => $error]);
         }
 
@@ -296,12 +296,12 @@ class eventParticipantController extends Controller
                 
             }
             $statusMessage = 'Udało Ci się zapisać grupę wydarzenie!';
-            return redirect()->route('home')->with('status', $statusMessage);
+            return redirect()->route('home')->with('status', $statusMessage)->with('executeJs', true);
 
         }
         else{
                  $error = 'Nie ma już wolnych miejsc.';
-                return redirect()->route('home')->withErrors(['message' => $error]);
+                return redirect()->route('home')->withErrors(['message' => $error])->with('executeJs', true);
         }
       
     }
@@ -316,7 +316,7 @@ class eventParticipantController extends Controller
             ->count();
     
         if ($result > 0) {
-            $error = 'Uzupełnij dane.';
+            $error = 'Aby odblokować profil uzupełnij dane szkoły!';
             return redirect()->route('event.list')->withErrors(['message' => $error]);
         }
 
@@ -352,12 +352,12 @@ class eventParticipantController extends Controller
             $eventDetails->save();
             
             $statusMessage = 'Udało Ci się zapisać grupę na wydarzenie!';
-            return redirect()->route('home')->with('status', $statusMessage);
+            return redirect()->route('home')->with('status', $statusMessage)->with('executeJs', true);
 
         }
         else{
                  $error = 'Nie ma już wolnych miejsc.';
-                return redirect()->route('event.list')->withErrors(['message' => $error]);
+                return redirect()->route('event.list')->withErrors(['message' => $error])->with('executeJs', true);
         }
       
     }
@@ -412,7 +412,8 @@ foreach ($eventParticipants as $key => $eventParticipant) {
             return redirect()->route('home')->with([
                 'status' => $statusMessage,
                 'status_duration' => 2000, 
-            ]);
+           
+            ])->with('executeJs', true);
         }
         $event_details_id = $request->input('event_details_id');
 
@@ -446,7 +447,8 @@ foreach ($eventParticipants as $key => $eventParticipant) {
             return redirect()->route('home')->with([
                 'status' => $statusMessage,
                 'status_duration' => 2000, 
-            ]);
+              
+            ])->with('executeJs', true);
         }
         
 
@@ -464,7 +466,7 @@ foreach ($eventParticipants as $key => $eventParticipant) {
 
     $event_details_id = $request->input('event_details_id');
   
-
+ 
 
     $NumberParticipants = $request->input('number_of_peoplee');
 
@@ -487,11 +489,12 @@ foreach ($eventParticipants as $key => $eventParticipant) {
         return redirect()->route('home')->with([
             'status' => $statusMessage,
             'status_duration' => 2000,
-        ]);
+           
+        ])->with('executeJs', true);
     }
     else{
         $error = 'Nie ma już wolnych miejsc.';
-       return redirect()->route('home')->withErrors(['status' => $error]);
+       return redirect()->route('home')->withErrors(['status' => $error])->with('executeJs', true);
 }
 }
 
@@ -530,11 +533,12 @@ public function edit3(Request $request)
         return redirect()->route('home')->with([
             'status' => $statusMessage,
             'status_duration' => 2000,
-        ]);
+       
+        ])->with('executeJs', true);
     }
     else{
         $error = 'Nie możesz odjąć wiecej osób niż masz zapisanych.';
-       return redirect()->route('home')->withErrors(['status' => $error]);
+       return redirect()->route('home')->withErrors(['status' => $error])->with('executeJs', true);
 }
     
 }
@@ -578,11 +582,11 @@ public function edit3(Request $request)
         $eventDetails->save();
 
         $statusMessage = 'Udało Ci się usunąć grupę!';
-            return redirect()->route('home')->with('status', $statusMessage);
+        return redirect()->route('home')->with('status', $statusMessage)->with('executeJs', true);
 
     } catch (\Exception) {
         $error = 'Wystąpił błąd podczas usuwania listy:';
-        return redirect()->route('home')->withErrors(['status' => $error]);
+        return redirect()->route('home')->withErrors(['status' => $error])->with('executeJs', true);
     }
 }
 
@@ -604,12 +608,12 @@ public function edit3(Request $request)
             $eventDetails->save();
     
              $statusMessage = 'Udało Ci się usunąć grupę!';
-            return redirect()->route('home')->with('status', $statusMessage);
+             return redirect()->route('home')->with('status', $statusMessage)->with('executeJs', true);
 
         } catch (\Exception) {
 
             $error = 'Wystąpił błąd podczas usuwania listy:';
-        return redirect()->route('home')->withErrors(['status' => $error]);
+        return redirect()->route('home')->withErrors(['status' => $error])->with('executeJs', true);
         }
     }
     public function leave($id){

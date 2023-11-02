@@ -35,30 +35,42 @@
         <div onclick="rat(1)" class="side-bar-info">
             Profil
         </div>
+        @if (Auth::user()->dictionary_schools_id)
         <div  onclick=" rating(0);toggleExpand()" class="side-bar-underinfo" data-id="1">
             Edycja profilu
         </div>
+        @endif
         <div onclick="rat(2)"class="side-bar-info">
             Lista wydarzeń
         </div>
+        @if (Auth::user()->dictionary_schools_id)
         <div onclick="rating(1); closeExpand();" class="side-bar-underinfo" data-id="2">
             Zapis indywidualny
         </div>
+        @endif
+        
+        @if (Auth::user()->dictionary_schools_id)
         @if(Auth::user() && Auth::user()->role == '2')
         <div onclick="rating(2); closeExpand();" class="side-bar-underinfo"data-id="2">
             Zapis grupowy
         </div>
         @endif
+        @endif
+        
         <div onclick="rat(3)" class="side-bar-info">
            Wygasłe wydarzenia
         </div>
+        @if (Auth::user()->dictionary_schools_id)
         <div onclick="rating(3); closeExpand();" class="side-bar-underinfo"data-id="3">
             Zapis indywidualny
         </div>
+        @endif
+        @if (Auth::user()->dictionary_schools_id)
         @if(Auth::user() && Auth::user()->role == '2')
         <div onclick="rating(4); closeExpand();" class="side-bar-underinfo" data-id="3">
             Zapis grupowy
         </div>
+        @endif
         @endif
         <div  onclick="redirectToEventList(event)" class="side-bar-info">
             Wszystkie wydarzenia
@@ -103,7 +115,7 @@
                 <div class="card-body">
                 <div id="update-message2" class="alert alert-danger" style="display: none;"></div>
                     @if(isset($error) && !empty($error))
-                        <div class="link-frame">
+                        <div class="link-frame blink">
                             <p>{{ $error }} -> <a href="/szkola">Kliknij tutaj</a></p>
                         </div>
                     @endif
@@ -111,7 +123,7 @@
                    
  <div class="table-info" data-id="1">
  <h3 style="text-align: center; margin: 20px 0;">Zapis indywidualny:</h3>
-
+ <div class="table-container" >
                 <table id="example"  class="table table-striped" style="width:100%">
         <thead>
             <tr>
@@ -150,9 +162,11 @@
       
     </table>
 </div>
+</div>
 @if(Auth::user() && Auth::user()->role == '2')
-<div class="table-info" data-id="2">
+<div id="element-2" class="table-info" data-id="2">
 <h3 style="text-align: center;margin: 20px 0;">Zapis grupowy:</h3>
+<div class="table-container" >
         <table id="example1"  class="table table-striped" style="width:100%">
         <thead>
             <tr>
@@ -180,7 +194,7 @@
             <td> {{  $group->date_start->format('d-m-Y')}} godz. {{$group->date_start->format('H:i') }}<br>{{  $group->date_end->format('d-m-Y')}} godz. {{$group->date_end->format('H:i') }}</td>
             <td>
             @if ($group->type == 1)
-            <a href="{{ route('list',$group->participant_id,) }}" class="btn btn-danger listunia">Lista</a>
+            <a href="{{ route('list',$group->participant_id,) }}"  class="btn btn-danger listunia">Lista</a>
             @else
             <a href="{{ route('listnr',$group->participant_id,) }}" class="btn btn-danger leave">Lista</a>
             @endif               
@@ -198,9 +212,11 @@
        
     </table>
 </div>
+</div>
 @endif
 <div class="table-info" data-id="3">
 <h3 style="text-align: center;margin: 30px 0;">Wygasłe wydarzenia indywidualne:</h3>
+<div class="table-container">
                 <table id="example"  class="table table-striped" style="width:100%">
         <thead>
             <tr>
@@ -232,9 +248,11 @@
        
     </table>
 </div>
+</div>
 @if(Auth::user() && Auth::user()->role == '2')
 <div class="table-info" data-id="4">
 <h3 style="text-align: center;margin: 30px 0;">Wygasłe wydarzenia grupowe:</h3>
+<div class="table-container" >
         <table id="example1"  class="table table-striped" style="width:100%">
         <thead>
             <tr>
@@ -273,6 +291,7 @@
             </tbody>
       
     </table>
+</div>
 </div>
 @endif
 
@@ -424,14 +443,12 @@
 <script defer >
 $(document).ready(function() {
     var table = $('#example').DataTable({
-        "scrollY": "500px", 
-        "scrollCollapse": true, 
+     
     });
 });
 $(document).ready(function() {
     var table = $('#example1').DataTable({
-        "scrollY": "500px", 
-        "scrollCollapse": true, 
+  
     });
 });
 </script>
@@ -691,40 +708,61 @@ leaveButtons.forEach(function(button) {
     });
 });
 
-    document.getElementById('confirm-leave-button').addEventListener('click', function() {
-        var dialog = document.getElementById('leave-dialog');
-        dialog.style.display = 'none';
-
-        var id = dialog.getAttribute('data-entry-id');
+   
 
 
-        var xhr = new XMLHttpRequest();
-        xhr.open('GET', '/leave/' + id, true);
-        xhr.onreadystatechange = function() {
-            if (xhr.readyState === XMLHttpRequest.DONE) {
-                if (xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-                    if (response.success) {
-                    var updateMessage = document.getElementById('update-message');
+
+
+
+    document.addEventListener('DOMContentLoaded', function() {
+    var leaveButtons = document.querySelectorAll('.leave-button');
+
+    leaveButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            var eventId = this.getAttribute('data-id'); 
+
+            var dialog = document.getElementById('leave-dialog');
+            dialog.style.display = 'flex'; 
+            document.getElementById('confirm-leave-button').addEventListener('click', function() {
+              
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', '/leave/' + eventId, true);
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        if (xhr.status === 200) {
+                            var response = JSON.parse(xhr.responseText);
+                            if (response.success) {
+                                var updateMessage = document.getElementById('update-message');
                     updateMessage.textContent = response.message;
                     updateMessage.style.display = 'block'; 
                     setTimeout(function() {
                         updateMessage.style.display = 'none'; 
-                        location.reload();
                     }, 1500); 
-                } 
-            } 
-        }
-    };
-        xhr.send();
-        var dialog = document.getElementById('custom-dialog');
-    dialog.style.display = 'none';
-    });
+                                var rowToDelete = button.closest('tr');
+                                if (rowToDelete) {
+                                    rowToDelete.remove();
+                                }
+                            } else {
+                                alert('Wystąpił błąd podczas usuwania.');
+                            }
+                        } else {
+                            alert('Wystąpił błąd podczas komunikacji z serwerem.');
+                        }
+                    }
+                };
+                xhr.send();
 
-    document.getElementById('cancel-leave-button').addEventListener('click', function() {
-        var dialog = document.getElementById('leave-dialog');
-        dialog.style.display = 'none';
+                dialog.style.display = 'none';
+            });
+
+            document.getElementById('cancel-leave-button').addEventListener('click', function() {
+                dialog.style.display = 'none'; 
+            });
+        });
     });
+});
+
+
 
 
     function cancelChanges() {
@@ -796,5 +834,17 @@ document.addEventListener('DOMContentLoaded', sprawdzDatyWydarzen);
  
 
 </script>
+@if ($closeGroupSection == 1)
+    <script>
+        rating(2);
+        closeExpand();
+    </script>
+@endif
 
+<script>
+@if(session('executeJs'))
+        rating(2);
+        closeExpand();
+@endif
+</script>
 @endsection

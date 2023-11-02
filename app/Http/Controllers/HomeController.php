@@ -43,8 +43,10 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-   public function index()
+   public function index(Request $request)
 {
+
+    $closeGroupSection = $request->input('close_group_section', 0);
     $participantId = Auth::id();
     $participant = Participant::findOrFail($participantId);
 
@@ -96,13 +98,14 @@ class HomeController extends Controller
 
 
     return view('home', [
+        'closeGroupSection' => $closeGroupSection,
         'results' => $results,
         'groups' => $groups,
         'participant' => $participant,
         'schoolName' => $schoolName,
         'cityName' => $cityName,
         'zipName' => $zipName,
-        'error' => ($checkSchool == 1) ? null : 'Proszę uzupełnić szkołę!'
+        'error' => ($checkSchool == 1) ? null : 'Aby odblokować profil uzupełnij dane szkoły!'
     ]);
 }
 

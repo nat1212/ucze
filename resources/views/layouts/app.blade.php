@@ -85,7 +85,7 @@
                                     </a>
                                     @endif
                                     <a  onclick="redirectToEventList(event)" class="dropdown-item"  href="#">
-                                    {{ ('Wszyskie wydarzenia') }}
+                                    {{ ('Wszystkie wydarzenia') }}
                                     </a>
                                     </div>
 
@@ -93,7 +93,7 @@
                                     @if(Request::is('event/list*'))
                                     <div class="H2p">
                                     <a onclick="window.location.href = '{{ url('/home') }}';" class="dropdown-item" href="#">
-                                    {{ ('Strona głowna') }}
+                                    {{ ('Profil') }}
                                     </a>
                                     </div>
 
