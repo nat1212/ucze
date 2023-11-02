@@ -71,29 +71,31 @@
     </div>
 @endforeach
 
-    </div>
-</div>
-                       
-                        <input type="hidden" name="id" value="{{ $event_id }}">
-                       
-                        <input type="hidden" name="event_details_id" value="{{ $event_details_id }}">
-                        </form>
-                        <div class="row mb-0">
-                            <div class="col-md-6 offset-md-5    ">
-                            @if (strtotime($date) > strtotime('now'))
-                                <button type="submit" class="btn btn-primary"  >
-                                    {{ __('Zapisz') }}
-                                </button>
-                                @endif   
-                  
-                                <a href="{{ route('home', ['close_group_section' => 1]) }}" class="btn btn-primary">Anuluj</a>
 
-                                @if (strtotime($date) > strtotime('now'))
-                                <button data-id="{{ $event_id }}" class="btn btn-danger del">Usuń liste</button>
-                                @endif
-                            </div>
-                        </div>
-              
+    </div>
+    
+</div>
+<input type="hidden" name="id" value="{{ $event_id }}">
+                       
+                       <input type="hidden" name="event_details_id" value="{{ $event_details_id }}">
+                
+                       <div class="button-container">
+    @if (strtotime($date) > strtotime('now'))
+        <button type="submit" class="btn btn-primary"style="margin: 5px;">
+            {{ __('Zapisz') }}
+        </button>
+    @endif
+
+    <a href="{{ route('home', ['close_group_section' => 1]) }}" class="btn btn-primary" style="margin: 5px;">Anuluj</a>
+</div>
+</form>
+<div class="button-container">
+    @if (strtotime($date) > strtotime('now'))
+        <button data-id="{{ $event_id }}" class="btn btn-danger del">Usuń liste</button>
+    @endif
+</div>
+                          
+                    
                     </div>
                 </div>
             </div>

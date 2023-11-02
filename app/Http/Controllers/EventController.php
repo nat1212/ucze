@@ -42,7 +42,7 @@ class EventController extends Controller
                 ->orderBy('date_start', 'asc');
         }])
         ->orderBy('date_start', 'asc')
-        ->paginate(3);
+        ->paginate(2);
     
     
     foreach ($events as $event) {

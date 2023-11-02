@@ -544,9 +544,11 @@ public function edit3(Request $request)
 }
     public function destroy($id){
         $currentDateTime = Carbon::now();
-        eventParticipantList::where('id', $id)->update(['deleted_at' => $currentDateTime]);
+    
         $event_id = eventParticipantList::where('id', $id)->value('event_participants_id');
         $Parti_id = eventParticipant::where('id', $event_id)->value('event_details_id');
+        eventParticipantList::where('id', $id)->update(['deleted_at' => $currentDateTime]);
+
         
         $eventParticipant = eventParticipant::find($event_id);
         $eventParticipant->number_of_people -= 1;
@@ -564,20 +566,25 @@ public function edit3(Request $request)
     try {
         $currentDateTime = Carbon::now();
 
-        $Parti_id = eventParticipant::where('id', $id)->value('event_details_id');
+        $Parti_idd = eventParticipant::where('id', $id)->value('event_details_id');
+
+
+        eventParticipant::where('id', $id)->update(['deleted_at' => $currentDateTime]);
+  
+        
+        $hasDeletedAt = eventParticipantList::where('event_participants_id', $id)->whereNull('deleted_at')->exists();
+
+
+        if ($hasDeletedAt) {
+       
+            $updatedCount = eventParticipantList::where('event_participants_id', $id)
+                ->whereNull('deleted_at')
+                ->update(['deleted_at' => $currentDateTime]);
+        }
 
 
         $numberOfPeople = eventParticipant::where('id', $id)->value('number_of_people');
-
-        eventParticipant::where('id', $id)->update(['deleted_at' => $currentDateTime]);
-        $hasDeletedAt = eventParticipantList::where('event_participants_id', $id)->whereNotNull('deleted_at')->exists();
-
-        if (!$hasDeletedAt) {
-            // Aktualizuj datę deleted_at tylko wtedy, jeśli nie ma jeszcze ustawionej daty
-            $updatedCount = eventParticipantList::where('event_participants_id', $id)->update(['deleted_at' => $currentDateTime]);
-        }
-
-        $eventDetails = EventDetails::find($Parti_id);
+        $eventDetails = EventDetails::find($Parti_idd);
         $eventDetails->number_seats += $numberOfPeople;
         $eventDetails->save();
 

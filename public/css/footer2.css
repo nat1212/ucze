@@ -81,3 +81,10 @@
   margin: 5px;
   cursor: pointer;
 }
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px;
+}
