@@ -135,7 +135,7 @@ class HomeController extends Controller
             'password' => Hash::make($request->new_password)
         ]);
 
-        return back()->with("status", "Udało się!");
+        return back()->with("status", "Udało się zmienić hasło!");
 }
 
 }
