@@ -22,7 +22,7 @@
 <div class="input-group">
 <input id="number_input" class="form-control" type="number" placeholder="Dodaj nowe osoby" min="1">
 <div class="input-group-append">
-<button style ="margin-left:10px;" onclick="addInputss()" class="btn btn-primary">Dodaj</button>
+<button style ="margin-left:10px;" onclick="addInputss()" class="btn btn-primary"  id="numberr">Dodaj</button>
 </div>
 
 </div>
@@ -81,7 +81,7 @@
                 
                        <div class="button-container">
     @if (strtotime($date) > strtotime('now'))
-        <button type="submit" class="btn btn-primary"style="margin: 5px;">
+        <button type="submit" class="btn btn-primary"style="margin: 5px;" id="save-button" disabled>
             {{ __('Zapisz') }}
         </button>
     @endif
@@ -295,7 +295,33 @@ form.addEventListener('keydown', function (e) {
     }
 });
 
+function enableSaveButton() {
+        $('#save-button').prop('disabled', false);
+    }
 
+   
+    function disableSaveButton() {
+        $('#save-button').prop('disabled', true);
+    }
+
+   
+    $('input[type="text"]').on('input', function () {
+        enableSaveButton();
+    });
+
+    $('#numberr').on('click', function () {
+        enableSaveButton();
+    });
+   
+    $('#add-button').on('click', function () {
+        enableSaveButton();
+    });
+
+ 
+    $('#myForm').on('submit', function () {
+      
+        disableSaveButton();
+    });
 
 </script>
 
