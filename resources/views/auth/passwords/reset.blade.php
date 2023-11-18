@@ -93,7 +93,7 @@ registerForm.addEventListener("submit", function () {
     setTimeout(function () {
         loadingOverlay.style.display = "none";
         loadingSpinner.style.display = "none";
-    }, 5000);
+    }, 7000);
 });
 
     </script>

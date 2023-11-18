@@ -5,6 +5,7 @@ use Illuminate\Database\Eloquent\Casts\AsDateTime;
 
 use Illuminate\Http\Request;
 use App\Models\Participant;
+use App\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -27,6 +28,8 @@ class ParticipantController extends Controller
 public function updateProfile(Request $request, $id)
 {
     $participant = Participant::findOrFail($id);
+
+    $user = Auth::user();
 
     $validator = Validator::make($request->all(), [
         'first_name' => 'nullable|string|max:255',
@@ -51,10 +54,11 @@ public function updateProfile(Request $request, $id)
 
     if (!empty($request->email)) {
         $newEmail = $request->email;
-        if ($newEmail != $participant->email) {
-            // Sprawdzanie unikalności adresu e-mail
+        if ($newEmail != $participant->email || $newEmail != $user->email) {
+
             $existingParticipant = Participant::where('email', $newEmail)->first();
-            if ($existingParticipant) {
+            $existingUser = User::where('email', $newEmail)->first();
+            if ($existingParticipant ||  $existingUser) {
                 return new JsonResponse(['message' => 'Adres e-mail jest już zajęty.']);
             } else {
                 $dataToUpdate['email'] = $newEmail;
