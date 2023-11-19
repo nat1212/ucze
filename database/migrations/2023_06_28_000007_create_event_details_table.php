@@ -32,10 +32,10 @@ return new class extends Migration
             $table->dateTime('date_end')->nullable()->default(null);
             $table->text('description')->nullable()->default(null);
             $table->text('comments')->nullable()->default(null);
+            $table->integer('all_seats')->nullable();
             $table->integer('number_seats')->nullable();
             $table->dateTime('date_start_rek')->nullable()->default(null);
             $table->dateTime('date_end_rek')->nullable()->default(null);
-            $table->integer('type')->nullable();
             $table->integer('events_id')->unsigned();
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable()->default(null);

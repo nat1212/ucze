@@ -61,7 +61,7 @@
 
                         <div class="card-footer">
                             <button type="submit" class="btn btn-primary">Zapisz</button>
-                            <a href="{{ route('home') }}" class="btn btn-primary">Anuluj</a>
+                            <a href="{{ route('home', ['close_group_section' => 2]) }}" class="btn btn-primary">Anuluj</a>
                         </div>
 
                     </form>

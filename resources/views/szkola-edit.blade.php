@@ -38,7 +38,7 @@
                                 </button>
 
                                 
-                                <a style="margin: 10px 0;" href="{{ route('home') }}" class="btn btn-primary">Anuluj</a>
+                                <a style="margin: 10px 0;" href="{{ route('home', ['close_group_section' => 2]) }}" class="btn btn-primary">Anuluj</a>
                             </div>
                         </div>
                     </form>

@@ -23,10 +23,10 @@
 
                     <div id="update-message" class="alert alert-success" style="display: none;"></div>
                     @if ($errors->has('status'))
-    <div id="update-message2" class="alert alert-danger">
-        {{ $errors->first('status') }}
-    </div>
-@endif
+                        <div id="update-message2" class="alert alert-danger">
+                            {{ $errors->first('status') }}
+                        </div>
+                    @endif
                    
      
                     <div id="update-message-container"></div>
@@ -36,7 +36,7 @@
             Profil
         </div>
         @if (Auth::user()->dictionary_schools_id)
-        <div  onclick=" rating(0);toggleExpand()" class="side-bar-underinfo" data-id="1">
+        <div  onclick=" rating(0);toggleExpand();" class="side-bar-underinfo" data-id="1">
             Edycja profilu
         </div>
         @endif
@@ -119,7 +119,7 @@
                             <p>{{ $error }} -> <a href="/szkola">Kliknij tutaj</a></p>
                         </div>
                     @endif
-   
+                    <div id="update-message3" class="alert alert-success" style="display: none;"></div>
                    
  <div class="table-info" data-id="1">
  <h3 style="text-align: center; margin: 20px 0;">Zapis indywidualny:</h3>
@@ -618,12 +618,13 @@ document.getElementById('confirm-button').addEventListener('click', function() {
             if (xhr.status === 200) {
                 var response = JSON.parse(xhr.responseText);
                 if (response.success) {
-                    var updateMessage = document.getElementById('update-message');
+                    var updateMessage = document.getElementById('update-message3');
                     updateMessage.textContent = response.message;
                     updateMessage.style.display = 'block'; 
                     setTimeout(function() {
                         updateMessage.style.display = 'none'; 
                         location.reload();
+               
                     }, 1500); 
                 } else {
                     var updateMessage = document.getElementById('update-message2');
@@ -631,7 +632,7 @@ document.getElementById('confirm-button').addEventListener('click', function() {
                     updateMessage.style.display = 'block'; 
                     setTimeout(function() {
                         updateMessage.style.display = 'none'; 
-                        location.reload();
+                       
                     }, 3000);
                 }
             } 
@@ -840,7 +841,12 @@ document.addEventListener('DOMContentLoaded', sprawdzDatyWydarzen);
         closeExpand();
     </script>
 @endif
-
+@if ($closeGroupSection == 2)
+    <script>
+        rating(0);
+        toggleExpand();
+    </script>
+@endif
 <script>
 @if(session('executeJs'))
         rating(2);
